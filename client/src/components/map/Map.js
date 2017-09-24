@@ -12,11 +12,17 @@ class ReactLeafletMap extends PureComponent {
       lat: 63.417993,
       lng: 10.405758,
       zoom: 15,
-      search: '',
-      bounds: [[], []]
     }
   }
 
+
+
+  /*  MAPS TO LOOK AT
+    url="http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+    url="https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png"
+    url="http://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=topo2&zoom={z}&x={x}&y={y}"
+    attribution='&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy; <a href="https://carto.com/attribution">CARTO</a>'
+  */
 
   render() {
     return (
@@ -25,11 +31,9 @@ class ReactLeafletMap extends PureComponent {
           center={[this.state.lat, this.state.lng]}
           zoom={this.state.zoom}
         >
-
-
           <TileLayer
-            url="https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png"
-            attribution='&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy; <a href="https://carto.com/attribution">CARTO</a>'
+            url="http://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=topo2&zoom={z}&x={x}&y={y}"
+            attribution='&copy; <a href="http://www.statkart.no">Startkart.no</a>'
           />
         </Map>
       </div>
