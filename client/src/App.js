@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
+import ReactLeafletMap from './components/map/Map.js';
 
 class App extends Component {
   state = {users: []}
@@ -17,7 +18,12 @@ class App extends Component {
         {this.state.users.map(user =>
           <div key={user.id}>{user.username}</div>
         )}
+        <div>
+        <ReactLeafletMap>
+        </ReactLeafletMap>
+        </div>
       </div>
+
     );
   }
 }
