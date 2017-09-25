@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
+import LandingPage from './components/LandingPage';
 
 class App extends Component {
   state = {users: []}
@@ -13,10 +14,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <h1>Users</h1>
-        {this.state.users.map(user =>
-          <div key={user.id}>{user.username}</div>
-        )}
+        <LandingPage />
       </div>
     );
   }
