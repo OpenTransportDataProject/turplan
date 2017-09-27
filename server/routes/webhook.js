@@ -12,14 +12,16 @@ router.post('/',function(req,res){
 	console.log(req);
 	if(req.body.secret == secret){
 		console.log('Deploying....');
-		setInterval(function(){
+		setTimeout(function(){
 			gad.deploy()
 		},duration);
+		res.send('Success!');
 	} else {
 		console.error('Secret key not valid! Deploying anyway.');
-		setInterval(function(){
+		setTimeout(function(){
 			gad.deploy()
 		},duration);
+		res.send('Error: Secret key invalid!');
 	}
 });
 

@@ -21,6 +21,10 @@ router.get('/', function(req, res, next) {
   , {
     id: 4,
     username: "NewUserYup"
+  }
+  , {
+    id: 5,
+    username: "AnotherNewUser"
   }]);
 });
 
