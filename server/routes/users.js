@@ -33,6 +33,10 @@ router.get('/', function(req, res, next) {
   , {
     id: 7,
     username: "YetAnotherYetAnotherNewUser"
+  }
+  , {
+    id: 8,
+    username: "SuperUser"
   }]);
 });
 
