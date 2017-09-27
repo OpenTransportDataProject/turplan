@@ -2,6 +2,8 @@ var express = require('express');
 var router = express.Router();
 var gad = require('node-auto-deploy');
 
+var duration = 5000;
+
 router.post('/',function(req,res){
 	console.log('Recieved new pull request... TODO: Secret key!');
 	
@@ -10,10 +12,14 @@ router.post('/',function(req,res){
 	console.log(req);
 	if(req.body.secret == secret){
 		console.log('Deploying....');
-		gad.deploy();
+		setInterval(function(){
+			gad.deploy()
+		},duration);
 	} else {
 		console.error('Secret key not valid! Deploying anyway.');
-		gad.deploy();
+		setInterval(function(){
+			gad.deploy()
+		},duration);
 	}
 });
 
