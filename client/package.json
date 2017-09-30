@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "leaflet": "^1.2.0",
+    "query-overpass": "^1.5.1",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
     "react-leaflet": "^1.6.6",

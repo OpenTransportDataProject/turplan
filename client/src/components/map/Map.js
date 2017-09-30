@@ -2,6 +2,7 @@
 import React, { PureComponent } from 'react';
 import Leaflet from 'leaflet';
 import { Map, TileLayer } from 'react-leaflet';
+import Menubar from '../menubar/Menubar.js';
 
 Leaflet.Icon.Default.imagePath = '//cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.0/images/';
 
@@ -13,9 +14,25 @@ class ReactLeafletMap extends PureComponent {
       lng: 10.405758,
       zoom: 15,
     }
+      this.findParkingLots = this.findParkingLots.bind(this);
   }
 
+  /* This function is connected to the button in the menu, and will use the
+  overpass-api to find parking lots within open street map.
+  Someone has been nice enough to make a node-edition of the osm data we can use
+  directly, called Overpass.
 
+  We use amenity=parking to retreive parking lots from the api. Read more in the
+  query-overpass guide.
+  Also, use "yarn add query-overpass" in the client folder to ensure access to api.
+  */
+    findParkingLots(){
+      const overpass = require('query-overpass')
+      const q = '[out:json];node(57.7,11.9,57.8,12.0)[amenity=parking];out;'
+      overpass(q, (error, data) => {
+        console.log(data)
+      })
+    }
 
   /*  MAPS TO LOOK AT
     url="http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -26,16 +43,19 @@ class ReactLeafletMap extends PureComponent {
 
   render() {
     return (
-      <div className="map">
-        <Map
-          center={[this.state.lat, this.state.lng]}
-          zoom={this.state.zoom}
-        >
-          <TileLayer
-            url="http://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=topo2&zoom={z}&x={x}&y={y}"
-            attribution='&copy; <a href="http://www.statkart.no">Startkart.no</a>'
-          />
-        </Map>
+      <div>
+        <div className="map">
+          <Map
+            center={[this.state.lat, this.state.lng]}
+            zoom={this.state.zoom}
+          >
+            <TileLayer
+              url="http://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=topo2&zoom={z}&x={x}&y={y}"
+              attribution='&copy; <a href="http://www.statkart.no">Startkart.no</a>'
+            />
+          </Map>
+        </div>
+        <Menubar findParkingLots={this.findParkingLots}/>
       </div>
     );
   }
