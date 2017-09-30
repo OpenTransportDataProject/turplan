@@ -27,8 +27,17 @@ class ReactLeafletMap extends PureComponent {
   Also, use "yarn add query-overpass" in the client folder to ensure access to api.
   */
     findParkingLots(){
+      // Finding the bounds of the current window to use in api call
+      var bounds = this.refs.map.leafletElement.getBounds();
+      var southWest_lat = bounds._southWest.lat;
+      var southWest_lng = bounds._southWest.lng;
+      var northEast_lat = bounds._northEast.lat;
+      var northEast_lng = bounds._northEast.lng;
+
+      console.log(bounds);
       const overpass = require('query-overpass')
-      const q = '[out:json];node(57.7,11.9,57.8,12.0)[amenity=parking];out;'
+      const q = '[out:json];node(' +southWest_lat+','+southWest_lng+','+northEast_lat+','+northEast_lng+')[amenity=parking];out;';
+      console.log(q);
       overpass(q, (error, data) => {
         console.log(data)
       })
@@ -48,6 +57,7 @@ class ReactLeafletMap extends PureComponent {
           <Map
             center={[this.state.lat, this.state.lng]}
             zoom={this.state.zoom}
+            ref='map'
           >
             <TileLayer
               url="http://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=topo2&zoom={z}&x={x}&y={y}"
