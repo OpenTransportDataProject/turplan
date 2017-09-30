@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
-import ReactLeafletMap from './components/Map';
-import LandingPage from './components/LandingPage';
-import styled from 'styled-components';
-import './App.css';
+import React, { Component } from "react";
+import ReactLeafletMap from "./components/Map";
+import LandingPage from "./components/LandingPage";
+import styled from "styled-components";
+import "./App.css";
 
 const Container = styled.div`
   display: flex;
@@ -17,11 +17,8 @@ class App extends Component {
     return (
       <Container className="App">
         <LandingPage />
+        <ReactLeafletMap />
       </Container>
-      <div className="App">
-        <h1>varde</h1>
-      <ReactLeafletMap/>
-      </div>
     );
   }
 }
