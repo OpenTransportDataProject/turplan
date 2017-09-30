@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import './App.css';
+import ReactLeafletMap from './components/Map';
 import LandingPage from './components/LandingPage';
 import styled from 'styled-components';
+import './App.css';
 
 const Container = styled.div`
   display: flex;
@@ -12,19 +13,15 @@ const Container = styled.div`
 `;
 
 class App extends Component {
-  state = {users: []}
-
-  componentDidMount() {
-    fetch('/users')
-      .then(res => res.json())
-      .then(users => this.setState({ users }));
-  }
-
   render() {
     return (
       <Container className="App">
         <LandingPage />
       </Container>
+      <div className="App">
+        <h1>varde</h1>
+      <ReactLeafletMap/>
+      </div>
     );
   }
 }

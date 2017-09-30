@@ -13,6 +13,30 @@ router.get('/', function(req, res, next) {
   }, {
   	id: 2,
   	username: "D0loresH4ze"
+  }
+  , {
+    id: 3,
+    username: "HelenesTest"
+  }
+  , {
+    id: 4,
+    username: "NewUserYup"
+  }
+  , {
+    id: 5,
+    username: "AnotherNewUser"
+  }
+  , {
+    id: 6,
+    username: "YetAnotherNewUser"
+  }
+  , {
+    id: 7,
+    username: "YetAnotherYetAnotherNewUser"
+  }
+  , {
+    id: 8,
+    username: "SuperUser"
   }]);
 });
 
