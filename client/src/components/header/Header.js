@@ -1,6 +1,5 @@
 
 import React, { PureComponent } from 'react';
-import Leaflet from 'leaflet';
 
 class Header extends PureComponent {
   render() {

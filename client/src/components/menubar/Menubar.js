@@ -1,6 +1,5 @@
 
 import React, { PureComponent } from 'react';
-import Leaflet from 'leaflet';
 import './Menubar.css';
 
 class Menubar extends PureComponent {
