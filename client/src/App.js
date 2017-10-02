@@ -14,6 +14,7 @@ const Container = styled.div`
 
 class App extends Component {
   render() {
+    return (
       <Container className="App">
         <LandingPage />
       </Container>

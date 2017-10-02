@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import Header from "../Header/Header.js";
-import Footer from "../Footer/Footer.js";
+import Header from "../header/Header.js";
+import Footer from "../footer/Footer.js";
 
 const Container = styled.div`
   flex: 1;
