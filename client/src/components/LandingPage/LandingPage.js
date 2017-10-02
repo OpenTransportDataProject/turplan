@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import Header from "./Header.js";
-import Footer from "./Footer.js";
+import Header from "../Header/Header.js";
+import Footer from "../Footer/Footer.js";
 
 const Container = styled.div`
   flex: 1;
@@ -59,7 +59,7 @@ const MapButtonContainer = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  padding-top: 10px;
+  padding: 10px;
 `;
 
 export const LandingPage = () => {

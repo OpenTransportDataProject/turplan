@@ -17,7 +17,6 @@ class App extends Component {
     return (
       <Container className="App">
         <LandingPage />
-        <ReactLeafletMap />
       </Container>
     );
   }
