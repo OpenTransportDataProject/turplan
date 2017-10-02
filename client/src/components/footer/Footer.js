@@ -44,7 +44,7 @@ export function Footer() {
       <NTNUImg src={ntnu} alt="ntnu" />
       <FooterText>
         {
-          "TDT4290 Kundestyrt Prosjekt i samarbeid med SINTEF og Statens Vegvesen"
+          "TDT4290 Kundestyrt Prosjekt i samarbeid med SINTEF Digital og Statens Vegvesen"
         }
       </FooterText>
       <CustomerContainer>

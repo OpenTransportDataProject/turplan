@@ -37,7 +37,7 @@ export function Header() {
       <SettingsImg
         src={settings}
         alt="settings"
-        onClick={() => console.log("Klikket på innstillinger...")}
+        onClick={() => console.log("Klikket på innstillinger......")}
       />
     </HeaderContainer>
   );
