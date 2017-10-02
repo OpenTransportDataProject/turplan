@@ -37,6 +37,10 @@ router.get('/', function(req, res, next) {
   , {
     id: 8,
     username: "SuperUser"
+  }
+  , {
+    id: 9,
+    username: "Ola Nordmann"
   }]);
 });
 
