@@ -16,11 +16,36 @@ const Container = styled.div`
 `;
 
 class App extends Component {
+  constructor(){
+      super();
+      this.state={
+        LandingPage:true
+      };
+      this.swapComponent = this.swapComponent.bind(this);
+  }
+
+  swapComponent(){
+    this.setState({LandingPage:false});
+  }
+
+
   render() {
+
+    var componentToShow;
+    if (this.state.LandingPage) {
+      componentToShow = <LandingPage swapComponent={this.swapComponent} />
+    }
+    else{
+      componentToShow = <ReactLeafletMap/>
+    }
+
     return (
       <Container className="App">
         <Header />
-        <LandingPage />
+
+          {componentToShow}
+
+
         <Footer />
       </Container>
     );
