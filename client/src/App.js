@@ -1,19 +1,23 @@
-import React, { Component } from 'react';
-import './App.css';
-import ReactLeafletMap from './components/map/Map.js';
-import Header from './components/header/Header.js';
+import React, { Component } from "react";
+import ReactLeafletMap from "./components/map";
+import LandingPage from "./components/landing_page";
+import styled from "styled-components";
+import "./App.css";
 
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100vh;
+  background-color: #eee;
+`;
 
 class App extends Component {
   render() {
-    var map = <ReactLeafletMap/>;
     return (
-      <div className="App">
-      <Header/>
-      {map}
-
-      </div>
-
+      <Container className="App">
+        <LandingPage />
+      </Container>
     );
   }
 }
