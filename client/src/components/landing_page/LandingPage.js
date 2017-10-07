@@ -1,13 +1,5 @@
 import React from "react";
 import styled from "styled-components";
-import Header from "../header/Header.js";
-import Footer from "../footer/Footer.js";
-
-const Container = styled.div`
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-`;
 
 const ContentContainer = styled.div`
   flex: 8;
@@ -64,25 +56,21 @@ const MapButtonContainer = styled.div`
 
 export const LandingPage = () => {
   return (
-    <Container>
-      <Header />
-      <ContentContainer>
-        <SearchContainer>
-          <Input placeholder="Søketekst" type="text" />
-          <SearchButton
-            onClick={() => console.log("Skal søke etter sted her...")}
-          >
-            Søk etter sted
-          </SearchButton>
-        </SearchContainer>
-        <MapButtonContainer>
-          <MapButton onClick={() => console.log("Skal gå til kart her...")}>
-            Gå til kart
-          </MapButton>
-        </MapButtonContainer>
-      </ContentContainer>
-      <Footer />
-    </Container>
+    <ContentContainer>
+      <SearchContainer>
+        <Input placeholder="Søketekst" type="text" />
+        <SearchButton
+          onClick={() => console.log("Skal søke etter sted her...")}
+        >
+          Søk etter sted
+        </SearchButton>
+      </SearchContainer>
+      <MapButtonContainer>
+        <MapButton onClick={() => console.log("Skal gå til kart her...")}>
+          Gå til kart
+        </MapButton>
+      </MapButtonContainer>
+    </ContentContainer>
   );
 };
 
