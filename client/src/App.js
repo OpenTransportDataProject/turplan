@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import ReactLeafletMap from "./components/Map";
-import LandingPage from "./components/LandingPage";
+import ReactLeafletMap from "./components/map";
+import LandingPage from "./components/landing_page";
 import styled from "styled-components";
 import "./App.css";
 

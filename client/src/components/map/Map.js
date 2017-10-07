@@ -3,6 +3,7 @@ import Leaflet from "leaflet";
 import { Map, TileLayer, Popup, Marker } from "react-leaflet";
 import Menubar from "../menubar/Menubar.js";
 import Header from "../header/Header.js";
+import Footer from "../footer/Footer.js";
 
 /* This function is connected to the button in the menu, and will use the
 overpass-api to find parking lots within open street map.
@@ -89,8 +90,8 @@ class ReactLeafletMap extends Component {
   render() {
     return (
       <div>
+        <Header />
         <div className="map">
-          <Header />
           <Map
             center={[this.state.lat, this.state.lng]}
             zoom={this.state.zoom}
@@ -110,6 +111,7 @@ class ReactLeafletMap extends Component {
           </Map>
         </div>
         <Menubar findParkingLots={this.findParkingLots} />
+        <Footer />
       </div>
     );
   }
