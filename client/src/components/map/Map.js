@@ -3,7 +3,6 @@ import Leaflet from "leaflet";
 import { Map, TileLayer, Popup, Marker } from "react-leaflet";
 import Menubar from "../menubar/Menubar.js";
 import Header from "../header/Header.js";
-import Footer from "../footer/Footer.js";
 
 /* This function is connected to the button in the menu, and will use the
 overpass-api to find parking lots within open street map.
@@ -35,13 +34,20 @@ class ReactLeafletMap extends Component {
       lng: 10.405758,
       zoom: 15,
       //The markers list will be filled with positions for all parking lots
-      markers: []
+      markers: [],
+      startmarker: []
     };
     // Makes this availiable. Fixes most of the react issues related to getting correct things
     this.findParkingLots = this.findParkingLots.bind(this);
     this.findChargingStations = this.findChargingStations.bind(this);
-    }
-
+    this.addMarker = this.addMarker.bind(this);
+  }
+  addMarker = e => {
+    let { startmarker } = this.state;
+    startmarker = [];
+    startmarker.push(e.latlng);
+    this.setState({ startmarker });
+  };
   findParkingLots() {
     var bounds = this.refs.map.leafletElement.getBounds();
     // Include the overpass library to be able to use it. It's a bit slow, but works
@@ -127,6 +133,7 @@ class ReactLeafletMap extends Component {
             center={[this.state.lat, this.state.lng]}
             zoom={this.state.zoom}
             ref="map"
+            onClick={this.addMarker}
           >
             <TileLayer
               url="http://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=topo2&zoom={z}&x={x}&y={y}"
@@ -139,10 +146,19 @@ class ReactLeafletMap extends Component {
                 </Popup>
               </Marker>
             ))}
+            {this.state.startmarker.map((position, idx) => (
+              <Marker key={`marker-${idx}`} position={position}>
+                <Popup>
+                  <span>Starting point :D</span>
+                </Popup>
+              </Marker>
+            ))}
           </Map>
         </div>
-        <Menubar findParkingLots={this.findParkingLots} findChargingStations={this.findChargingStations} />
-        <Footer />
+        <Menubar
+          findParkingLots={this.findParkingLots}
+          findChargingStations={this.findChargingStations}
+        />
       </div>
     );
   }
