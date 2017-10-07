@@ -39,28 +39,23 @@ class ReactLeafletMap extends Component {
     };
     // Makes this availiable. Fixes most of the react issues related to getting correct things
     this.findParkingLots = this.findParkingLots.bind(this);
-  }
+    this.findChargingStations = this.findChargingStations.bind(this);
+    }
 
   findParkingLots() {
-    // Finding the bounding box of the current window to use in api call
     var bounds = this.refs.map.leafletElement.getBounds();
-    var southWest_lat = bounds._southWest.lat;
-    var southWest_lng = bounds._southWest.lng;
-    var northEast_lat = bounds._northEast.lat;
-    var northEast_lng = bounds._northEast.lng;
-
     // Include the overpass library to be able to use it. It's a bit slow, but works
     const overpass = require("query-overpass");
     // Creates the query which is sent to overpass-api using their language of preference
     const query =
       "[out:json];node(" +
-      southWest_lat +
+      bounds._southWest.lat +
       "," +
-      southWest_lng +
+      bounds._southWest.lng +
       "," +
-      northEast_lat +
+      bounds._northEast.lat +
       "," +
-      northEast_lng +
+      bounds._northEast.lng +
       ")[amenity=parking];out;";
     // Performs the query:
     overpass(query, (error, data) => {
@@ -74,6 +69,42 @@ class ReactLeafletMap extends Component {
         var parkingLot = parkingLots[i];
         var lat = parkingLot.geometry.coordinates[1];
         var lng = parkingLot.geometry.coordinates[0];
+        markers.push([lat, lng]);
+      }
+      // Updates the state with new markers.
+      this.setState({ markers });
+    });
+  }
+
+  findChargingStations() {
+    // Finding the bounding box of the current window to use in api call
+    var bounds = this.refs.map.leafletElement.getBounds();
+    // Include the overpass library to be able to use it. It's a bit slow, but works
+    const overpass = require("query-overpass");
+    // Creates the query which is sent to overpass-api using their language of preference
+    const query =
+      "[out:json];node(" +
+      bounds._southWest.lat +
+      "," +
+      bounds._southWest.lng +
+      "," +
+      bounds._northEast.lat +
+      "," +
+      bounds._northEast.lng +
+      ")[amenity=charging_stations];out;";
+    // Performs the query:
+    overpass(query, (error, data) => {
+      // Here is what gets returned from the api call to overpass based on bounds.
+      var charging_stations = data.features;
+      console.log(error);
+      // Obtaining coordinates for each parking lot entry
+      let { markers } = this.state;
+      markers = [];
+      // Obtain all positions and send them to the state which will be used to make markers
+      for (var i = 0; i < charging_stations.length; i++) {
+        var chargingStation = charging_stations[i];
+        var lat = chargingStation.geometry.coordinates[1];
+        var lng = chargingStation.geometry.coordinates[0];
         markers.push([lat, lng]);
       }
       // Updates the state with new markers.
@@ -110,7 +141,7 @@ class ReactLeafletMap extends Component {
             ))}
           </Map>
         </div>
-        <Menubar findParkingLots={this.findParkingLots} />
+        <Menubar findParkingLots={this.findParkingLots} findChargingStations={this.findChargingStations} />
         <Footer />
       </div>
     );
