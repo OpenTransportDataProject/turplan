@@ -43,6 +43,8 @@ class ReactLeafletMap extends Component {
     }
 
   findParkingLots() {
+    // http://wiki.openstreetmap.org/wiki/Overpass_API/Overpass_API_by_Example <-- read here for info abt queries
+
     var bounds = this.refs.map.leafletElement.getBounds();
     // Include the overpass library to be able to use it. It's a bit slow, but works
     const overpass = require("query-overpass");
@@ -56,7 +58,25 @@ class ReactLeafletMap extends Component {
       bounds._northEast.lat +
       "," +
       bounds._northEast.lng +
-      ")[amenity=parking];out;";
+      ")[amenity=parking];out;way(" +
+      bounds._southWest.lat +
+      "," +
+      bounds._southWest.lng +
+      "," +
+      bounds._northEast.lat +
+      "," +
+      bounds._northEast.lng +
+      ")[amenity=parking];out center;relation(" +
+      bounds._southWest.lat +
+      "," +
+      bounds._southWest.lng +
+      "," +
+      bounds._northEast.lat +
+      "," +
+      bounds._northEast.lng +
+      ")[amenity=parking];out center;";
+
+
     // Performs the query:
     overpass(query, (error, data) => {
       // Here is what gets returned from the api call to overpass based on bounds.
@@ -83,15 +103,33 @@ class ReactLeafletMap extends Component {
     const overpass = require("query-overpass");
     // Creates the query which is sent to overpass-api using their language of preference
     const query =
-      "[out:json];node(" +
-      bounds._southWest.lat +
-      "," +
-      bounds._southWest.lng +
-      "," +
-      bounds._northEast.lat +
-      "," +
-      bounds._northEast.lng +
-      ")[amenity=charging_stations];out;";
+    "[out:json];node(" +
+    bounds._southWest.lat +
+    "," +
+    bounds._southWest.lng +
+    "," +
+    bounds._northEast.lat +
+    "," +
+    bounds._northEast.lng +
+    ")[amenity=charging_station];out;way(" +
+    bounds._southWest.lat +
+    "," +
+    bounds._southWest.lng +
+    "," +
+    bounds._northEast.lat +
+    "," +
+    bounds._northEast.lng +
+    ")[amenity=charging_station];out center;relation(" +
+    bounds._southWest.lat +
+    "," +
+    bounds._southWest.lng +
+    "," +
+    bounds._northEast.lat +
+    "," +
+    bounds._northEast.lng +
+    ")[amenity=charging_station];out center;";
+
+    
     // Performs the query:
     overpass(query, (error, data) => {
       // Here is what gets returned from the api call to overpass based on bounds.
@@ -121,7 +159,6 @@ class ReactLeafletMap extends Component {
   render() {
     return (
       <div>
-        <Header />
         <div className="map">
           <Map
             center={[this.state.lat, this.state.lng]}
@@ -142,7 +179,6 @@ class ReactLeafletMap extends Component {
           </Map>
         </div>
         <Menubar findParkingLots={this.findParkingLots} findChargingStations={this.findChargingStations} />
-        <Footer />
       </div>
     );
   }
