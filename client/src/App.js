@@ -1,10 +1,14 @@
 import React, { Component } from "react";
 import ReactLeafletMap from "./components/map";
 import LandingPage from "./components/landing_page";
+import Header from "./components/header/Header.js";
+import MapHeader from "./components/header/MapHeader.js";
+import Footer from "./components/footer/Footer.js";
 import styled from "styled-components";
 import "./App.css";
 
 const Container = styled.div`
+  flex: 1;
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -13,10 +17,40 @@ const Container = styled.div`
 `;
 
 class App extends Component {
+  constructor(){
+      super();
+      this.state={
+        LandingPage:true
+      };
+      this.swapComponent = this.swapComponent.bind(this);
+  }
+
+  swapComponent(){
+    this.setState({LandingPage:false});
+  }
+
+
   render() {
+    var headerToShow;
+    var componentToShow;
+
+    if (this.state.LandingPage) {
+      headerToShow = <Header swapComponent={this.swapComponent}/>
+      componentToShow = <LandingPage swapComponent={this.swapComponent}/>
+    }
+    else{
+      headerToShow = <MapHeader/>
+      componentToShow = <ReactLeafletMap/>
+    }
+
     return (
       <Container className="App">
-        <LandingPage />
+
+          {headerToShow}
+          {componentToShow}
+          <Footer />
+
+
       </Container>
     );
   }
