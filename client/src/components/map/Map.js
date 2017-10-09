@@ -2,7 +2,19 @@ import React, { Component } from "react";
 import Leaflet from "leaflet";
 import { Map, TileLayer, Popup, Marker } from "react-leaflet";
 import Menubar from "../menubar/Menubar.js";
+import styled from 'styled-components';
 
+const Container = styled.div`
+  display: flex;
+  flex: 1;
+  margin: 1em;
+`;
+
+const MapContainer = styled.div`
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+`;
 /* This function is connected to the button in the menu, and will use the
 overpass-api to find parking lots within open street map.
 Someone has been nice enough to make a node-edition of the osm data we can use
@@ -163,13 +175,14 @@ class ReactLeafletMap extends Component {
   */
   render() {
     return (
-      <div>
-        <div className="map">
+      <Container>
+        <MapContainer>
           <Map
             center={[this.state.lat, this.state.lng]}
             zoom={this.state.zoom}
             ref="map"
             onClick={this.addMarker}
+            style={{margin: 'auto', width: '90%', height: '90%', position: 'relative'}}
           >
             <TileLayer
               url="http://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=topo2&zoom={z}&x={x}&y={y}"
@@ -190,12 +203,12 @@ class ReactLeafletMap extends Component {
               </Marker>
             ))}
           </Map>
-        </div>
+        </MapContainer>
         <Menubar
           findParkingLots={this.findParkingLots}
           findChargingStations={this.findChargingStations}
         />
-      </div>
+      </Container>
     );
   }
 }
