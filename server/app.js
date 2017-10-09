@@ -20,19 +20,19 @@ app.use(function(req, res, next) {
 
 const MongoWrapper = function MongoWrapper() {
   MongoClient.connect('mongodb://localhost:27017/trips', function (err, db) {
-  if(err) throw err;
+    if(err) throw err;
 
-  this.db = db;
-  this.api = {
-    turer: database.collection('api.turer'),
+    this.db = db;
+    this.api = {
+      turer: database.collection('api.turer'),
+    }
+
+    [
+      'test'
+    ].forEach((type) => {
+      this[type] = database.collection(type);
+    });
   }
-
-  [
-    'test'
-  ].forEach((type) => {
-    this[type] = database.collection(type);
-  });
-  
 }
 
 // view engine setup
