@@ -54,9 +54,6 @@ const MapButtonContainer = styled.div`
 `;
 
 class LandingPage extends Component {
-  constructor(props) {
-    super(props);
-  }
 
   render() {
 
