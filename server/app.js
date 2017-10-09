@@ -9,6 +9,7 @@ var routes = require('./routes/index');
 var users = require('./routes/users');
 var webhook = require('./routes/webhook');
 var trips = require('./routes/_test');
+var MongoClient = require('mongodb').MongoClient
 
 var app = express();
 app.use(function(req, res, next) {
@@ -16,6 +17,23 @@ app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
 });
+
+const MongoWrapper = function MongoWrapper() {
+  MongoClient.connect('mongodb://localhost:27017/trips', function (err, db) {
+  if(err) throw err;
+
+  this.db = db;
+  this.api = {
+    turer: database.collection('api.turer'),
+  }
+
+  [
+    'test'
+  ].forEach((type) => {
+    this[type] = database.collection(type);
+  });
+  
+}
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
