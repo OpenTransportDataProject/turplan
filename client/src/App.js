@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import ReactLeafletMap from "./components/map";
+import ReactLeafletMap from "./components/Map";
 import LandingPage from "./components/landing_page";
 import Header from "./components/header/Header.js";
 import MapHeader from "./components/header/MapHeader.js";
