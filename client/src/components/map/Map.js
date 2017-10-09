@@ -3,6 +3,7 @@ import Leaflet from "leaflet";
 import { Map, TileLayer, Popup, Marker } from "react-leaflet";
 import Menubar from "../menubar/Menubar.js";
 import Header from "../header/Header.js";
+var axios = require('axios');
 
 /* This function is connected to the button in the menu, and will use the
 overpass-api to find parking lots within open street map.
@@ -41,6 +42,7 @@ class ReactLeafletMap extends Component {
     this.findParkingLots = this.findParkingLots.bind(this);
     this.findChargingStations = this.findChargingStations.bind(this);
     this.addMarker = this.addMarker.bind(this);
+    this.findTrips();
   }
   addMarker = e => {
     let { startmarker } = this.state;
@@ -154,6 +156,22 @@ class ReactLeafletMap extends Component {
       // Updates the state with new markers.
       this.setState({ markers });
     });
+  }
+
+  /*
+  Only for demnstration purposes
+  */
+  findTrips(){
+    
+    axios.get('http://localhost:3001/trips')
+      .then(function (response) {
+        var myLines = response.data.geojson;
+        console.log(myLines);
+      })
+      .catch(function (error) {
+        console.error(error);
+      });
+
   }
 
   /*  MAPS TO LOOK AT
