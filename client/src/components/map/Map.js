@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import Leaflet from "leaflet";
 import { Map, TileLayer, Popup, Marker } from "react-leaflet";
 import Menubar from "../menubar/Menubar.js";
-import Header from "../header/Header.js";
 
 /* This function is connected to the button in the menu, and will use the
 overpass-api to find parking lots within open street map.

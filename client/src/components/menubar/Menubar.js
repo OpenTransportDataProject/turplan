@@ -2,9 +2,6 @@ import React, { PureComponent } from "react";
 import "./Menubar.css";
 
 class Menubar extends PureComponent {
-  constructor(props) {
-    super(props);
-  }
 
   render() {
     return (
@@ -16,7 +13,7 @@ class Menubar extends PureComponent {
       <button onClick={this.props.findChargingStations.bind(this)}>
         Find Charging Stations
       </button>
-      
+
       </div>
     );
   }
