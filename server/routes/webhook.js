@@ -10,7 +10,7 @@ router.post('/',function(req,res){
 	if(req.body.secret == secret){
 		setTimeout(function(){
 			console.log('Deploying....');
-			gad.deploy({ origin:"origin", branch:"dev" });
+			gad.deploy({ origin:"origin", branch:"serverBranch" });
 		},duration);
 		res.send('Success!');
 	} else {
