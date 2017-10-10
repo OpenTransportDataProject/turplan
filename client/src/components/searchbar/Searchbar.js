@@ -3,6 +3,7 @@ import {LandingPage} from '../landing_page/LandingPage';
 import PlacesAutocomplete, { geocodeByAddress, getLatLng} from 'react-places-autocomplete';
 //import { geocodeByAddress, geoCodeByPlaceId } from 'react-places-autocomplete';
 import styled from "styled-components";
+import ReactLeafletMap from '../Map/Map';
 
 // API key AIzaSyD-qhLT9q0SQV8EjT4wUivxtyS7K_CxMhM 
 
@@ -20,11 +21,12 @@ export class Searchbar extends Component {
         this.onChange = (address) => this.setState({ address });
 
         this.printLatLng = this.printLatLng.bind(this);
+        
 
     }
 
     printLatLng = () =>{
-        console.log("lat: " + this.state.lat + " lng: " + this.state.lng );
+        console.log("Searchbar - lat: " + this.state.lat + " lng: " + this.state.lng );
     }
 
     handleFormSubmit = (event) => {
@@ -61,6 +63,7 @@ export class Searchbar extends Component {
         
     };
 
+   
 
     render() {
 
@@ -113,19 +116,25 @@ export class Searchbar extends Component {
         
 
         return(
-            
-                <form onSubmit={this.handleFormSubmit}>
+            <div>
+                <form onSubmit={this.handleFormSubmit} >
                     <PlacesAutocomplete 
                     inputProps={inputProps}
                     onEnterKeyDown={this.handleEnter} 
                     styles={myStyles}
                     />
-                    
-                    {<SearchButton>
+                   
+                    {
+
+                    <SearchButton onClick={this.props.handleMap}>
                         Søk etter sted
                     </SearchButton>
+                    
                     }
+                
                 </form>
+
+            </div>
           
         )
     }

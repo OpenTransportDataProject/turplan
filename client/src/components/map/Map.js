@@ -54,10 +54,14 @@ constructor() {
     markers: [],
     startmarker: []
   };
+  
   // Makes this availiable. Fixes most of the react issues related to getting correct things
   this.findParkingLots = this.findParkingLots.bind(this);
   this.findChargingStations = this.findChargingStations.bind(this);
   this.addMarker = this.addMarker.bind(this);
+  this.handleMap = this.handleMap.bind(this);
+
+
 }
 addMarker = e => {
   let { startmarker } = this.state;
@@ -173,6 +177,19 @@ findChargingStations() {
   });
 }
 
+handleMap(event){
+  this.setState({
+    lat: 59.9138688,
+     lng: 10.752245399999993
+  })
+}
+
+
+
+printLatLng(){
+  console.log("Map - Lat: " + this.state.lat + " Lng: " + this.state.lng);
+}
+
 /*  MAPS TO LOOK AT
   url="http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
   url="https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png"
@@ -182,13 +199,17 @@ findChargingStations() {
 render() {
   return (
     <Container>
+      {
+        
       <Searchcontainer>
-        <Searchbar/>
+        <Searchbar handleMap={this.handleMap}/>
       </Searchcontainer>
-
+        
+      }
       <MapContainer>
         <Map
-          center={[this.state.lat, this.state.lng]}
+          center={[this.state.lat, this.state.lng]} 
+          //center={[this.props.lat, this.props.lng]}
           zoom={this.state.zoom}
           ref="map"
           onClick={this.addMarker}
