@@ -125,12 +125,16 @@ export class Searchbar extends Component {
                     />
                    
                     {
-
-                    <SearchButton onClick={this.props.handleMap}>
+                    /*
+                    <SearchButton onClick={this.props.handleMap(this.state.lat, this.state.lng)}>
                         Søk etter sted
                     </SearchButton>
-                    
+                    */
                     }
+
+                    <SearchButton onClick ={this.props.handleMap(this.state.lat, this.state.lng)}>
+                        Søk etter sted
+                    </SearchButton>
                 
                 </form>
 

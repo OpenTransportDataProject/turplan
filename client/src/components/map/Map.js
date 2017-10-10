@@ -177,10 +177,10 @@ findChargingStations() {
   });
 }
 
-handleMap(event){
+handleMap(lat, lng){
   this.setState({
-    lat: 59.9138688,
-     lng: 10.752245399999993
+    lat,
+    lng
   })
 }
 
@@ -202,7 +202,7 @@ render() {
       {
         
       <Searchcontainer>
-        <Searchbar handleMap={this.handleMap}/>
+        <Searchbar handleMap={(lat, lng) => this.handleMap(lat, lng)}/>
       </Searchcontainer>
         
       }
