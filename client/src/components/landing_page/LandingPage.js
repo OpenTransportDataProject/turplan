@@ -1,5 +1,7 @@
 import React, {Component} from "react";
 import styled from "styled-components";
+import {Searchbar} from "../searchbar/Searchbar";
+
 const ContentContainer = styled.div`
   flex: 8;
   display: flex;
@@ -60,12 +62,19 @@ class LandingPage extends Component {
 
   return (
     <ContentContainer>
+
+      <SearchContainer>
+        <Searchbar />
+      </SearchContainer>
+
+      {/*
       <SearchContainer>
         <Input placeholder="Søketekst" type="text" />
         <SearchButton>
           Søk etter sted
         </SearchButton>
       </SearchContainer>
+      */}
       <MapButtonContainer>
         <MapButton onClick={this.props.swapComponent.bind(this)}>
           Gå til kart
