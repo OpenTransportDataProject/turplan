@@ -48,11 +48,12 @@ export class Searchbar extends Component {
 
     }
 
-    handleEnter = (address) => {
+    handleSelect = (address) => {
         geocodeByAddress(address)
         .then(results => getLatLng(results[0]))
         .then(latLng => //console.log('Success', latLng)
             this.setState({
+                address,
                 lat: latLng.lat,
                 lng: latLng.lng
             })
@@ -120,7 +121,7 @@ export class Searchbar extends Component {
                 <form onSubmit={this.handleFormSubmit} >
                     <PlacesAutocomplete
                     inputProps={inputProps}
-                    onEnterKeyDown={this.handleEnter}
+                    onSelect={(address) => this.handleSelect(address)}
                     styles={myStyles}
                     />
 
