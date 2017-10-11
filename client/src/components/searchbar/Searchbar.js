@@ -1,15 +1,15 @@
 import React, {Component} from 'react';
-import {LandingPage} from '../landing_page/LandingPage';
+import {LandingPage} from '../Landing_page/LandingPage';
 import PlacesAutocomplete, { geocodeByAddress, getLatLng} from 'react-places-autocomplete';
 //import { geocodeByAddress, geoCodeByPlaceId } from 'react-places-autocomplete';
 import styled from "styled-components";
 import ReactLeafletMap from '../Map/Map';
 
-// API key AIzaSyD-qhLT9q0SQV8EjT4wUivxtyS7K_CxMhM 
+// API key AIzaSyD-qhLT9q0SQV8EjT4wUivxtyS7K_CxMhM
 
 
 export class Searchbar extends Component {
-    
+
     constructor(props){
         super(props);
 
@@ -21,7 +21,7 @@ export class Searchbar extends Component {
         this.onChange = (address) => this.setState({ address });
 
         this.printLatLng = this.printLatLng.bind(this);
-        
+
 
     }
 
@@ -34,18 +34,18 @@ export class Searchbar extends Component {
 
         geocodeByAddress(this.state.address)
         .then(results => getLatLng(results[0]))
-        .then(latLng => 
+        .then(latLng =>
             //console.log('Success', latLng)
             this.setState({
                 lat: latLng.lat,
                 lng: latLng.lng
             })
-        
+
         )
         .catch(error => console.error('Error', error))
 
         this.printLatLng();
-       
+
     }
 
     handleEnter = (address) => {
@@ -56,24 +56,24 @@ export class Searchbar extends Component {
                 lat: latLng.lat,
                 lng: latLng.lng
             })
-            
+
         )
         .catch(error => console.error('Error', error))
 
-        
+
     };
 
-   
+
 
     render() {
 
-        
+
 
         const inputProps = {
             value: this.state.address,
             onChange: this.onChange,
         }
-        
+
         const ContentContainer = styled.div`
         flex: 8;
         display: flex;
@@ -90,7 +90,7 @@ export class Searchbar extends Component {
         border-radius: 2px;
         margin-left: 10px;
       `;
-      
+
     /*
       const SearchContainer = styled.div`
       flex: 7;
@@ -99,49 +99,42 @@ export class Searchbar extends Component {
       align-items: center;
       justify-content: center;
       padding: 10px;
-      
+
       `;
       */
-        
+
         const myStyles = {
-            root: { 
+            root: {
                 position: 'relative'
             },
             input: {
                 width: '100%'
             }
-            
+
           }
-        
-        
+
+
 
         return(
             <div>
                 <form onSubmit={this.handleFormSubmit} >
-                    <PlacesAutocomplete 
+                    <PlacesAutocomplete
                     inputProps={inputProps}
-                    onEnterKeyDown={this.handleEnter} 
+                    onEnterKeyDown={this.handleEnter}
                     styles={myStyles}
                     />
-                   
-                    {
-                    /*
-                    <SearchButton onClick={this.props.handleMap(this.state.lat, this.state.lng)}>
-                        Søk etter sted
-                    </SearchButton>
-                    */
-                    }
 
-                    <SearchButton onClick ={this.props.handleMap(this.state.lat, this.state.lng)}>
+                    {
+
+                    <SearchButton onClick={() => this.props.handleMap(this.state.lat, this.state.lng)}>
                         Søk etter sted
                     </SearchButton>
-                
+
+                    }
                 </form>
 
             </div>
-          
+
         )
     }
 }
-
-

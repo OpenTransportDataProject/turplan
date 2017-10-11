@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import Leaflet from "leaflet";
 import { Map, TileLayer, Popup, Marker } from "react-leaflet";
-import Menubar from "../menubar/Menubar.js";
-import {Searchbar} from "../searchbar/Searchbar";
+import Menubar from "../Menubar/Menubar.js";
+import {Searchbar} from "../Searchbar/Searchbar";
 import styled from "styled-components";
 
 const Container = styled.div`
@@ -54,7 +54,7 @@ constructor() {
     markers: [],
     startmarker: []
   };
-  
+
   // Makes this availiable. Fixes most of the react issues related to getting correct things
   this.findParkingLots = this.findParkingLots.bind(this);
   this.findChargingStations = this.findChargingStations.bind(this);
@@ -200,15 +200,15 @@ render() {
   return (
     <Container>
       {
-        
+
       <Searchcontainer>
         <Searchbar handleMap={(lat, lng) => this.handleMap(lat, lng)}/>
       </Searchcontainer>
-        
+
       }
       <MapContainer>
         <Map
-          center={[this.state.lat, this.state.lng]} 
+          center={[this.state.lat, this.state.lng]}
           //center={[this.props.lat, this.props.lng]}
           zoom={this.state.zoom}
           ref="map"

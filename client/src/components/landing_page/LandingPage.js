@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import styled from "styled-components";
-import {Searchbar} from "../searchbar/Searchbar";
+import { Searchbar } from "../Searchbar/Searchbar";
 
 const ContentContainer = styled.div`
   flex: 8;
@@ -62,10 +62,6 @@ class LandingPage extends Component {
 
   return (
     <ContentContainer>
-
-      <SearchContainer>
-        <Searchbar />
-      </SearchContainer>
 
       {/*
       <SearchContainer>
