@@ -23,11 +23,11 @@ justify-content: center;
 align-items: center;
 `;
 
-
 /* This function is connected to the button in the menu, and will use the
 overpass-api to find parking lots within open street map.
 Someone has been nice enough to make a node-edition of the osm data we can use
 directly, called Overpass.
+
 We use amenity=parking to retreive parking lots from the api. Read more in the
 query-overpass guide. This doesn't find all parking lots, but a lot. We should
 look into ways to expand the query and find more parking lots.
@@ -42,6 +42,7 @@ Leaflet.Icon.Default.imagePath =
 // This component HAD to be a component, not PureComponent, to be able to display markers.
 // DO NOT change it. Was big problem, as it says nothing changes when it in fact does.
 class ReactLeafletMap extends Component {
+
 constructor() {
   //setting up initial starting state of the map.
   super();
