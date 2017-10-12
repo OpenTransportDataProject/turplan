@@ -68,6 +68,7 @@ class ReactLeafletMap extends Component {
     startmarker = [];
     startmarker.push(e.latlng);
     this.setState({ startmarker });
+  };
 
   findParkingLots() {
     // http://wiki.openstreetmap.org/wiki/Overpass_API/Overpass_API_by_Example <-- read here for info abt queries
@@ -241,4 +242,5 @@ class ReactLeafletMap extends Component {
     );
   }
 }
+
 export default ReactLeafletMap;
