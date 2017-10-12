@@ -28,6 +28,7 @@ const MapContainer = styled.div`
 overpass-api to find parking lots within open street map.
 Someone has been nice enough to make a node-edition of the osm data we can use
 directly, called Overpass.
+
 We use amenity=parking to retreive parking lots from the api. Read more in the
 query-overpass guide. This doesn't find all parking lots, but a lot. We should
 look into ways to expand the query and find more parking lots.
@@ -67,7 +68,6 @@ class ReactLeafletMap extends Component {
     startmarker = [];
     startmarker.push(e.latlng);
     this.setState({ startmarker });
-  };
 
   findParkingLots() {
     // http://wiki.openstreetmap.org/wiki/Overpass_API/Overpass_API_by_Example <-- read here for info abt queries
