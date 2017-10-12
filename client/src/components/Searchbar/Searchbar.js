@@ -78,7 +78,7 @@ export class Searchbar extends Component {
         const ContentContainer = styled.div`
         flex: 8;
         display: flex;
-        flex-direction: column;
+        flex-direction: row;
         background-color: rgb(144, 173, 204);
       `;
 

@@ -8,11 +8,11 @@ class Menubar extends PureComponent {
     return (
       <MenuBar>
         <Button onClick={this.props.findParkingLots.bind(this)}>
-          Find Parking Lots
+          Finn parkeringsplass
         </Button>
 
         <Button onClick={this.props.findChargingStations.bind(this)}>
-          Find Charging Stations
+          Finn ladestasjon
         </Button>
 
       </MenuBar>
