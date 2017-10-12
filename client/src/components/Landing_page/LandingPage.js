@@ -15,12 +15,6 @@ class LandingPage extends Component {
 
   return (
     <ContentContainer>
-      <SearchContainer>
-        <Input placeholder="Søketekst" type="text" />
-        <SearchButton>
-          Søk etter sted
-        </SearchButton>
-      </SearchContainer>
       <MapButtonContainer>
         <MapButton onClick={this.props.swapComponent.bind(this)}>
           Gå til kart
