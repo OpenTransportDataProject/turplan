@@ -214,7 +214,6 @@ render() {
           zoom={this.state.zoom}
           ref="map"
           onClick={this.addMarker}
-          style={{margin: 'auto', width: '90%', height: '90%', position: 'relative'}}
         >
           <TileLayer
             url="http://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=topo2&zoom={z}&x={x}&y={y}"
