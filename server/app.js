@@ -1,13 +1,21 @@
+// stuff we need
 var express = require('express');
 var path = require('path');
-var favicon = require('serve-favicon');
+//var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
+// import the routes
 var routes = require('./routes/index');
 var webhook = require('./routes/webhook');
-var api = require('./routes/api/index');
+var api = require('./routes/trips');
+
+// set up and connect to mongodb using mongoose
+var mongoose = require('mongoose');
+var mongoURL = 'mongodb://localhost:27017/trips';
+mongoose.connect(mongoURL);
+mongoose.Promise = require('bluebird');
 
 var app = express();
 
@@ -19,7 +27,6 @@ app.use(function(req, res, next) {
 });
 
 // view engine setup
-// todo: make views for editing
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
@@ -30,8 +37,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// routes setup
 app.use('/', routes);
-app.use('/api/trips', api);
+app.use('/api/v1/trips', api);
 
 // disabled automatic pull as that will not work at the moment
 //app.use('/webhook', webhook);
