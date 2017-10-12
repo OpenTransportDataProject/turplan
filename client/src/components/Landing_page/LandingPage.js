@@ -1,6 +1,8 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
 import styled from "styled-components";
-import { Searchbar } from "../Searchbar/Searchbar";
+import Searchbar from "../Searchbar/Searchbar.js";
+import Header from "../Header/Header.js";
+import Footer from "../Footer/Footer.js";
 
 const ContentContainer = styled.div`
   flex: 8;
@@ -56,14 +58,11 @@ const MapButtonContainer = styled.div`
 `;
 
 class LandingPage extends Component {
-
   render() {
-
-
-  return (
-    <ContentContainer>
-
-      {/*
+    return (
+      <ContentContainer>
+        <Header />
+        {/*
       <SearchContainer>
         <Input placeholder="Søketekst" type="text" />
         <SearchButton>
@@ -71,14 +70,15 @@ class LandingPage extends Component {
         </SearchButton>
       </SearchContainer>
       */}
-      <MapButtonContainer>
-        <MapButton onClick={this.props.swapComponent.bind(this)}>
-          Gå til kart
-        </MapButton>
-      </MapButtonContainer>
-    </ContentContainer>
-  );
-};
+        <MapButtonContainer>
+          <MapButton onClick={this.props.swapComponent.bind(this)}>
+            Gå til kart
+          </MapButton>
+        </MapButtonContainer>
+        <Footer />
+      </ContentContainer>
+    );
+  }
 }
 
 export default LandingPage;
