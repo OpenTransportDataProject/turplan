@@ -63,11 +63,18 @@ export class Searchbar extends Component {
       value: this.state.address,
       onChange: this.onChange
     };
+  }
+
+  render() {
+    const inputProps = {
+      value: this.state.address,
+      onChange: this.onChange
+    };
 
     const ContentContainer = styled.div`
       flex: 8;
       display: flex;
-      flex-direction: column;
+      flex-direction: row;
       background-color: rgb(144, 173, 204);
     `;
 
