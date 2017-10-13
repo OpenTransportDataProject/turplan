@@ -47,6 +47,13 @@ var parkingIcon = Leaflet.icon({
   popupAnchor: [-3, -76]
 });
 
+var vegvesenParkingIcon = Leaflet.icon({
+  iconUrl: "images/marker-vv-park.png",
+  iconSize: [40, 40],
+  iconAnchor: [12.5, 41],
+  popupAnchor: [-3, -76]
+});
+
 var chargingIcon = Leaflet.icon({
   iconUrl: "images/marker-charge.png",
   iconSize: [25, 41],
@@ -75,7 +82,8 @@ class ReactLeafletMap extends Component {
       //The markers list will be filled with positions for all parking lots
       parkingMarkers: [],
       chargingMarkers: [],
-      startMarker: []
+      startMarker: [],
+      vegvesenMarkers: []
     };
 
     // Makes this availiable. Fixes most of the react issues related to getting correct things
@@ -83,13 +91,16 @@ class ReactLeafletMap extends Component {
     this.findChargingStations = this.findChargingStations.bind(this);
     this.addMarker = this.addMarker.bind(this);
     this.handleMap = this.handleMap.bind(this);
+    this.findVegvesenParkingLots = this.findVegvesenParkingLots.bind(this);
   }
+
   addMarker = e => {
     let { startMarker } = this.state;
     startMarker = [];
     startMarker.push(e.latlng);
     this.setState({ startMarker });
   };
+
   findParkingLots() {
     // http://wiki.openstreetmap.org/wiki/Overpass_API/Overpass_API_by_Example <-- read here for info abt queries
 
@@ -134,6 +145,7 @@ class ReactLeafletMap extends Component {
       // Obtain all positions and send them to the state which will be used to make markers
       for (var i = 0; i < parkingLots.length; i++) {
         var parkingLot = parkingLots[i];
+        console.log(parkingLot);
         var lat = parkingLot.geometry.coordinates[1];
         var lng = parkingLot.geometry.coordinates[0];
         parkingMarkers.push([lat, lng]);
@@ -207,8 +219,33 @@ class ReactLeafletMap extends Component {
     console.log("Map - Lat: " + this.state.lat + " Lng: " + this.state.lng);
   }
 
+  findVegvesenParkingLots() {
+    fetch(
+      "https://www.vegvesen.no/ws/no/vegvesen/veg/parkeringsomraade/parkeringsregisteret/v1/parkeringsomraade?datafelter=kart"
+    )
+      .then(results => results.json())
+      .then(data => {
+        let parking_lots = data;
+        let { vegvesenMarkers } = this.state;
+        vegvesenMarkers = [];
+
+        for (var i = 0; i < parking_lots.length; i++) {
+          var parking_lot = parking_lots[i];
+          var lat = parking_lot.breddegrad;
+          var lng = parking_lot.lengdegrad;
+          var id = parking_lot.id;
+          vegvesenMarkers.push([lat, lng, id]);
+        }
+
+        this.setState({ vegvesenMarkers });
+        console.log(this.state.vegvesenMarkers);
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
+  }
+
   /*  MAPS TO LOOK AT
->>>>>>> 8334417a43823b1a75eedb1ec87db919a2a6387f
   url="http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
   url="https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png"
   url="http://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=topo2&zoom={z}&x={x}&y={y}"
@@ -268,10 +305,22 @@ class ReactLeafletMap extends Component {
                 </Popup>
               </Marker>
             ))}
+            {this.state.vegvesenMarkers.map((position, idx) => (
+              <Marker
+                key={`marker-${idx}`}
+                position={position}
+                icon={vegvesenParkingIcon}
+              >
+                <Popup>
+                  <span>Parkeringsplass fra parkeringsregisteret!</span>
+                </Popup>
+              </Marker>
+            ))}
           </Map>
         </MapContainer>
         <Menubar
           findParkingLots={this.findParkingLots}
+          findVegvesenParkingLots={this.findVegvesenParkingLots}
           findChargingStations={this.findChargingStations}
         />
       </Container>
