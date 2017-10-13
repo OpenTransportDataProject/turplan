@@ -1,12 +1,13 @@
 import styled from 'styled-components';
 
 export const MenuBar = styled.div`
-  background-color: #d2e2f4;
+  background-color: rgba(255,255, 255, 0.7);
   width:100%;
   position: absolute;
-  bottom:0px;
+  bottom:0;
   display:block;
   height:60px;
+  left:0;
 `;
 
 export const Button = styled.button`
