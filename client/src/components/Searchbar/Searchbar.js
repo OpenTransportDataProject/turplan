@@ -5,6 +5,8 @@ import PlacesAutocomplete, { geocodeByAddress, getLatLng} from 'react-places-aut
 import styled from "styled-components";
 import ReactLeafletMap from '../Map/Map';
 
+import { Container, ContentContainer, SearchButton } from './SearchbarStyles';
+
 // API key AIzaSyD-qhLT9q0SQV8EjT4wUivxtyS7K_CxMhM
 
 
@@ -60,49 +62,14 @@ export class Searchbar extends Component {
 
         )
         .catch(error => console.error('Error', error))
-
-
     };
 
-
-
     render() {
-
-
 
         const inputProps = {
             value: this.state.address,
             onChange: this.onChange,
         }
-
-        const ContentContainer = styled.div`
-        flex: 8;
-        display: flex;
-        flex-direction: row;
-        background-color: rgb(144, 173, 204);
-      `;
-
-        const SearchButton = styled.button`
-        display: inline-block;
-        padding: 5px;
-        font-size: 1em;
-        background-color: rgb(86, 115, 163);
-        border: 2px solid rgb(58, 77, 109);
-        border-radius: 2px;
-        margin-left: 10px;
-      `;
-
-    /*
-      const SearchContainer = styled.div`
-      flex: 7;
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      justify-content: center;
-      padding: 10px;
-
-      `;
-      */
 
         const myStyles = {
             root: {
@@ -114,10 +81,8 @@ export class Searchbar extends Component {
 
           }
 
-
-
         return(
-            <div>
+            <Container>
                 <form onSubmit={this.handleFormSubmit} >
                     <PlacesAutocomplete
                     inputProps={inputProps}
@@ -134,7 +99,7 @@ export class Searchbar extends Component {
                     }
                 </form>
 
-            </div>
+            </Container>
 
         )
     }
