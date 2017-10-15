@@ -73,7 +73,8 @@ export class Searchbar extends Component {
 
         const myStyles = {
             root: {
-                position: 'relative'
+                position: 'relative',
+                zIndex: '1'
             },
             input: {
                 width: '100%'
