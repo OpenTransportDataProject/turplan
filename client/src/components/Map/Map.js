@@ -224,17 +224,28 @@ class ReactLeafletMap extends Component {
       "https://www.vegvesen.no/ws/no/vegvesen/veg/parkeringsomraade/parkeringsregisteret/v1/parkeringsomraade?datafelter=kart"
     )
       .then(results => results.json())
-      .then(data => {
-        let parking_lots = data;
-        let { vegvesenMarkers } = this.state;
-        vegvesenMarkers = [];
+      .then(parking_lots => {
+        let vegvesenMarkers = [];
 
-        for (var i = 0; i < parking_lots.length; i++) {
-          var parking_lot = parking_lots[i];
-          var lat = parking_lot.breddegrad;
-          var lng = parking_lot.lengdegrad;
-          var id = parking_lot.id;
-          vegvesenMarkers.push([lat, lng, id]);
+        for (let i = 0; i < parking_lots.length; i++) {
+          const parking_lot = parking_lots[i];
+          const lat = parking_lot.breddegrad;
+          const lng = parking_lot.lengdegrad;
+          const id = parking_lot.id;
+          const pay_p = parking_lot.antallAvgiftsbelagtePlasser;
+          const free_p = parking_lot.antallAvgiftsfriePlasser;
+          const charge_p = parking_lot.antallLadeplasser;
+          const handicap_p = parking_lot.antallForflytningshemmede;
+          vegvesenMarkers.push({
+            position: [lat, lng],
+            id: id,
+            lots: {
+              pay: pay_p,
+              free: free_p,
+              charge: charge_p,
+              handicap: handicap_p
+            }
+          });
         }
 
         this.setState({ vegvesenMarkers });
@@ -305,14 +316,14 @@ class ReactLeafletMap extends Component {
                 </Popup>
               </Marker>
             ))}
-            {this.state.vegvesenMarkers.map((position, idx) => (
+            {this.state.vegvesenMarkers.map(({ position, id }, idx) => (
               <Marker
                 key={`marker-${idx}`}
                 position={position}
                 icon={vegvesenParkingIcon}
               >
                 <Popup>
-                  <span>Parkeringsplass fra parkeringsregisteret!</span>
+                  <span>Id: {id}</span>
                 </Popup>
               </Marker>
             ))}
