@@ -4,8 +4,7 @@ var express = require('express');
 var router = express.Router();
 var apiKey = require ('./apiKey');
 
-// This one transforms the parameters to an url to make it easier to use
-// in a get-request.
+// This one transforms the parameters to an url to make it easier to use in a get-request.
 function serialize(obj) {
   var str = [];
   for(var p in obj)
@@ -14,16 +13,16 @@ function serialize(obj) {
 }
 
 // Makes a route for charging address
-router.get('/', function(req, res, next) {
+router.get('/:north/:east/:south/:west', function(req, res, next) {
 
 // Example Query parameters from nobil
 var parameters = {
     'apikey': apiKey.nobilApiKey, 'apiversion': '3',
     'action': "search",
     'type': 'rectangle',
-    'northeast': '(59.943921193288915, 10.826683044433594)',
-    'southwest': '(59.883683240905256, 10.650901794433594)',
-    'existingids': '189,195,199,89,48',
+    'northeast': '('+req.params['north']+', '+req.params['east']+')',
+    'southwest': '('+req.params['south']+', '+req.params['west']+')',
+    // 59.943921193288915/10.826683044433594/59.883683240905256/10.650901794433594
   };
 
 // Execute Query
@@ -32,7 +31,7 @@ fetch('http://nobil.no/api/server/search.php?'+serialize(parameters),{
     }).then(
       response=>response.json() //converts to json
     ).then(
-      json=>console.log(json)
+      json=>res.json(json)
     );
 });
 
