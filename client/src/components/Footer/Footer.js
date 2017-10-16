@@ -3,7 +3,14 @@ import ntnu from "./images/ntnu_logo.png";
 import sintef from "./images/sintef_logo.png";
 import vegvesen from "./images/vegvesen_logo.png";
 
-import { FooterContainer, FooterText, CustomerContainer, NTNUImg, SINTEFImg, VegvesenImg } from './FooterStyles';
+import {
+  FooterContainer,
+  FooterText,
+  CustomerContainer,
+  NTNUImg,
+  SINTEFImg,
+  VegvesenImg
+} from "./FooterStyles";
 
 export function Footer() {
   return (
