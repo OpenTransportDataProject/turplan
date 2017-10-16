@@ -49,7 +49,7 @@ var parkingIcon = Leaflet.icon({
 
 var vegvesenParkingIcon = Leaflet.icon({
   iconUrl: "images/marker-vv-park.png",
-  iconSize: [40, 40],
+  iconSize: [25, 41],
   iconAnchor: [12.5, 41],
   popupAnchor: [-3, -76]
 });
@@ -316,14 +316,19 @@ class ReactLeafletMap extends Component {
                 </Popup>
               </Marker>
             ))}
-            {this.state.vegvesenMarkers.map(({ position, id }, idx) => (
+            {this.state.vegvesenMarkers.map(({ position, id, lots }, idx) => (
               <Marker
                 key={`marker-${idx}`}
                 position={position}
                 icon={vegvesenParkingIcon}
               >
                 <Popup>
-                  <span>Id: {id}</span>
+                  <div>
+                    <div>Id: {id}</div>
+                    <div>
+                      Posisjon: {position[0]}, {position[1]}
+                    </div>
+                  </div>
                 </Popup>
               </Marker>
             ))}
