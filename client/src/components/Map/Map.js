@@ -2,27 +2,9 @@ import React, { Component } from "react";
 import Leaflet from "leaflet";
 import { Map, TileLayer, Popup, Marker } from "react-leaflet";
 import Menubar from "../Menubar/Menubar.js";
-import Searchbar from "../Searchbar/Searchbar.js";
 import MapHeader from "../Header/MapHeader.js";
-import styled from "styled-components";
-
-const Container = styled.div`
-  display: flex;
-  flex: 1;
-  margin: 1em;
-`;
-
-const Searchcontainer = styled.div`
-  flex: 1;
-  justify-content: center;
-  align-items: center;
-`;
-
-const MapContainer = styled.div`
-  flex: 4;
-  justify-content: center;
-  align-items: center;
-`;
+import { Searchbar } from "../Searchbar/Searchbar";
+import { Container, Searchcontainer, MapContainer } from "./MapStyles";
 
 /* This function is connected to the button in the menu, and will use the
 overpass-api to find parking lots within open street map.
