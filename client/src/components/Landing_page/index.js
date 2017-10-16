@@ -1,2 +1,2 @@
-import LandingPage from './LandingPage.js';
+import LandingPage from "./LandingPage.js";
 export default LandingPage;

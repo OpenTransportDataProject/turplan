@@ -2,7 +2,12 @@ import React from "react";
 import logo from "./images/route.png";
 import settings from "./images/settings.png";
 
-import { HeaderContainer, MainTitle, LogoImg, SettingsImg } from './HeaderStyles';
+import {
+  HeaderContainer,
+  MainTitle,
+  LogoImg,
+  SettingsImg
+} from "./HeaderStyles";
 
 export function Header() {
   return (

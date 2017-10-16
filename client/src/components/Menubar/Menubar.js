@@ -1,9 +1,8 @@
 import React, { PureComponent } from "react";
 
-import { MenuBar, Button } from './MenubarStyles';
+import { MenuBar, Button } from "./MenubarStyles";
 
 class Menubar extends PureComponent {
-
   render() {
     return (
       <MenuBar>
@@ -14,7 +13,6 @@ class Menubar extends PureComponent {
         <Button onClick={this.props.findChargingStations.bind(this)}>
           Find Charging Stations
         </Button>
-
       </MenuBar>
     );
   }
