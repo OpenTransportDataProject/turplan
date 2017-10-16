@@ -57,12 +57,14 @@ class ReactLeafletMap extends Component {
       //The markers list will be filled with positions for all parking lots
       parkingMarkers: [],
       chargingMarkers: [],
+      chargingNobilMarkers: [],
       startMarker: []
     };
 
     // Makes this availiable. Fixes most of the react issues related to getting correct things
     this.findParkingLots = this.findParkingLots.bind(this);
     this.findChargingStations = this.findChargingStations.bind(this);
+    this.findNobilChargingStations = this.findNobilChargingStations.bind(this);
     this.addMarker = this.addMarker.bind(this);
     this.handleMap = this.handleMap.bind(this);
   }
@@ -176,7 +178,33 @@ class ReactLeafletMap extends Component {
       // Updates the state with new markers.
       this.setState({ chargingMarkers });
     });
+
+
   }
+
+  findNobilChargingStations() {
+    // Finding the bounding box of the current window to use in api call
+    var bounds = this.refs.map.leafletElement.getBounds();
+    // Execute Query
+    fetch('http://localhost:3001/charging/'+
+      bounds._southWest.lat +
+      "/" +
+      bounds._southWest.lng +
+      "/" +
+      bounds._northEast.lat +
+      "/" +
+      bounds._northEast.lng,{
+      method:'GET',
+        }).then(
+          response=>response.json() //converts to json
+        ).then(
+          json=>console.log(json)
+        );
+    }
+
+
+
+
 
   handleMap(lat, lng) {
     this.setState({
@@ -239,6 +267,17 @@ class ReactLeafletMap extends Component {
                 </Popup>
               </Marker>
             ))}
+            {this.state.chargingNobilMarkers.map((position, idx) => (
+              <Marker
+                key={`marker-${idx}`}
+                position={position}
+                icon={chargingIcon}
+              >
+                <Popup>
+                  <span>NOBIL Ladestasjon!</span>
+                </Popup>
+              </Marker>
+            ))}
             {this.state.startMarker.map((position, idx) => (
               <Marker
                 key={`marker-${idx}`}
@@ -255,6 +294,7 @@ class ReactLeafletMap extends Component {
         <Menubar
           findParkingLots={this.findParkingLots}
           findChargingStations={this.findChargingStations}
+          findNobilChargingStations={this.findNobilChargingStations}
         />
       </Container>
     );
