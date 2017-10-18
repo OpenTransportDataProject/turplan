@@ -34,7 +34,6 @@ class App extends Component {
     } else {
       componentToShow = <ReactLeafletMap />;
     }
-
     return <Container className="App">{componentToShow}</Container>;
   }
 }

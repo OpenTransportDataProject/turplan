@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import Leaflet from "leaflet";
 import { Map, TileLayer, Popup, Marker } from "react-leaflet";
 import Menubar from "../Menubar/Menubar.js";
-import MapHeader from "../Header/MapHeader.js";
 import { Searchbar } from "../Searchbar/Searchbar";
+import MapHeader from "../Header/MapHeader.js";
 import { Container, Searchcontainer, MapContainer } from "./MapStyles";
 
 /* This function is connected to the button in the menu, and will use the
@@ -64,16 +64,18 @@ class ReactLeafletMap extends Component {
       //The markers list will be filled with positions for all parking lots
       parkingMarkers: [],
       chargingMarkers: [],
+      chargingNobilMarkers: [],
       startMarker: [],
       vegvesenMarkers: []
     };
 
     // Makes this availiable. Fixes most of the react issues related to getting correct things
     this.findParkingLots = this.findParkingLots.bind(this);
+    this.findVegvesenParkingLots = this.findVegvesenParkingLots.bind(this);
     this.findChargingStations = this.findChargingStations.bind(this);
+    this.findNobilChargingStations = this.findNobilChargingStations.bind(this);
     this.addMarker = this.addMarker.bind(this);
     this.handleMap = this.handleMap.bind(this);
-    this.findVegvesenParkingLots = this.findVegvesenParkingLots.bind(this);
   }
 
   addMarker = e => {
@@ -127,7 +129,6 @@ class ReactLeafletMap extends Component {
       // Obtain all positions and send them to the state which will be used to make markers
       for (var i = 0; i < parkingLots.length; i++) {
         var parkingLot = parkingLots[i];
-        console.log(parkingLot);
         var lat = parkingLot.geometry.coordinates[1];
         var lng = parkingLot.geometry.coordinates[0];
         parkingMarkers.push([lat, lng]);
@@ -169,6 +170,66 @@ class ReactLeafletMap extends Component {
       "," +
       bounds._northEast.lng +
       ")[amenity=charging_station];out center;";
+
+    // Performs the query:
+    overpass(query, (error, data) => {
+      // Here is what gets returned from the api call to overpass based on bounds.
+      var charging_stations = data.features;
+      console.log(error);
+      // Obtaining coordinates for each parking lot entry
+      let { chargingMarkers } = this.state;
+      chargingMarkers = [];
+      // Obtain all positions and send them to the state which will be used to make markers
+      for (var i = 0; i < charging_stations.length; i++) {
+        var chargingStation = charging_stations[i];
+        var lat = chargingStation.geometry.coordinates[1];
+        var lng = chargingStation.geometry.coordinates[0];
+        chargingMarkers.push([lat, lng]);
+      }
+      // Updates the state with new markers.
+      this.setState({ chargingMarkers });
+    });
+  }
+
+  findNobilChargingStations() {
+    // Finding the bounding box of the current window to use in api call
+    var bounds = this.refs.map.leafletElement.getBounds();
+    // Execute Query
+    fetch(
+      "http://localhost:3001/charging/" + // Now we MUST run client on 3001. Find a better way.
+        bounds._southWest.lat +
+        "/" +
+        bounds._southWest.lng +
+        "/" +
+        bounds._northEast.lat +
+        "/" +
+        bounds._northEast.lng,
+      {
+        method: "GET"
+      }
+    )
+      .then(
+        response => response.json() //converts from json
+      )
+      .then(data => {
+        console.log(data);
+        var charging_stations = data.chargerstations;
+        // Obtaining coordinates for each parking lot entry
+        let { chargingNobilMarkers } = this.state;
+        chargingNobilMarkers = [];
+        // Obtain all positions and send them to the state which will be used to make markers
+        for (var i = 0; i < charging_stations.length; i++) {
+          var chargingStation = charging_stations[i];
+          var lat = chargingStation.csmd.Position.split(",")[0];
+          lat = lat.substr(1);
+          var lng = chargingStation.csmd.Position.split(",")[1];
+          lng = lng.substr(0, lat.length - 1);
+          chargingNobilMarkers.push([parseFloat(lat), parseFloat(lng)]);
+          console.log(parseFloat(lat), parseFloat(lng));
+        }
+        // Updates the state with new markers.
+        this.setState({ chargingNobilMarkers });
+      });
 
     // Performs the query:
     overpass(query, (error, data) => {
@@ -248,6 +309,7 @@ class ReactLeafletMap extends Component {
   render() {
     return (
       <Container>
+        <MapHeader />
         {
           <Searchcontainer>
             <Searchbar handleMap={(lat, lng) => this.handleMap(lat, lng)} />
@@ -287,17 +349,6 @@ class ReactLeafletMap extends Component {
                 </Popup>
               </Marker>
             ))}
-            {this.state.startMarker.map((position, idx) => (
-              <Marker
-                key={`marker-${idx}`}
-                position={position}
-                icon={newMarkerIcon}
-              >
-                <Popup>
-                  <span>Starting point :D</span>
-                </Popup>
-              </Marker>
-            ))}
             {this.state.vegvesenMarkers.map(({ position, id, lots }, idx) => (
               <Marker
                 key={`marker-${idx}`}
@@ -314,12 +365,35 @@ class ReactLeafletMap extends Component {
                 </Popup>
               </Marker>
             ))}
+            {this.state.chargingNobilMarkers.map((position, idx) => (
+              <Marker
+                key={`marker-${idx}`}
+                position={position}
+                icon={chargingIcon}
+              >
+                <Popup>
+                  <span>NOBIL Ladestasjon!</span>
+                </Popup>
+              </Marker>
+            ))}
+            {this.state.startMarker.map((position, idx) => (
+              <Marker
+                key={`marker-${idx}`}
+                position={position}
+                icon={newMarkerIcon}
+              >
+                <Popup>
+                  <span>Starting point :D</span>
+                </Popup>
+              </Marker>
+            ))}
           </Map>
         </MapContainer>
         <Menubar
           findParkingLots={this.findParkingLots}
           findVegvesenParkingLots={this.findVegvesenParkingLots}
           findChargingStations={this.findChargingStations}
+          findNobilChargingStations={this.findNobilChargingStations}
         />
       </Container>
     );

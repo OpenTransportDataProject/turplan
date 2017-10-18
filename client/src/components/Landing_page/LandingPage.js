@@ -1,6 +1,4 @@
 import React, { Component } from "react";
-import styled from "styled-components";
-import Searchbar from "../Searchbar/Searchbar.js";
 import Header from "../Header/Header.js";
 import Footer from "../Footer/Footer.js";
 import {
@@ -17,14 +15,6 @@ class LandingPage extends Component {
     return (
       <ContentContainer>
         <Header />
-        {/*
-      <SearchContainer>
-        <Input placeholder="Søketekst" type="text" />
-        <SearchButton>
-          Søk etter sted
-        </SearchButton>
-      </SearchContainer>
-      */}
         <MapButtonContainer>
           <MapButton onClick={this.props.swapComponent.bind(this)}>
             Gå til kart

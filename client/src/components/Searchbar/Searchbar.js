@@ -21,8 +21,8 @@ export class Searchbar extends Component {
       lat: 0,
       lng: 0
     };
-    this.onChange = address => this.setState({ address });
 
+    this.onChange = address => this.setState({ address });
     this.printLatLng = this.printLatLng.bind(this);
   }
 
