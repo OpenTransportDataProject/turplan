@@ -54,7 +54,9 @@ constructor() {
     // center coordinates for initial map <- change these for wanted location
     lat: 63.417993,
     lng: 10.405758,
-    zoom: 15,
+    zoom: 13,
+    zoom1:13,
+    ad:'',
     //The markers list will be filled with positions for all parking lots
     parkingMarkers: [],
     chargingMarkers: [],
@@ -184,10 +186,12 @@ findChargingStations() {
   });
 }
 
-handleMap(lat, lng){
+handleMap(lat, lng,zoom1,ad){
   this.setState({
     lat,
-    lng
+    lng,
+    zoom1,
+    ad
   })
 }
 
@@ -209,7 +213,7 @@ render() {
       {
 
       <Searchcontainer>
-        <Searchbar handleMap={(lat, lng) => this.handleMap(lat, lng)}/>
+        <Searchbar handleMap={(lat, lng,zoom1,ad) => this.handleMap(lat, lng,zoom1,ad)}/>
       </Searchcontainer>
 
       }
@@ -217,7 +221,7 @@ render() {
         <Map
           center={[this.state.lat, this.state.lng]}
           //center={[this.props.lat, this.props.lng]}
-          zoom={this.state.zoom}
+          zoom={this.state.zoom1}
           ref="map"
           onClick={this.addMarker}
         >
@@ -246,6 +250,17 @@ render() {
               </Popup>
             </Marker>
           ))}
+
+           <Marker position={[this.state.lat,this.state.lng]}  icon={newMarkerIcon}>
+
+           <Popup>
+             <span>{this.state.ad}</span>
+           </Popup>
+           </Marker>
+
+
+
+
         </Map>
       </MapContainer>
       <Menubar

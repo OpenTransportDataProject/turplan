@@ -18,7 +18,8 @@ export class Searchbar extends Component {
         this.state = {
             address: '',
             lat: 0,
-            lng: 0
+            lng: 0,
+            zoom1:15
         };
         this.onChange = (address) => this.setState({ address });
 
@@ -40,7 +41,9 @@ export class Searchbar extends Component {
             //console.log('Success', latLng)
             this.setState({
                 lat: latLng.lat,
-                lng: latLng.lng
+                lng: latLng.lng,
+               zoom1:15
+
             })
 
         )
@@ -93,7 +96,7 @@ export class Searchbar extends Component {
 
                     {
 
-                    <SearchButton onClick={() => this.props.handleMap(this.state.lat, this.state.lng)}>
+                    <SearchButton onClick={() => this.props.handleMap(this.state.lat, this.state.lng, this.state.zoom1,this.state.address)}>
                         Søk etter sted
                     </SearchButton>
 
