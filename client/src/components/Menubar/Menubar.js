@@ -30,7 +30,11 @@ class Menubar extends PureComponent {
         <Button onClick={this.props.findChargingStations.bind(this)}>
           Find Charging Stations
         </Button>
-
+{
+ //       <Button onClick={this.props.logBounds.bind(this)}>
+ //         logBounds
+ //        </Button>
+}
       </MenuBar>
     );
   }
