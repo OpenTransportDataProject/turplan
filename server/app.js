@@ -1,30 +1,26 @@
 // stuff we need
-var express = require('express');
-var path = require('path');
-//var favicon = require('serve-favicon');
-var logger = require('morgan');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
+var express = require('express'),
+	path = require('path'),
+	logger = require('morgan'),
+	cookieParser = require('cookie-parser'),
+	bodyParser = require('body-parser'),
+	cors = require('cors');
 
 // import the routes
-var routes = require('./routes/index');
-var webhook = require('./routes/webhook');
-var api = require('./routes/trips');
+var routes = require('./routes/index'),
+	webhook = require('./routes/webhook'),
+	api = require('./routes/trips');
 
 // set up and connect to mongodb using mongoose
-var mongoose = require('mongoose');
-var mongoURL = 'mongodb://localhost:27017/trips';
+var mongoose = require('mongoose'),
+	mongoURL = 'mongodb://localhost:27017/trips';
+
 mongoose.connect(mongoURL);
+mongoose.set('debug', true);
 mongoose.Promise = require('bluebird');
 
 var app = express();
-
-// enable CORS
-app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  next();
-});
+app.use(cors());
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -57,11 +53,12 @@ app.use(function(req, res, next) {
 // will print stacktrace
 if (app.get('env') === 'development') {
   app.use(function(err, req, res, next) {
+  	console.log(err.stack);
     res.status(err.status || 500);
-    res.render('error', {
+    res.json({'errors': {
       message: err.message,
       error: err
-    });
+    }});
   });
 }
 

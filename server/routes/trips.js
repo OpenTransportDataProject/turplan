@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var assert = require('assert');
+var cors = require('cors');
 
 var Trip = require('../models/trips.js');
 
@@ -36,17 +37,22 @@ router.get('/', function(req, res, next) {
 		return res.json(result);
 	});
 	
-});
+}); 
 
 router.post('/', function(req, res, next) {
-
-	Trip.create(req.body, function(err, result){
+	console.log("FUNK!");
+	var trip = new Trip(req.body);
+	return trip.save().then(function() {
+		console.log("success!");
+		return res.json(trip);
+	});
+	/*Trip.create(req.body, function(err, result){
 		if(err) {
 			//console.error(err);
 			return res.json(err);
 		}
 		return res.json(result);
-	});
+	});*/
 });
 
 // Put request. Not a priority right now.

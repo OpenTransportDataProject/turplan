@@ -17,7 +17,9 @@ const TripSchema = new Schema({
 	},
 	images: { type: [ String ], default: [] },
 	name: { type: String, required: true },
-	classification: { type: Number, required: true } // Easy, Medium, Hard etc.
+	classification: { type: Number, required: true }, // Easy, Medium, Hard etc.
+	ntID: { type: String, required: true }, // used for checking against nasjonal turbase
+    provider: { type: String, default: "" }
 });
 
 const Trip = mongoose.model('trip', TripSchema);
