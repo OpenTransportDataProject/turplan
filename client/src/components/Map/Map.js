@@ -4,7 +4,7 @@ import { Map, TileLayer, Popup, Marker, Polyline } from "react-leaflet";
 import Menubar from "../Menubar/Menubar.js";
 import { Searchbar } from "../Searchbar/Searchbar";
 import styled from "styled-components";
-import axios from "axios";
+
 import {Hikes} from "../Hikes/Hikes";
 
 const Container = styled.div`
@@ -61,7 +61,13 @@ class ReactLeafletMap extends Component {
             //The markers list will be filled with positions for all parking lots
             markers: [],
             startmarker: [],
-            bounds: []
+            bounds: {
+                northEastLat: 0,
+                northEastLng: 0, 
+                southWestLat: 0,
+                southWestLng: 0
+            },
+            polyLineCoordinates: []
         };
 
         // Makes this availiable. Fixes most of the react issues related to getting correct things
@@ -71,7 +77,7 @@ class ReactLeafletMap extends Component {
         this.moveMap = this.moveMap.bind(this);
         this.logBounds = this.logBounds.bind(this);
         this.getHikes = this.getHikes.bind(this);
-
+        this.setBounds = this.setBounds.bind(this);
 
     }
     addMarker = e => {
@@ -203,33 +209,40 @@ class ReactLeafletMap extends Component {
             lng
         })
     }
+
+    /*
+        Sets the bounds state of the current boundingbox of the map. This function is supposed 
+        to be called whenever the view of the map changes. 
+    */
+    setBounds(){
+        let currentBounds = this.refs.map.leafletElement.getBounds();
+
+        this.setState({
+            bounds: {
+                northEastLat: currentBounds._northEast.lat,
+                northEastLng: currentBounds._northEast.lng,
+                southWestLat: currentBounds._southWest.lat,
+                southWestLng: currentBounds._southWest.lng
+            }
+        })
+    }
+    
+    /*
+        Callback function being passed as props to Hikes component. 
+        Hikes provides polyLineCoordinates back to be drawn. 
+        The polyLineCoordinates should only be passed when the bounds are updated.
+    */
+    getHikes(polyLineCoordinates) {
+        this.setState({
+            polyLineCoordinates: polyLineCoordinates
+        })
+    }
     
 
     logBounds(){
-        console.log(this.refs.map.leafletElement.getBounds());
-        this.getHikes(this.refs.map.leafletElement.getBounds());
+       console.log("NorthEast bounds: " + "lat " + this.state.bounds.northEastLat + " lng " + this.state.bounds.northEastLng);
+       console.log("SouthWest bounds: " + "lat " + this.state.bounds.southWestLat + " lng " + this.state.bounds.southWestLng);
     }
-
-
-
-    async getHikes(bounds){
-
-        
-        let upperLat = bounds._northEast.lat;
-        let upperLng = bounds._northEast.lng;
-        let lowerLat = bounds._southWest.lat;
-        let lowerLng = bounds._southWest.lng;
-
-        let url = "http://198.211.120.107:3001";
-
-        //return axios.get('https://api.github.com/users/' + username + '/repos');
-        // console.log(axios.get(`${url}/api/v1/trips?lat_lower=${lowerLat}&lat_upper=${upperLat}&lng_lower=${lowerLng}&lng_upper=${upperLng}`))
-        
-        let result = await axios.get(`${url}/api/v1/trips?lat_lower=${lowerLat}&lat_upper=${upperLat}&lng_lower=${lowerLng}&lng_upper=${upperLng}`);
-        console.log(result)
-        //return axios.get(`${url}/api/v1/trips?lat_lower=${lowerLat}&lat_upper=${upperLat}&lng_lower=${lowerLng}&lng_upper=${upperLng}`);
-    }
-
     
 
     printLatLng() {
@@ -243,12 +256,14 @@ class ReactLeafletMap extends Component {
       attribution='&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy; <a href="https://carto.com/attribution">CARTO</a>'
     */
     render() {
+
+        this.logBounds();
         return (
             <Container>
                 {
 
                     <Searchcontainer>
-                        <Searchbar moveMap={(lat, lng) => this.handleMap(lat, lng)} />
+                        <Searchbar moveMap={(lat, lng) => this.moveMap(lat, lng)} />
                     </Searchcontainer>
 
                 }
@@ -260,7 +275,8 @@ class ReactLeafletMap extends Component {
                         ref="map"
                         onClick={this.addMarker}
                         style={{ margin: 'auto', width: '90%', height: '90%', position: 'relative' }}
-                        onViewportChanged={this.logBounds}
+                        onViewportChanged={this.setBounds}
+                        //onViewportChanged={this.logBounds}
 
                     >
                         <TileLayer
@@ -290,7 +306,10 @@ class ReactLeafletMap extends Component {
                     findChargingStations={this.findChargingStations}
                    // logBounds={this.logBounds}
                 />
-                <Hikes />
+                <Hikes 
+                    mapBounds={this.state.bounds}
+                    getHikes={(polyLineCoordinates) => this.getHikes(polyLineCoordinates)}
+                />
             </Container>
         );
     }
