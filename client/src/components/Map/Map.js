@@ -230,25 +230,6 @@ class ReactLeafletMap extends Component {
         // Updates the state with new markers.
         this.setState({ chargingNobilMarkers });
       });
-
-    // Performs the query:
-    overpass(query, (error, data) => {
-      // Here is what gets returned from the api call to overpass based on bounds.
-      var charging_stations = data.features;
-      console.log(error);
-      // Obtaining coordinates for each parking lot entry
-      let { chargingMarkers } = this.state;
-      chargingMarkers = [];
-      // Obtain all positions and send them to the state which will be used to make markers
-      for (var i = 0; i < charging_stations.length; i++) {
-        var chargingStation = charging_stations[i];
-        var lat = chargingStation.geometry.coordinates[1];
-        var lng = chargingStation.geometry.coordinates[0];
-        chargingMarkers.push([lat, lng]);
-      }
-      // Updates the state with new markers.
-      this.setState({ chargingMarkers });
-    });
   }
 
   handleMap(lat, lng) {
