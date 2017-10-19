@@ -125,6 +125,7 @@ class ReactLeafletMap extends Component {
     overpass(query, (error, data) => {
       // Here is what gets returned from the api call to overpass based on bounds.
       var parkingLots = data.features;
+      console.log(parkingLots);
       // Obtaining coordinates for each parking lot entry
       let { parkingMarkers } = this.state;
       parkingMarkers = [];
@@ -133,7 +134,18 @@ class ReactLeafletMap extends Component {
         var parkingLot = parkingLots[i];
         var lat = parkingLot.geometry.coordinates[1];
         var lng = parkingLot.geometry.coordinates[0];
-        parkingMarkers.push([lat, lng]);
+        var id = parkingLot.id;
+        var tags = parkingLot.properties.tags;
+        var amenity = tags.amenity;
+        var access = tags.access;
+        parkingMarkers.push({
+          position: [lat, lng],
+          tags: {
+            amenity: amenity,
+            access: access
+          },
+          id: id
+        });
       }
       // Updates the state with new markers.
       this.setState({ parkingMarkers });
@@ -314,7 +326,7 @@ class ReactLeafletMap extends Component {
               url="http://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=topo2&zoom={z}&x={x}&y={y}"
               attribution="&copy; <a href=&quot;http://www.statkart.no&quot;>Startkart.no</a>"
             />
-            {this.state.parkingMarkers.map((position, idx) => (
+            {this.state.parkingMarkers.map(({ position, tags, id }, idx) => (
               <Marker
                 key={`marker-${idx}`}
                 position={position}
@@ -323,7 +335,13 @@ class ReactLeafletMap extends Component {
                 <Popup>
                   <div>
                     <div>Parkeringsplass!</div>
-                    <div>OpenStreetMap</div>
+                    <div>
+                      Posisjon: {position[0]}, {position[1]}
+                    </div>
+                    <div>Amenity: {tags.amenity}</div>
+                    <div>Access: {tags.access}</div>
+                    <div>Fra: OpenStreetMap</div>
+                    <div>ID: {id}</div>
                   </div>
                 </Popup>
               </Marker>
@@ -360,7 +378,7 @@ class ReactLeafletMap extends Component {
                         <div>Antall handicap plasser: {lots.handicap}</div>
                       </div>
                       <div>Fra: Parkeringsregisteret</div>
-                      <div>Id: {id}</div>
+                      <div>ID: {id}</div>
                     </div>
                   </Popup>
                 </Marker>
