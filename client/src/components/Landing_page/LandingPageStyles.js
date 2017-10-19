@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 export const ContentContainer = styled.div`
-  flex: 8;
+  flex: 1;
   display: flex;
   flex-direction: column;
   background-color: rgb(242, 242, 242);
@@ -18,31 +18,57 @@ export const MapButton = styled.button`
     cursor:pointer;
   }
 `;
-export const PageContent = styled.div`
+export const PageContentContainer = styled.div`
   flex: 6;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
   padding:10%;
   font-size:18px;
   color: grey;
+  background-color: #fff;
 `;
+
+export const PageContentHeader = styled.p`
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 1em;
+  flex: 1;
+`;
+
 export const PageBanner = styled.img`
   width:100%;
   height:auto;
 `;
 
-export const MapBanner = styled.div`
-  background-image:url("images/karteksempel.jpg");
-  width:100%;
-  min-height:200px;
-  padding:10px;
+export const Row = styled.div`
+  display: flex;
+  flex-direction: row;
+  margin: 1.5em 0;
+  min-height: 10em;
 `;
-export const Divider = styled.div`
-  height: 1px;
-  width: 90%;
-  background-color: #ddd;
-  position: relative;
-  margin-bottom:40px;
+
+export const PageInfoContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex: 2;
+`;
+
+export const Info = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+`;
+
+export const InfoHeader = styled.h3`
+  margin: 0;
+`;
+
+export const InfoText = styled.p`
+  font-size: 1em;
+`;
+
+export const Image = styled.div`
+  flex: 1;
+  background-image: url(${props => props.imageUrl ? props.imageUrl : null});
+  border-radius: 10px;
 `;

@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 export const HeaderContainer = styled.div`
-
+  flex: 1;
   background-color: rgb(58, 77, 109,0.4);
   background-image:url("images/dd.jpg");
   background-size:cover;
@@ -36,8 +36,8 @@ export const MapButton = styled.button`
   display: inline-block;
   padding: 20px;
   font-size: 1em;
-  background-color: rgb(255, 255, 266,0.7);
-  border: 2px solid rgb(255, 255, 266,1);
+  background-color: #ddd;
+  border: none;
   border-radius: 5px;
   &:hover{
     cursor:pointer;
