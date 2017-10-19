@@ -6,7 +6,6 @@ import { Searchbar } from "../Searchbar/Searchbar";
 import MapHeader from "../Header/MapHeader.js";
 import { Container, Searchcontainer, MapContainer } from "./MapStyles";
 
-
 /* This function is connected to the button in the menu, and will use the
 overpass-api to find parking lots within open street map.*/
 
@@ -114,7 +113,7 @@ class ReactLeafletMap extends Component {
 
     // Performs the query:
     overpass(query, (error, data) => {
-      if(data == null){
+      if (data == null) {
         alert("Fikk ingen respons, prøv på nytt litt senere");
         return;
       }
@@ -133,6 +132,10 @@ class ReactLeafletMap extends Component {
         var tags = parkingLot.properties.tags;
         var amenity = tags.amenity;
         var access = tags.access;
+        var fee = tags.fee;
+        var capacity = tags.capacity;
+        var maxstay = tags.maxstay;
+
         parkingMarkers.push({
           position: [lat, lng],
           tags: {
@@ -182,7 +185,7 @@ class ReactLeafletMap extends Component {
 
     // Performs the query:
     overpass(query, (error, data) => {
-      if(data == null){
+      if (data == null) {
         alert("Fikk ingen respons, prøv på nytt litt senere");
         return;
       }
@@ -338,7 +341,10 @@ class ReactLeafletMap extends Component {
                       Posisjon: {position[0]}, {position[1]}
                     </div>
                     <div>Amenity: {tags.amenity}</div>
-                    <div>Access: {tags.access}</div>
+                    <div>Tilgang: {tags.access}</div>
+                    <div>Betaling: {tags.fee}</div>
+                    <div>Kapasitet: {tags.capacity}</div>
+                    <div>Maks oppholdstid: {tags.maxstay}</div>
                     <div>Fra: OpenStreetMap</div>
                     <div>ID: {id}</div>
                   </div>
