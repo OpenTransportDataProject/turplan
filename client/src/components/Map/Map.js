@@ -6,18 +6,9 @@ import { Searchbar } from "../Searchbar/Searchbar";
 import MapHeader from "../Header/MapHeader.js";
 import { Container, Searchcontainer, MapContainer } from "./MapStyles";
 
-/* This function is connected to the button in the menu, and will use the
-overpass-api to find parking lots within open street map.
-Someone has been nice enough to make a node-edition of the osm data we can use
-directly, called Overpass.
 
-We use amenity=parking to retreive parking lots from the api. Read more in the
-query-overpass guide. This doesn't find all parking lots, but a lot. We should
-look into ways to expand the query and find more parking lots.
-Also, use "yarn add query-overpass" in the client folder to ensure access to api.
-Source for fixing all the bugs in the code related to marker displays:
-https://jsfiddle.net/q2v7t59h/413/
-*/
+/* This function is connected to the button in the menu, and will use the
+overpass-api to find parking lots within open street map.*/
 
 //Leaflet.Icon.Default.imagePath =
 //"//cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.0/images/";
@@ -123,6 +114,10 @@ class ReactLeafletMap extends Component {
 
     // Performs the query:
     overpass(query, (error, data) => {
+      if(data == null){
+        alert("Fikk ingen respons, prøv på nytt litt senere");
+        return;
+      }
       // Here is what gets returned from the api call to overpass based on bounds.
       var parkingLots = data.features;
       console.log(parkingLots);
@@ -187,6 +182,10 @@ class ReactLeafletMap extends Component {
 
     // Performs the query:
     overpass(query, (error, data) => {
+      if(data == null){
+        alert("Fikk ingen respons, prøv på nytt litt senere");
+        return;
+      }
       // Here is what gets returned from the api call to overpass based on bounds.
       var charging_stations = data.features;
       console.log(error);
