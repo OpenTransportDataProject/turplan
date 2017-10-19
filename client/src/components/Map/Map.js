@@ -29,12 +29,14 @@ var parkingIcon = Leaflet.icon({
   popupAnchor: [-3, -76]
 });
 
+/*
 var vegvesenParkingIcon = Leaflet.icon({
   iconUrl: "images/marker-vv-park.png",
   iconSize: [25, 41],
   iconAnchor: [12.5, 41],
   popupAnchor: [-3, -76]
 });
+*/
 
 var chargingIcon = Leaflet.icon({
   iconUrl: "images/marker-charge.png",
@@ -245,7 +247,7 @@ class ReactLeafletMap extends Component {
 
   findVegvesenParkingLots() {
     fetch(
-      "https://www.vegvesen.no/ws/no/vegvesen/veg/parkeringsomraade/parkeringsregisteret/v1/parkeringsomraade?datafelter=kart"
+      "https://www.vegvesen.no/ws/no/vegvesen/veg/parkeringsomraade/parkeringsregisteret/v1/parkeringsomraade?datafelter=alle"
     )
       .then(results => results.json())
       .then(parking_lots => {
@@ -256,13 +258,17 @@ class ReactLeafletMap extends Component {
           const lat = parking_lot.breddegrad;
           const lng = parking_lot.lengdegrad;
           const id = parking_lot.id;
-          const pay_p = parking_lot.antallAvgiftsbelagtePlasser;
-          const free_p = parking_lot.antallAvgiftsfriePlasser;
-          const charge_p = parking_lot.antallLadeplasser;
-          const handicap_p = parking_lot.antallForflytningshemmede;
+          const version = parking_lot.aktivVersjon;
+          const address = version.adresse;
+          const pay_p = version.antallAvgiftsbelagtePlasser;
+          const free_p = version.antallAvgiftsfriePlasser;
+          const charge_p = version.antallLadeplasser;
+          const handicap_p = version.antallForflytningshemmede;
+
           vegvesenMarkers.push({
             position: [lat, lng],
             id: id,
+            address: address,
             lots: {
               pay: pay_p,
               free: free_p,
@@ -315,7 +321,10 @@ class ReactLeafletMap extends Component {
                 icon={parkingIcon}
               >
                 <Popup>
-                  <span>Parkeringsplass!</span>
+                  <div>
+                    <div>Parkeringsplass!</div>
+                    <div>OpenStreetMap</div>
+                  </div>
                 </Popup>
               </Marker>
             ))}
@@ -330,22 +339,33 @@ class ReactLeafletMap extends Component {
                 </Popup>
               </Marker>
             ))}
-            {this.state.vegvesenMarkers.map(({ position, id, lots }, idx) => (
-              <Marker
-                key={`marker-${idx}`}
-                position={position}
-                icon={vegvesenParkingIcon}
-              >
-                <Popup>
-                  <div>
-                    <div>Id: {id}</div>
+            {this.state.vegvesenMarkers.map(
+              ({ position, id, address, lots }, idx) => (
+                <Marker
+                  key={`marker-${idx}`}
+                  position={position}
+                  icon={parkingIcon}
+                >
+                  <Popup>
                     <div>
-                      Posisjon: {position[0]}, {position[1]}
+                      <div>Parkeringsplass!</div>
+                      <div>Adresse: {address}</div>
+                      <div>
+                        Posisjon: {position[0]}, {position[1]}
+                      </div>
+                      <div>
+                        <div>Antall avgiftsbelagte plasser: {lots.pay}</div>
+                        <div>Antall avgiftsfrie plasser: {lots.free}</div>
+                        <div>Antall ladeplasser: {lots.charge}</div>
+                        <div>Antall handicap plasser: {lots.handicap}</div>
+                      </div>
+                      <div>Fra: Parkeringsregisteret</div>
+                      <div>Id: {id}</div>
                     </div>
-                  </div>
-                </Popup>
-              </Marker>
-            ))}
+                  </Popup>
+                </Marker>
+              )
+            )}
             {this.state.chargingNobilMarkers.map((position, idx) => (
               <Marker
                 key={`marker-${idx}`}
