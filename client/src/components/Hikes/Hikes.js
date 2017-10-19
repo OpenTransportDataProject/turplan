@@ -30,14 +30,14 @@ export class Hikes extends Component {
                 let result = await axios.get(`${url}/api/v1/trips?lat_lower=${lowerLat}&lat_upper=${upperLat}&lng_lower=${lowerLng}&lng_upper=${upperLng}`);
                 console.log(result)
                 //return axios.get(`${url}/api/v1/trips?lat_lower=${lowerLat}&lat_upper=${upperLat}&lng_lower=${lowerLng}&lng_upper=${upperLng}`);
-            }
+    }
 
     render(){
 
 
         return(
             <div>
-                
+
             </div> 
         )
     }
