@@ -6,9 +6,10 @@ export const FooterContainer = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  background-color: rgb(58, 77, 109);
+  background-color: rgb(58, 77, 109,0.1);
   padding-left: 10px;
   padding-right: 10px;
+  max-height:200px;
 `;
 
 export const FooterText = styled.p`

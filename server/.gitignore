@@ -8,4 +8,4 @@ node_modules
 *.log
 *.gz
 
-/routes/apiKeys.js
+/routes/apiKey.js
