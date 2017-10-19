@@ -61,7 +61,8 @@ class ReactLeafletMap extends Component {
             //The markers list will be filled with positions for all parking lots
             markers: [],
             startmarker: [],
-            bounds: []
+            bounds: [],
+            polyLines: []
         };
 
         // Makes this availiable. Fixes most of the react issues related to getting correct things
@@ -203,6 +204,13 @@ class ReactLeafletMap extends Component {
             lng
         })
     }
+
+    changeBounds(){
+        this.setState({
+            
+        })
+    }
+    
     
 
     logBounds(){
@@ -290,7 +298,10 @@ class ReactLeafletMap extends Component {
                     findChargingStations={this.findChargingStations}
                    // logBounds={this.logBounds}
                 />
-                <Hikes />
+                <Hikes
+                 mapBounds={this.state.bounds}
+                 
+                 />
             </Container>
         );
     }
