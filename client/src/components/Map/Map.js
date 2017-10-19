@@ -55,13 +55,16 @@ constructor() {
     lat: 63.417993,
     lng: 10.405758,
     zoom: 13,
-    zoom1:13,
-    ad:'',
+    zoom1:13,//Zoom 1 is for the change zoom when we search.
+    ad:'',//This is for showing positing on the marker
     //The markers list will be filled with positions for all parking lots
     parkingMarkers: [],
     chargingMarkers: [],
-    startMarker: []
+    startMarker: [],
 
+    ///For selecting the the parking point
+    pos:null,
+    startinPoint: null,
   };
 
   // Makes this availiable. Fixes most of the react issues related to getting correct things
@@ -69,9 +72,11 @@ constructor() {
   this.findChargingStations = this.findChargingStations.bind(this);
   this.addMarker = this.addMarker.bind(this);
   this.handleMap = this.handleMap.bind(this);
+  this.selectparking = this.selectparking.bind(this);
 
 
 }
+
 addMarker = e => {
   let { startMarker } = this.state;
   startMarker = [];
@@ -81,6 +86,11 @@ addMarker = e => {
 findParkingLots() {
   // http://wiki.openstreetmap.org/wiki/Overpass_API/Overpass_API_by_Example <-- read here for info abt queries
 
+this.setState({
+
+    startinPoint:null,
+
+})
   var bounds = this.refs.map.leafletElement.getBounds();
   // Include the overpass library to be able to use it. It's a bit slow, but works
   const overpass = require("query-overpass");
@@ -196,6 +206,16 @@ handleMap(lat, lng,zoom1,ad){
 }
 
 
+selectparking(pos){
+console.log("we are passing the postion"+pos);
+
+this.setState({
+    startinPoint:pos,
+
+})
+
+}
+
 
 printLatLng(){
   console.log("Map - Lat: " + this.state.lat + " Lng: " + this.state.lng);
@@ -229,24 +249,40 @@ render() {
             url="http://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=topo2&zoom={z}&x={x}&y={y}"
             attribution="&copy; <a href=&quot;http://www.statkart.no&quot;>Startkart.no</a>"
           />
-          {this.state.parkingMarkers.map((position, idx) => (
+          {!this.state.startinPoint ? this.state.parkingMarkers.map((position, idx) => (
             <Marker key={`marker-${idx}`} position={position} icon={parkingIcon}>
               <Popup>
-                <span>Parkeringsplass!</span>
+
+
+                <span>
+
+                    Parking position is   {position}
+
+                {<button onClick={(e) =>this.selectparking(position)}>Mark This parking lot starting point</button>}
+
+                </span>
               </Popup>
             </Marker>
-          ))}
+          )) :   <Marker  position={this.state.startinPoint} icon={parkingIcon}>
+          <Popup>
+
+
+            <span>
+
+          This is your selected Starting point
+            </span>
+          </Popup>
+
+</Marker>
+
+  }
+
+
+
           {this.state.chargingMarkers.map((position, idx) => (
             <Marker key={`marker-${idx}`} position={position} icon={chargingIcon}>
               <Popup>
                 <span>Ladestasjon!</span>
-              </Popup>
-            </Marker>
-          ))}
-          {this.state.startMarker.map((position, idx) => (
-            <Marker key={`marker-${idx}`} position={position} icon={newMarkerIcon}>
-              <Popup>
-                <span>Starting point :D</span>
               </Popup>
             </Marker>
           ))}
