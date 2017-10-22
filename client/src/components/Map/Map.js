@@ -54,7 +54,9 @@ class ReactLeafletMap extends Component {
       //For selecting the Starting point.
            pos:null,
            s_parkingpoint: null,
-
+// Selecting the Charging stations
+          c_pos:null,
+          s_chargepoint:null,
 
 
 
