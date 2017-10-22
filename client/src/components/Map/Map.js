@@ -49,7 +49,16 @@ class ReactLeafletMap extends Component {
       parkingMarkers: [],
       chargingMarkers: [],
       chargingNobilMarkers: [],
-      startMarker: []
+      startMarker: [],
+
+      //For selecting the Starting point.
+           pos:null,
+           s_parkingpoint: null,
+
+
+
+
+
     };
 
     // Makes this availiable. Fixes most of the react issues related to getting correct things
@@ -58,6 +67,9 @@ class ReactLeafletMap extends Component {
     this.findNobilChargingStations = this.findNobilChargingStations.bind(this);
     this.addMarker = this.addMarker.bind(this);
     this.handleMap = this.handleMap.bind(this);
+    this.selectparking = this.selectparking.bind(this);
+
+
   }
   addMarker = e => {
     let { startMarker } = this.state;
@@ -65,6 +77,21 @@ class ReactLeafletMap extends Component {
     startMarker.push(e.latlng);
     this.setState({ startMarker });
   };
+
+
+  selectparking(pos){
+ console.log("we are passing the postion"+pos);
+
+ this.setState({
+
+s_parkingpoint:pos,
+
+ })
+
+ }
+
+
+
   findParkingLots() {
     // http://wiki.openstreetmap.org/wiki/Overpass_API/Overpass_API_by_Example <-- read here for info abt queries
 
