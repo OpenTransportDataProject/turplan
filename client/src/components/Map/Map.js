@@ -98,7 +98,17 @@ s_parkingpoint:pos,
     var bounds = this.refs.map.leafletElement.getBounds();
     // Include the overpass library to be able to use it. It's a bit slow, but works
     const overpass = require("query-overpass");
+    //This is reset the Selected parking position
+    this.setState({
+
+    s_parkingpoint:null,
+
+})
+
+
+
     // Creates the query which is sent to overpass-api using their language of preference
+
     const query =
       "[out:json];node(" +
       bounds._southWest.lat +
@@ -288,17 +298,40 @@ s_parkingpoint:pos,
               url="http://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=topo2&zoom={z}&x={x}&y={y}"
               attribution="&copy; <a href=&quot;http://www.statkart.no&quot;>Startkart.no</a>"
             />
-            {this.state.parkingMarkers.map((position, idx) => (
+
+            {!this.state.s_parkingpoint ?this.state.parkingMarkers.map((position, idx) => (
               <Marker
                 key={`marker-${idx}`}
                 position={position}
                 icon={parkingIcon}
               >
                 <Popup>
-                  <span>Parkeringsplass!</span>
+                  <span>
+
+             Parking position is   {position}
+
+             {<button onClick={(e) =>this.selectparking(position)}>Mark This parking lot starting point</button>}
+
+
+
+
+                  </span>
                 </Popup>
               </Marker>
-            ))}
+            )):  <Marker  position={this.state.s_parkingpoint} icon={parkingIcon}>
+
+            <Popup>
+
+
+                       <span>
+
+                     This is your selected Starting point
+                       </span>
+                     </Popup>
+
+           </Marker>
+
+          }
             {this.state.chargingMarkers.map((position, idx) => (
               <Marker
                 key={`marker-${idx}`}
