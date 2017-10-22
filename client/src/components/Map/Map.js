@@ -26,7 +26,6 @@ align-items: center;
 `;
 
 
-const coordinates = [[63.417993, 10.405758], [66.423132, 10.405758]];
 
 
 
@@ -78,7 +77,7 @@ class ReactLeafletMap extends Component {
         this.handleMap = this.handleMap.bind(this);
         
         this.logBounds = this.logBounds.bind(this);
-        this.getHikes = this.getHikes.bind(this);
+        this.getHikesCoordinates = this.getHikesCoordinates.bind(this);
         this.setBounds = this.setBounds.bind(this);
 
     }
@@ -237,10 +236,33 @@ class ReactLeafletMap extends Component {
         Hikes provides polyLineCoordinates back to be drawn. 
         The polyLineCoordinates should only be passed when the bounds are updated.
     */
-    getHikes(polyLineCoordinates) {
+    getHikesCoordinates(coordinates) {
+        /*
         this.setState({
-            polyLineCoordinates: polyLineCoordinates
+            polyLineCoordinates: coordinates
         })
+        */
+        
+        let {polyLineCoordinates} = this.state;
+
+        polyLineCoordinates.push(coordinates);
+
+    
+        this.setState({polyLineCoordinates})
+        
+
+        /*
+        console.log(coordinates);
+
+        let {polyLineCoordinates} = this.state;
+        polyLineCoordinates = [];
+
+        polyLineCoordinates.push([1, 2, 3]);
+        polyLineCoordinates.push([4, 5, 6]);
+        polyLineCoordinates.push([7, 8, 9]);
+
+        this.setState({polyLineCoordinates});
+        */
     }
     
 
@@ -262,7 +284,9 @@ class ReactLeafletMap extends Component {
     */
     render() {
 
-        this.logBounds();
+        console.log(this.state.polyLineCoordinates);
+
+        //this.logBounds();
         return (
             <Container>
                 {
@@ -303,7 +327,7 @@ class ReactLeafletMap extends Component {
                             </Marker>
                         ))}
 
-                        <Polyline positions={coordinates} color="blue" />
+                        <Polyline positions={this.state.polyLineCoordinates} color="blue" />
                     </Map>
                 </MapContainer>
                 <Menubar
@@ -313,7 +337,7 @@ class ReactLeafletMap extends Component {
                 />
                 <Hikes 
                     mapBounds={this.state.bounds}
-                    getHikes={(polyLineCoordinates) => this.getHikes(polyLineCoordinates)}
+                    getHikesCoordinates={(coordinates) => this.getHikesCoordinates(coordinates)}
                 />
             </Container>
         );
