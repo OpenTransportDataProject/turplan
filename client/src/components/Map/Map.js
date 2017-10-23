@@ -90,6 +90,16 @@ class ReactLeafletMap extends Component {
 s_parkingpoint:pos,
 
  })
+ for (var i = 0; i < this.state.chargingMarkers.length; i++)
+ {
+
+this.setState({
+
+  chargingMarkers:[],
+  s_chargepoint:null,
+})
+
+}
 
  }
 
@@ -108,7 +118,7 @@ for (var i = 0; i < this.state.parkingMarkers.length; i++)
 {
 this.setState({
 parkingMarkers:[],
-
+s_parkingpoint:null,
 })
 
 }
