@@ -229,7 +229,6 @@ class ReactLeafletMap extends Component {
           var lng = chargingStation.csmd.Position.split(",")[1];
           lng = lng.substr(0, lat.length - 1);
           chargingNobilMarkers.push([parseFloat(lat), parseFloat(lng)]);
-          console.log(parseFloat(lat), parseFloat(lng));
         }
         // Updates the state with new markers.
         this.setState({ chargingNobilMarkers });
