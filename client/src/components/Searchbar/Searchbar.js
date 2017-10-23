@@ -42,7 +42,7 @@ export class Searchbar extends Component {
             })
         
         )
-        .catch(error => console.error('Error', error))
+        .catch(error =>  console.error('Error', error))
 
         this.printLatLng();
        

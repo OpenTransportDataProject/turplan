@@ -5,7 +5,7 @@ import Menubar from "../Menubar/Menubar.js";
 import { Searchbar } from "../Searchbar/Searchbar";
 import styled from "styled-components";
 
-import {Hikes} from "../Hikes/Hikes";
+import {getHikes} from "../Hikes/Hikes";
 
 const Container = styled.div`
 display: flex;
@@ -218,7 +218,7 @@ class ReactLeafletMap extends Component {
         Sets the bounds state of the current boundingbox of the map. This function is supposed 
         to be called whenever the view of the map changes. 
     */
-    setBounds(){
+    async setBounds(){
         let currentBounds = this.refs.map.leafletElement.getBounds();
 
         this.setState({
@@ -229,6 +229,14 @@ class ReactLeafletMap extends Component {
                 southWestLng: currentBounds._southWest.lng
             }
         })
+        
+        let hikeCoordinates = await getHikes(this.state.bounds);
+
+        this.setState({
+            polyLineCoordinates: hikeCoordinates
+        })
+
+        //console.log(this.state.bounds);
     }
     
     /*
@@ -237,11 +245,6 @@ class ReactLeafletMap extends Component {
         The polyLineCoordinates should only be passed when the bounds are updated.
     */
     getHikesCoordinates(coordinates) {
-        /*
-        this.setState({
-            polyLineCoordinates: coordinates
-        })
-        */
         
         let {polyLineCoordinates} = this.state;
 
@@ -250,19 +253,6 @@ class ReactLeafletMap extends Component {
     
         this.setState({polyLineCoordinates})
         
-
-        /*
-        console.log(coordinates);
-
-        let {polyLineCoordinates} = this.state;
-        polyLineCoordinates = [];
-
-        polyLineCoordinates.push([1, 2, 3]);
-        polyLineCoordinates.push([4, 5, 6]);
-        polyLineCoordinates.push([7, 8, 9]);
-
-        this.setState({polyLineCoordinates});
-        */
     }
     
 
@@ -284,7 +274,7 @@ class ReactLeafletMap extends Component {
     */
     render() {
 
-        console.log(this.state.polyLineCoordinates);
+        //console.log(this.state.polyLineCoordinates);
 
         return (
             <Container>
@@ -304,8 +294,6 @@ class ReactLeafletMap extends Component {
                         onClick={this.addMarker}
                         style={{ margin: 'auto', width: '90%', height: '90%', position: 'relative' }}
                         onViewportChanged={this.setBounds}
-                        //onViewportChanged={this.logBounds}
-
                     >
                         <TileLayer
                             url="http://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=topo2&zoom={z}&x={x}&y={y}"
@@ -333,10 +321,6 @@ class ReactLeafletMap extends Component {
                     findParkingLots={this.findParkingLots}
                     findChargingStations={this.findChargingStations}
                    // logBounds={this.logBounds}
-                />
-                <Hikes 
-                    mapBounds={this.state.bounds}
-                    getHikesCoordinates={(coordinates) => this.getHikesCoordinates(coordinates)}
                 />
             </Container>
         );
