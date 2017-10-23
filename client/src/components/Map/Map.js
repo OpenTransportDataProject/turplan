@@ -286,7 +286,6 @@ class ReactLeafletMap extends Component {
 
         console.log(this.state.polyLineCoordinates);
 
-        //this.logBounds();
         return (
             <Container>
                 {
