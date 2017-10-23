@@ -1,9 +1,6 @@
 import React, { Component } from "react";
 import ReactLeafletMap from "./components/Map";
-import LandingPage from "./components/Landing_page";
-import Header from "./components/Header/Header.js";
-import MapHeader from "./components/Header/MapHeader.js";
-import Footer from "./components/Footer/Footer.js";
+import LandingPage from "./components/Landing_page/LandingPage.js";
 import styled from "styled-components";
 import "./App.css";
 

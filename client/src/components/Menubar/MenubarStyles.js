@@ -13,7 +13,7 @@ export const MenuBar = styled.div`
 export const Button = styled.button`
   display: inline-block;
   background-color: #adc2db;
-  width: 30%;
+  width: 20%;
   height: 70%;
   margin-top: 5px;
 `;
