@@ -232,9 +232,16 @@ class ReactLeafletMap extends Component {
         
         let hikeCoordinates = await getHikes(this.state.bounds);
 
-        this.setState({
-            polyLineCoordinates: hikeCoordinates
-        })
+        console.log(hikeCoordinates);
+        if(hikeCoordinates) {
+
+            this.setState({
+                polyLineCoordinates: hikeCoordinates
+            })
+        }
+        
+
+        
 
         //console.log(this.state.bounds);
     }
