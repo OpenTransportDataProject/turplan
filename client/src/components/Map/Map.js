@@ -71,8 +71,9 @@ class ReactLeafletMap extends Component {
     this.handleMap = this.handleMap.bind(this);
     this.selectparking = this.selectparking.bind(this);
     this.selectcharging=this.selectcharging.bind(this);
-this.removeparking=this.removeparking.bind(this);
+
   }
+
   addMarker = e => {
     let { startMarker } = this.state;
     startMarker = [];
@@ -187,7 +188,7 @@ parkingMarkers:[],
     var bounds = this.refs.map.leafletElement.getBounds();
 //Reset the value of the charging marker
 this.setState({
-s_parkingpoint:null,
+//s_parkingpoint:null,
 s_chargepoint:null,
 
 })
