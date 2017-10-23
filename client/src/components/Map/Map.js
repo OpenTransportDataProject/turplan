@@ -109,22 +109,21 @@ class ReactLeafletMap extends Component {
         return;
       }
       // Here is what gets returned from the api call to overpass based on bounds.
-      var parkingLots = data.features;
+      let parkingLots = data.features;
       // Obtaining coordinates for each parking lot entry
-      let { parkingMarkers } = this.state;
-      parkingMarkers = [];
+      let parkingMarkers = [];
       // Obtain all positions and send them to the state which will be used to make markers
-      for (var i = 0; i < parkingLots.length; i++) {
-        var parkingLot = parkingLots[i];
-        var lat = parkingLot.geometry.coordinates[1];
-        var lng = parkingLot.geometry.coordinates[0];
-        var id = parkingLot.id;
-        var tags = parkingLot.properties.tags;
-        var amenity = tags.amenity;
-        var access = tags.access;
-        var fee = tags.fee;
-        var capacity = tags.capacity;
-        var maxstay = tags.maxstay;
+      for (let i = 0; i < parkingLots.length; i++) {
+        const parkingLot = parkingLots[i];
+        const lat = parkingLot.geometry.coordinates[1];
+        const lng = parkingLot.geometry.coordinates[0];
+        const id = parkingLot.id;
+        const tags = parkingLot.properties.tags;
+        const amenity = tags.amenity;
+        const access = tags.access;
+        const fee = tags.fee;
+        const capacity = tags.capacity;
+        const maxstay = tags.maxstay;
 
         parkingMarkers.push({
           position: [lat, lng],
@@ -180,16 +179,31 @@ class ReactLeafletMap extends Component {
         return;
       }
       // Here is what gets returned from the api call to overpass based on bounds.
-      var charging_stations = data.features;
+      let charging_stations = data.features;
       // Obtaining coordinates for each parking lot entry
-      let { chargingMarkers } = this.state;
-      chargingMarkers = [];
+      let chargingMarkers = [];
       // Obtain all positions and send them to the state which will be used to make markers
-      for (var i = 0; i < charging_stations.length; i++) {
-        var chargingStation = charging_stations[i];
-        var lat = chargingStation.geometry.coordinates[1];
-        var lng = chargingStation.geometry.coordinates[0];
-        chargingMarkers.push([lat, lng]);
+      for (let i = 0; i < charging_stations.length; i++) {
+        const chargingStation = charging_stations[i];
+        const lat = chargingStation.geometry.coordinates[1];
+        const lng = chargingStation.geometry.coordinates[0];
+        const id = chargingStation.id;
+        const tags = chargingStation.properties.tags;
+        const amenity = tags.amenity;
+        const fee = tags.fee;
+        const capacity = tags.capacity;
+        const hours = tags.opening_hours;
+
+        chargingMarkers.push({
+          position: [lat, lng],
+          id: id,
+          tags: {
+            amenity: amenity,
+            fee: fee,
+            capacity: capacity,
+            hours: hours
+          }
+        });
       }
       // Updates the state with new markers.
       this.setState({ chargingMarkers });
@@ -217,18 +231,36 @@ class ReactLeafletMap extends Component {
         response => response.json() //converts from json
       )
       .then(data => {
-        var charging_stations = data.chargerstations;
+        const charging_stations = data.chargerstations;
         // Obtaining coordinates for each parking lot entry
-        let { chargingNobilMarkers } = this.state;
-        chargingNobilMarkers = [];
+        let chargingNobilMarkers = [];
         // Obtain all positions and send them to the state which will be used to make markers
-        for (var i = 0; i < charging_stations.length; i++) {
-          var chargingStation = charging_stations[i];
-          var lat = chargingStation.csmd.Position.split(",")[0];
-          lat = lat.substr(1);
-          var lng = chargingStation.csmd.Position.split(",")[1];
-          lng = lng.substr(0, lat.length - 1);
-          chargingNobilMarkers.push([parseFloat(lat), parseFloat(lng)]);
+        for (let i = 0; i < charging_stations.length; i++) {
+          const chargingStation = charging_stations[i];
+          const lat = chargingStation.csmd.Position.split(",")[0].substr(1);
+          //lat = lat.substr(1);
+          const lng = chargingStation.csmd.Position
+            .split(",")[1]
+            .substr(0, lat.length - 1);
+          //lng = lng.substr(0, lat.length - 1);
+          const id = chargingStation.csmd.id;
+          const name = chargingStation.csmd.name;
+          const street = chargingStation.csmd.Street;
+          const street_nr = chargingStation.csmd.House_number;
+          const points = chargingStation.csmd.Number_charging_points;
+          const description = chargingStation.csmd.Description_of_location;
+
+          chargingNobilMarkers.push({
+            position: [parseFloat(lat), parseFloat(lng)],
+            id: id,
+            name: name,
+            address: {
+              street: street,
+              street_nr: street_nr
+            },
+            points: points,
+            description: description
+          });
         }
         // Updates the state with new markers.
         this.setState({ chargingNobilMarkers });
@@ -327,8 +359,8 @@ class ReactLeafletMap extends Component {
                       Posisjon: {position[0]}, {position[1]}
                     </div>
                     <div>Amenity: {tags.amenity}</div>
-                    <div>Tilgang: {tags.access}</div>
                     <div>Betaling: {tags.fee}</div>
+                    <div>Parkeringstillegg: {tags.p_fee}</div>
                     <div>Kapasitet: {tags.capacity}</div>
                     <div>Maks oppholdstid: {tags.maxstay}</div>
                     <div>Fra: OpenStreetMap</div>
@@ -337,14 +369,24 @@ class ReactLeafletMap extends Component {
                 </Popup>
               </Marker>
             ))}
-            {this.state.chargingMarkers.map((position, idx) => (
+            {this.state.chargingMarkers.map(({ position, id, tags }, idx) => (
               <Marker
                 key={`marker-${idx}`}
                 position={position}
                 icon={chargingIcon}
               >
                 <Popup>
-                  <span>Ladestasjon!</span>
+                  <div>
+                    <div>Ladestasjon!</div>
+                    <div>
+                      Posisjon: {position[0]}, {position[1]}
+                    </div>
+                    <div>Amenity: {tags.amenity}</div>
+                    <div>Betaling: {tags.fee}</div>
+                    <div>Kapasitet: {tags.capacity}</div>
+                    <div>Fra: OpenStreetMap</div>
+                    <div>ID: {id}</div>
+                  </div>
                 </Popup>
               </Marker>
             ))}
@@ -375,17 +417,30 @@ class ReactLeafletMap extends Component {
                 </Marker>
               )
             )}
-            {this.state.chargingNobilMarkers.map((position, idx) => (
-              <Marker
-                key={`marker-${idx}`}
-                position={position}
-                icon={chargingIcon}
-              >
-                <Popup>
-                  <span>NOBIL Ladestasjon!</span>
-                </Popup>
-              </Marker>
-            ))}
+            {this.state.chargingNobilMarkers.map(
+              ({ position, id, address, name, points, description }, idx) => (
+                <Marker
+                  key={`marker-${idx}`}
+                  position={position}
+                  icon={chargingIcon}
+                >
+                  <Popup>
+                    <div>
+                      <div>Ladestasjon!</div>
+                      <div>
+                        Adresse: {address.street} {address.street_nr}
+                      </div>
+                      <div>
+                        Posisjon: {position[0]}, {position[1]}
+                      </div>
+                      <div>Antall Ladeplasser: {points}</div>
+                      <div>Fra: NOBIL Transnova</div>
+                      <div>ID: {id}</div>
+                    </div>
+                  </Popup>
+                </Marker>
+              )
+            )}
             {this.state.startMarker.map((position, idx) => (
               <Marker
                 key={`marker-${idx}`}
