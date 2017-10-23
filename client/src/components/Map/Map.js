@@ -66,7 +66,7 @@ class ReactLeafletMap extends Component {
                 southWestLat: 0,
                 southWestLng: 0
             },
-            polyLineCoordinates: []
+            hikes: []
         };
 
         // Makes this availiable. Fixes most of the react issues related to getting correct things
@@ -77,8 +77,9 @@ class ReactLeafletMap extends Component {
         this.handleMap = this.handleMap.bind(this);
         
         this.logBounds = this.logBounds.bind(this);
-        this.getHikesCoordinates = this.getHikesCoordinates.bind(this);
         this.setBounds = this.setBounds.bind(this);
+
+        this.handleClick = this.handleClick.bind(this);
 
     }
     addMarker = e => {
@@ -230,15 +231,14 @@ class ReactLeafletMap extends Component {
             }
         })
         
-        let hikeCoordinates = await getHikes(this.state.bounds);
+        let hikes = await getHikes(this.state.bounds);
 
-        console.log(hikeCoordinates);
-        if(hikeCoordinates) {
-
+        console.log(hikes);
+        if(hikes) {
             this.setState({
-                polyLineCoordinates: hikeCoordinates
+                hikes: hikes
             })
-        }
+        } 
         
 
         
@@ -251,7 +251,7 @@ class ReactLeafletMap extends Component {
         Hikes provides polyLineCoordinates back to be drawn. 
         The polyLineCoordinates should only be passed when the bounds are updated.
     */
-    getHikesCoordinates(coordinates) {
+    /*getHikesCoordinates(coordinates) {
         
         let {polyLineCoordinates} = this.state;
 
@@ -260,8 +260,11 @@ class ReactLeafletMap extends Component {
     
         this.setState({polyLineCoordinates})
         
-    }
+    }*/
     
+    handleClick() {
+        console.log('Hello');
+    }
 
     logBounds(){
        console.log("NorthEast bounds: " + "lat " + this.state.bounds.northEastLat + " lng " + this.state.bounds.northEastLng);
@@ -320,8 +323,9 @@ class ReactLeafletMap extends Component {
                                 </Popup>
                             </Marker>
                         ))}
-
-                        <Polyline positions={this.state.polyLineCoordinates} color="blue" />
+                        {this.state.hikes.map((hike, idx) => (
+                            <Polyline positions={hike.geometry.coordinates} color="rgba(0,0,255,1)" />
+                        ))}
                     </Map>
                 </MapContainer>
                 <Menubar
