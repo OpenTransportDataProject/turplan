@@ -19,15 +19,6 @@ var parkingIcon = Leaflet.icon({
   popupAnchor: [-3, -76]
 });
 
-/*
-var vegvesenParkingIcon = Leaflet.icon({
-  iconUrl: "images/marker-vv-park.png",
-  iconSize: [25, 41],
-  iconAnchor: [12.5, 41],
-  popupAnchor: [-3, -76]
-});
-*/
-
 var chargingIcon = Leaflet.icon({
   iconUrl: "images/marker-charge.png",
   iconSize: [25, 41],
@@ -119,7 +110,6 @@ class ReactLeafletMap extends Component {
       }
       // Here is what gets returned from the api call to overpass based on bounds.
       var parkingLots = data.features;
-      console.log(parkingLots);
       // Obtaining coordinates for each parking lot entry
       let { parkingMarkers } = this.state;
       parkingMarkers = [];
@@ -191,7 +181,6 @@ class ReactLeafletMap extends Component {
       }
       // Here is what gets returned from the api call to overpass based on bounds.
       var charging_stations = data.features;
-      console.log(error);
       // Obtaining coordinates for each parking lot entry
       let { chargingMarkers } = this.state;
       chargingMarkers = [];
@@ -228,7 +217,6 @@ class ReactLeafletMap extends Component {
         response => response.json() //converts from json
       )
       .then(data => {
-        console.log(data);
         var charging_stations = data.chargerstations;
         // Obtaining coordinates for each parking lot entry
         let { chargingNobilMarkers } = this.state;
@@ -293,7 +281,6 @@ class ReactLeafletMap extends Component {
         }
 
         this.setState({ vegvesenMarkers });
-        console.log(this.state.vegvesenMarkers);
       })
       .catch(function(error) {
         console.log(error);
