@@ -11,6 +11,10 @@ export const MainTitle = styled.h1`
   font-size: 50px;
   color: white;
   text-align:center;
+  @media(max-width:768px){
+    text-align:left;
+    margin-left:10%;
+  }
 `;
 
 export const PromoText = styled.div`
@@ -20,6 +24,9 @@ export const PromoText = styled.div`
   margin-bottom:40px;
   max-width:50%;
   font-size:18px;
+  @media(max-width:768px){
+    max-width:80%;
+  }
 `;
 
 export const LogoImg = styled.img`
