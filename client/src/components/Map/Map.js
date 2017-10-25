@@ -46,16 +46,16 @@ class ReactLeafletMap extends Component {
       zoom: 15,
       //The markers list will be filled with positions for all parking lots
       parkingMarkers: [],
+      vegvesenMarkers: [],
       chargingMarkers: [],
       chargingNobilMarkers: [],
       startMarker: [],
-      //For selecting the Starting point.
-      pos:null,
+      //Selecting the Parking point.
+      p_pos: null,
       s_parkingpoint: null,
       // Selecting the Charging stations
-      c_pos:null,
-      s_chargepoint:null,
-      vegvesenMarkers: []
+      c_pos: null,
+      s_chargepoint: null
     };
 
     // Makes this availiable. Fixes most of the react issues related to getting correct things
@@ -66,8 +66,7 @@ class ReactLeafletMap extends Component {
     this.addMarker = this.addMarker.bind(this);
     this.handleMap = this.handleMap.bind(this);
     this.selectparking = this.selectparking.bind(this);
-    this.selectcharging=this.selectcharging.bind(this);
-
+    this.selectcharging = this.selectcharging.bind(this);
   }
 
   addMarker = e => {
@@ -77,37 +76,31 @@ class ReactLeafletMap extends Component {
     this.setState({ startMarker });
   };
 
+  selectparking(pos) {
+    console.log("we are passing the postion" + pos);
 
-  selectparking(pos){
-    console.log("we are passing the postion"+pos);
+    this.setState({ s_parkingpoint: pos });
 
-    this.setState({
-
-      s_parkingpoint:pos,
-
-    })
     for (var i = 0; i < this.state.chargingMarkers.length; i++) {
       this.setState({
-        chargingMarkers:[],
-        s_chargepoint:null,
-      })
+        chargingMarkers: [],
+        s_chargepoint: null
+      });
     }
   }
 
   selectcharging(pos) {
-    console.log("we Have Selected the Charging Station"+ pos)
-    this.setState({
-      s_chargepoint:pos,
-    })
+    console.log("we Have Selected the Charging Station" + pos);
+
+    this.setState({ s_chargepoint: pos });
 
     for (var i = 0; i < this.state.parkingMarkers.length; i++) {
       this.setState({
-        parkingMarkers:[],
-        s_parkingpoint:null,
-      })
+        parkingMarkers: [],
+        s_parkingpoint: null
+      });
     }
   }
-
 
   findParkingLots() {
     // http://wiki.openstreetmap.org/wiki/Overpass_API/Overpass_API_by_Example <-- read here for info abt queries
@@ -116,40 +109,36 @@ class ReactLeafletMap extends Component {
     // Include the overpass library to be able to use it. It's a bit slow, but works
     const overpass = require("query-overpass");
     //This is reset the Selected parking position
-    this.setState({
-
-    s_parkingpoint:null,
-
-  })
+    this.setState({ s_parkingpoint: null });
 
     // Creates the query which is sent to overpass-api using their language of preference
 
-  const query =
-    "[out:json];node(" +
-    bounds._southWest.lat +
-    "," +
-    bounds._southWest.lng +
-    "," +
-    bounds._northEast.lat +
-    "," +
-    bounds._northEast.lng +
-    ")[amenity=parking];out;way(" +
-    bounds._southWest.lat +
-    "," +
-    bounds._southWest.lng +
-    "," +
-    bounds._northEast.lat +
-    "," +
-    bounds._northEast.lng +
-    ")[amenity=parking];out center;relation(" +
-    bounds._southWest.lat +
-    "," +
-    bounds._southWest.lng +
-    "," +
-    bounds._northEast.lat +
-    "," +
-    bounds._northEast.lng +
-    ")[amenity=parking];out center;";
+    const query =
+      "[out:json];node(" +
+      bounds._southWest.lat +
+      "," +
+      bounds._southWest.lng +
+      "," +
+      bounds._northEast.lat +
+      "," +
+      bounds._northEast.lng +
+      ")[amenity=parking];out;way(" +
+      bounds._southWest.lat +
+      "," +
+      bounds._southWest.lng +
+      "," +
+      bounds._northEast.lat +
+      "," +
+      bounds._northEast.lng +
+      ")[amenity=parking];out center;relation(" +
+      bounds._southWest.lat +
+      "," +
+      bounds._southWest.lng +
+      "," +
+      bounds._northEast.lat +
+      "," +
+      bounds._northEast.lng +
+      ")[amenity=parking];out center;";
 
     // Performs the query:
     overpass(query, (error, data) => {
@@ -158,22 +147,21 @@ class ReactLeafletMap extends Component {
         return;
       }
       // Here is what gets returned from the api call to overpass based on bounds.
-      var parkingLots = data.features;
+      let parkingLots = data.features;
       // Obtaining coordinates for each parking lot entry
-      let { parkingMarkers } = this.state;
-      parkingMarkers = [];
+      let parkingMarkers = [];
       // Obtain all positions and send them to the state which will be used to make markers
-      for (var i = 0; i < parkingLots.length; i++) {
-        var parkingLot = parkingLots[i];
-        var lat = parkingLot.geometry.coordinates[1];
-        var lng = parkingLot.geometry.coordinates[0];
-        var id = parkingLot.id;
-        var tags = parkingLot.properties.tags;
-        var amenity = tags.amenity;
-        var access = tags.access;
-        var fee = tags.fee;
-        var capacity = tags.capacity;
-        var maxstay = tags.maxstay;
+      for (let i = 0; i < parkingLots.length; i++) {
+        const parkingLot = parkingLots[i];
+        const lat = parkingLot.geometry.coordinates[1];
+        const lng = parkingLot.geometry.coordinates[0];
+        const id = parkingLot.id;
+        const tags = parkingLot.properties.tags;
+        const amenity = tags.amenity;
+        const access = tags.access;
+        const fee = tags.fee;
+        const capacity = tags.capacity;
+        const maxstay = tags.maxstay;
 
         parkingMarkers.push({
           position: [lat, lng],
@@ -193,11 +181,7 @@ class ReactLeafletMap extends Component {
     // Finding the bounding box of the current window to use in api call
     var bounds = this.refs.map.leafletElement.getBounds();
     //Reset the value of the charging marker
-    this.setState({
-      //s_parkingpoint:null,
-      s_chargepoint:null,
-    })
-
+    this.setState({ s_chargepoint: null });
 
     // Include the overpass library to be able to use it. It's a bit slow, but works
     const overpass = require("query-overpass");
@@ -229,26 +213,41 @@ class ReactLeafletMap extends Component {
       bounds._northEast.lng +
       ")[amenity=charging_station];out center;";
 
-  // Performs the query:
-  overpass(query, (error, data) => {
-    if (data == null) {
-      alert("Fikk ingen respons, prøv på nytt litt senere");
-      return;
-    }
-    // Here is what gets returned from the api call to overpass based on bounds.
-    var charging_stations = data.features;
-    // Obtaining coordinates for each parking lot entry
-    let { chargingMarkers } = this.state;
-    chargingMarkers = [];
-    // Obtain all positions and send them to the state which will be used to make markers
-    for (var i = 0; i < charging_stations.length; i++) {
-      var chargingStation = charging_stations[i];
-      var lat = chargingStation.geometry.coordinates[1];
-      var lng = chargingStation.geometry.coordinates[0];
-      chargingMarkers.push([lat, lng]);
-    }
-    // Updates the state with new markers.
-    this.setState({ chargingMarkers });
+    // Performs the query:
+    overpass(query, (error, data) => {
+      if (data == null) {
+        alert("Fikk ingen respons, prøv på nytt litt senere");
+        return;
+      }
+      // Here is what gets returned from the api call to overpass based on bounds.
+      let charging_stations = data.features;
+      // Obtaining coordinates for each parking lot entry
+      let chargingMarkers = [];
+      // Obtain all positions and send them to the state which will be used to make markers
+      for (let i = 0; i < charging_stations.length; i++) {
+        const chargingStation = charging_stations[i];
+        const lat = chargingStation.geometry.coordinates[1];
+        const lng = chargingStation.geometry.coordinates[0];
+        const id = chargingStation.id;
+        const tags = chargingStation.properties.tags;
+        const amenity = tags.amenity;
+        const fee = tags.fee;
+        const capacity = tags.capacity;
+        const hours = tags.opening_hours;
+
+        chargingMarkers.push({
+          position: [lat, lng],
+          id: id,
+          tags: {
+            amenity: amenity,
+            fee: fee,
+            capacity: capacity,
+            hours: hours
+          }
+        });
+      }
+      // Updates the state with new markers.
+      this.setState({ chargingMarkers });
     });
   }
 
@@ -273,18 +272,35 @@ class ReactLeafletMap extends Component {
         response => response.json() //converts from json
       )
       .then(data => {
-        var charging_stations = data.chargerstations;
+        const charging_stations = data.chargerstations;
         // Obtaining coordinates for each parking lot entry
-        let { chargingNobilMarkers } = this.state;
-        chargingNobilMarkers = [];
+        let chargingNobilMarkers = [];
         // Obtain all positions and send them to the state which will be used to make markers
-        for (var i = 0; i < charging_stations.length; i++) {
-          var chargingStation = charging_stations[i];
-          var lat = chargingStation.csmd.Position.split(",")[0];
-          lat = lat.substr(1);
-          var lng = chargingStation.csmd.Position.split(",")[1];
-          lng = lng.substr(0, lat.length - 1);
-          chargingNobilMarkers.push([parseFloat(lat), parseFloat(lng)]);
+        for (let i = 0; i < charging_stations.length; i++) {
+          const chargingStation = charging_stations[i];
+          const lat = chargingStation.csmd.Position.split(",")[0].substr(1);
+          //lat = lat.substr(1);
+          const lng = chargingStation.csmd.Position
+            .split(",")[1]
+            .substr(0, lat.length - 1);
+          //lng = lng.substr(0, lat.length - 1);
+          const id = chargingStation.csmd.id;
+          const name = chargingStation.csmd.name;
+          const street = chargingStation.csmd.Street;
+          const street_nr = chargingStation.csmd.House_number;
+          const points = chargingStation.csmd.Number_charging_points;
+          const description = chargingStation.csmd.Description_of_location;
+
+          chargingNobilMarkers.push({
+            position: [parseFloat(lat), parseFloat(lng)],
+            id: id,
+            name: name,
+            address: {
+              street: street,
+              street_nr: street_nr
+            },
+            points: points
+          });
         }
         // Updates the state with new markers.
         this.setState({ chargingNobilMarkers });
@@ -371,64 +387,82 @@ class ReactLeafletMap extends Component {
               attribution="&copy; <a href=&quot;http://www.statkart.no&quot;>Startkart.no</a>"
             />
 
-            {!this.state.s_parkingpoint ? this.state.parkingMarkers.map(({ position, tags, id }, idx) => (
-              <Marker
-                key={`marker-${idx}`}
-                position={position}
-                icon={parkingIcon}
-              >
-                <Popup>
-                  <div>
-                    <div>Parkeringsplass!</div>
+            {!this.state.s_parkingpoint ? (
+              this.state.parkingMarkers.map(({ position, tags, id }, idx) => (
+                <Marker
+                  key={`marker-${idx}`}
+                  position={position}
+                  icon={parkingIcon}
+                >
+                  <Popup>
                     <div>
-                      Posisjon: {position[0]}, {position[1]}
+                      <div>Parkeringsplass!</div>
+                      <div>
+                        Posisjon: {position[0]}, {position[1]}
+                      </div>
+                      <div>Amenity: {tags.amenity}</div>
+                      <div>Betaling: {tags.fee}</div>
+                      <div>Parkeringstillegg: {tags.p_fee}</div>
+                      <div>Kapasitet: {tags.capacity}</div>
+                      <div>Maks oppholdstid: {tags.maxstay}</div>
+                      <div>Fra: OpenStreetMap</div>
+                      <div>ID: {id}</div>
+                      <div>
+                        {
+                          <button onClick={e => this.selectparking(position)}>
+                            Mark as starting point?
+                          </button>
+                        }
+                      </div>
                     </div>
-                    <div>Amenity: {tags.amenity}</div>
-                    <div>Tilgang: {tags.access}</div>
-                    <div>Betaling: {tags.fee}</div>
-                    <div>Kapasitet: {tags.capacity}</div>
-                    <div>Maks oppholdstid: {tags.maxstay}</div>
-                    <div>Fra: OpenStreetMap</div>
-                    <div>ID: {id}</div>
-                    <span>
-                      {<button onClick={(e) =>this.selectparking(position)}>Mark This parking lot starting point</button>}
-                    </span>
-                  </div>
-                </Popup>
-              </Marker>
-            )):
-            <Marker position={this.state.s_parkingpoint} icon={parkingIcon}>
-              <Popup>
-                <span>
-                  This is your selected Starting point
-                </span>
-              </Popup>
-            </Marker>
-
-          }
-
-            {!this.state.s_chargepoint ?this.state.chargingMarkers.map((position, idx) => (
-              <Marker
-                key={`marker-${idx}`}
-                position={position}
-                icon={chargingIcon}
-              >
+                  </Popup>
+                </Marker>
+              ))
+            ) : (
+              <Marker position={this.state.s_parkingpoint} icon={parkingIcon}>
                 <Popup>
-                  <span>
-                 {<button onClick={(e) =>this.selectcharging(position)}>Mark This charging as starting point</button>}
-                  </span>
+                  <span>Your selected starting point!</span>
                 </Popup>
               </Marker>
-            )):
-            <Marker  position={this.state.s_chargepoint} icon={chargingIcon}>
-              <Popup>
-                <span>
-                  This is your selected Starting point
-                </span>
-              </Popup>
-            </Marker>
-          }
-            ))}
+            )}
+
+            {!this.state.s_chargepoint ? (
+              this.state.chargingMarkers.map(({ position, id, tags }, idx) => (
+                <Marker
+                  key={`marker-${idx}`}
+                  position={position}
+                  icon={chargingIcon}
+                >
+                  <Popup>
+                    <div>
+                      <div>Ladestasjon!</div>
+                      <div>
+                        Posisjon: {position[0]}, {position[1]}
+                      </div>
+                      <div>Amenity: {tags.amenity}</div>
+                      <div>Betaling: {tags.fee}</div>
+                      <div>Kapasitet: {tags.capacity}</div>
+                      <div>Fra: OpenStreetMap</div>
+                      <div>ID: {id}</div>
+                      <div>
+                        {
+                          <button onClick={e => this.selectcharging(position)}>
+                            Mark as starting point?
+                          </button>
+                        }
+                      </div>
+                    </div>
+                  </Popup>
+                </Marker>
+              ))
+            ) : (
+              <Marker position={this.state.s_chargepoint} icon={chargingIcon}>
+                <Popup>
+                  <span>Your selected starting point!</span>
+                </Popup>
+              </Marker>
+            )}
+
             {this.state.vegvesenMarkers.map(
               ({ position, id, address, lots }, idx) => (
                 <Marker
@@ -456,17 +490,32 @@ class ReactLeafletMap extends Component {
                 </Marker>
               )
             )}
-            {this.state.chargingNobilMarkers.map((position, idx) => (
-              <Marker
-                key={`marker-${idx}`}
-                position={position}
-                icon={chargingIcon}
-              >
-                <Popup>
-                  <span>NOBIL Ladestasjon!</span>
-                </Popup>
-              </Marker>
-            ))}
+
+            {this.state.chargingNobilMarkers.map(
+              ({ position, id, address, name, points }, idx) => (
+                <Marker
+                  key={`marker-${idx}`}
+                  position={position}
+                  icon={chargingIcon}
+                >
+                  <Popup>
+                    <div>
+                      <div>Ladestasjon!</div>
+                      <div>
+                        Adresse: {address.street} {address.street_nr}
+                      </div>
+                      <div>
+                        Posisjon: {position[0]}, {position[1]}
+                      </div>
+                      <div>Antall Ladeplasser: {points}</div>
+                      <div>Fra: NOBIL Transnova</div>
+                      <div>ID: {id}</div>
+                    </div>
+                  </Popup>
+                </Marker>
+              )
+            )}
+
             {this.state.startMarker.map((position, idx) => (
               <Marker
                 key={`marker-${idx}`}
@@ -474,7 +523,7 @@ class ReactLeafletMap extends Component {
                 icon={newMarkerIcon}
               >
                 <Popup>
-                  <span>Starting point :D</span>
+                  <span>Starting point!</span>
                 </Popup>
               </Marker>
             ))}
