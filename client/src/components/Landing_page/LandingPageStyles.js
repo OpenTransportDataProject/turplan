@@ -65,6 +65,7 @@ export const InfoHeader = styled.h3`
 
 export const InfoText = styled.p`
   font-size: 1em;
+  padding: 10px;
 `;
 
 export const Image = styled.div`
