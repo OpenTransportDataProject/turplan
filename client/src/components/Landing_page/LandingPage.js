@@ -49,16 +49,29 @@ class LandingPage extends Component {
                 <InfoHeader>Finn turer</InfoHeader>
                 <InfoText>Denne applikasjonen samler tur-informasjon fra Nasjonalturbase. Da denne var strukturert litt uhelig for vårt bruk, har vi lastet ned et subset av deres turer for å vise i vår applikasjon. </InfoText>
               </Info>
-                <Image imageUrl={"images/karteksempel.jpg"}/>
+                <Image imageUrl={"images/tur.jpg"}/>
             </Row>
             <Row>
-              <Image imageUrl={"images/karteksempel.jpg"}/>
+              <Image imageUrl={"images/kart.jpg"}/>
               <Info>
                 <InfoHeader>Våre kart</InfoHeader>
                 <InfoText>Vi benytter leaflet som basis for å vise kart-data og markere, med kartblad hentet ut fra statkart. </InfoText>
               </Info>
             </Row>
           </PageInfoContainer>
+          <PageContentHeader>
+            <h1>Api og datakilder</h1>
+            <ul>
+            <li>Nobil Transnova</li>
+            <li>Open Street Map</li>
+            <li>Statens vegvesen's parkeringsregister</li>
+            <li>Google places</li>
+            <li>Nasjonalturbase</li>
+            <li>Leaflet</li>
+            <li>Statkart/Kartverket/Norgeskart</li>
+
+            </ul>
+          </PageContentHeader>
           </PageContentContainer>
         <Footer />
       </ContentContainer>
