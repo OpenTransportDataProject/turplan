@@ -14,16 +14,16 @@ export const MapButton = styled.button`
   background-color: rgb(86, 115, 163);
   border: 2px solid rgb(58, 77, 109);
   border-radius: 2px;
-  &:hover{
-    cursor:pointer;
+  &:hover {
+    cursor: pointer;
   }
 `;
 export const PageContentContainer = styled.div`
   flex: 6;
   display: flex;
   flex-direction: column;
-  padding:10%;
-  font-size:18px;
+  padding: 10%;
+  font-size: 18px;
   color: grey;
   background-color: #fff;
 `;
@@ -35,8 +35,8 @@ export const PageContentHeader = styled.p`
 `;
 
 export const PageBanner = styled.img`
-  width:100%;
-  height:auto;
+  width: 100%;
+  height: auto;
 `;
 
 export const Row = styled.div`
@@ -59,9 +59,7 @@ export const Info = styled.div`
   justify-content: center;
 `;
 
-export const InfoHeader = styled.h3`
-  margin: 0;
-`;
+export const InfoHeader = styled.h3`margin: 0;`;
 
 export const InfoText = styled.p`
   font-size: 1em;
@@ -70,6 +68,8 @@ export const InfoText = styled.p`
 
 export const Image = styled.div`
   flex: 1;
-  background-image: url(${props => props.imageUrl ? props.imageUrl : null});
+  background-image: url(${props => (props.imageUrl ? props.imageUrl : null)});
   border-radius: 10px;
 `;
+
+export const List = styled.ul`list-style-type: none;`;
