@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import Leaflet from "leaflet";
-import { Map, TileLayer, Popup, Marker } from "react-leaflet";
+import { Map, TileLayer, Popup, Marker, Polyline } from "react-leaflet";
 import Menubar from "../Menubar/Menubar.js";
 import { Searchbar } from "../Searchbar/Searchbar";
 import MapHeader from "../Header/MapHeader.js";
@@ -8,6 +8,9 @@ import { Container, Searchcontainer, MapContainer } from "./MapStyles";
 
 /* This function is connected to the button in the menu, and will use the
 overpass-api to find parking lots within open street map.*/
+import styled from "styled-components";
+
+import {getHikes} from "../Hikes/Hikes";
 
 //Leaflet.Icon.Default.imagePath =
 //"//cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.0/images/";
@@ -33,6 +36,23 @@ var newMarkerIcon = Leaflet.icon({
   popupAnchor: [-3, -76]
 });
 
+
+
+/* This function is connected to the button in the menu, and will use the
+overpass-api to find parking lots within open street map.
+Someone has been nice enough to make a node-edition of the osm data we can use
+directly, called Overpass.
+We use amenity=parking to retreive parking lots from the api. Read more in the
+query-overpass guide. This doesn't find all parking lots, but a lot. We should
+look into ways to expand the query and find more parking lots.
+Also, use "yarn add query-overpass" in the client folder to ensure access to api.
+Source for fixing all the bugs in the code related to marker displays:
+https://jsfiddle.net/q2v7t59h/413/
+*/
+
+Leaflet.Icon.Default.imagePath =
+    "//cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.0/images/";
+
 // This component HAD to be a component, not PureComponent, to be able to display markers.
 // DO NOT change it. Was big problem, as it says nothing changes when it in fact does.
 class ReactLeafletMap extends Component {
@@ -45,6 +65,15 @@ class ReactLeafletMap extends Component {
       lng: 10.405758,
       zoom: 15,
       //The markers list will be filled with positions for all parking lots
+      markers: [],
+      startmarker: [],
+      bounds: {
+          northEastLat: 0,
+          northEastLng: 0, 
+          southWestLat: 0,
+          southWestLng: 0
+      },
+      hikes: [],
       parkingMarkers: [],
       vegvesenMarkers: [],
       chargingMarkers: [],
@@ -60,13 +89,14 @@ class ReactLeafletMap extends Component {
 
     // Makes this availiable. Fixes most of the react issues related to getting correct things
     this.findParkingLots = this.findParkingLots.bind(this);
-    this.findVegvesenParkingLots = this.findVegvesenParkingLots.bind(this);
     this.findChargingStations = this.findChargingStations.bind(this);
-    this.findNobilChargingStations = this.findNobilChargingStations.bind(this);
     this.addMarker = this.addMarker.bind(this);
     this.handleMap = this.handleMap.bind(this);
+    this.setBounds = this.setBounds.bind(this);
+    this.findVegvesenParkingLots = this.findVegvesenParkingLots.bind(this);
     this.selectparking = this.selectparking.bind(this);
     this.selectcharging = this.selectcharging.bind(this);
+    this.findNobilChargingStations = this.findNobilChargingStations.bind(this);
   }
 
   addMarker = e => {
@@ -250,6 +280,40 @@ class ReactLeafletMap extends Component {
       this.setState({ chargingMarkers });
     });
   }
+  handleMap(lat, lng) {
+    this.setState({
+        lat,
+        lng
+    })
+
+    console.log("Logging here: " + " lat " + lat + " lng " + lng);
+
+}
+
+/*
+        Sets the bounds state of the current boundingbox of the map. This function is supposed 
+        to be called whenever the view of the map changes. 
+    */
+    async setBounds(){
+      let currentBounds = this.refs.map.leafletElement.getBounds();
+
+      this.setState({
+          bounds: {
+              northEastLat: currentBounds._northEast.lat,
+              northEastLng: currentBounds._northEast.lng,
+              southWestLat: currentBounds._southWest.lat,
+              southWestLng: currentBounds._southWest.lng
+          }
+      })
+      
+      let hikes = await getHikes(this.state.bounds);
+	  console.log(hikes);
+      if(hikes) {
+          this.setState({
+              hikes: hikes
+          })
+      } 
+  }
 
   findNobilChargingStations() {
     // Finding the bounding box of the current window to use in api call
@@ -314,10 +378,6 @@ class ReactLeafletMap extends Component {
     });
   }
 
-  printLatLng() {
-    console.log("Map - Lat: " + this.state.lat + " Lng: " + this.state.lng);
-  }
-
   findVegvesenParkingLots() {
     fetch(
       "https://www.vegvesen.no/ws/no/vegvesen/veg/parkeringsomraade/parkeringsregisteret/v1/parkeringsomraade?datafelter=alle"
@@ -377,10 +437,10 @@ class ReactLeafletMap extends Component {
         <MapContainer>
           <Map
             center={[this.state.lat, this.state.lng]}
-            //center={[this.props.lat, this.props.lng]}
             zoom={this.state.zoom}
             ref="map"
             onClick={this.addMarker}
+			onViewportChanged={this.setBounds}
           >
             <TileLayer
               url="http://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=topo2&zoom={z}&x={x}&y={y}"
@@ -527,6 +587,19 @@ class ReactLeafletMap extends Component {
                 </Popup>
               </Marker>
             ))}
+            {this.state.hikes.map((hike, idx) => (
+                            <Polyline positions={hike.geometry.coordinates} color="rgba(0,0,255,1)" />
+                        ))}
+                        {this.state.hikes.map((hike, idx) => (
+                            <Marker key={`marker-${idx}`} position={hike.geometry.coordinates[0]}>
+                                <Popup>
+                                  <div>
+                                    <div><b>{hike.name}</b></div>
+                                    <div><b>Lengde: </b>{hike.maxDist}</div>
+                                  </div>
+                                </Popup>
+                            </Marker>
+                        ))}
           </Map>
         </MapContainer>
         <Menubar

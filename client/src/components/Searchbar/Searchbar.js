@@ -18,19 +18,12 @@ export class Searchbar extends Component {
 
     this.state = {
       address: "",
-      lat: 0,
-      lng: 0
+      lat: 63.417993,
+      lng: 10.205758
     };
 
     this.onChange = address => this.setState({ address });
-    this.printLatLng = this.printLatLng.bind(this);
   }
-
-  printLatLng = () => {
-    console.log(
-      "Searchbar - lat: " + this.state.lat + " lng: " + this.state.lng
-    );
-  };
 
   handleFormSubmit = event => {
     event.preventDefault();
@@ -46,7 +39,6 @@ export class Searchbar extends Component {
       )
       .catch(error => console.error("Error", error));
 
-    this.printLatLng();
   };
 
   handleSelect = address => {

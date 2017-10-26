@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "antd": "^2.13.3",
+    "axios": "^0.16.2",
     "leaflet": "^1.2.0",
     "prop-types": "15.5.0",
     "query-overpass": "^1.5.1",
