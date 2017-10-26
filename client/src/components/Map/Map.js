@@ -326,6 +326,16 @@ class ReactLeafletMap extends Component {
                         {this.state.hikes.map((hike, idx) => (
                             <Polyline positions={hike.geometry.coordinates} color="rgba(0,0,255,1)" />
                         ))}
+                        {this.state.hikes.map((hike, idx) => (
+                            <Marker key={`marker-${idx}`} position={hike.geometry.coordinates[0]}>
+                                <Popup>
+                                  <div>
+                                    <div><b>{hike.name}</b></div>
+                                    <div><b>Lengde: </b>{hike.maxDist}</div>
+                                  </div>
+                                </Popup>
+                            </Marker>
+                        ))}
                     </Map>
                 </MapContainer>
                 <Menubar
