@@ -1,7 +1,7 @@
 import React from "react";
 
 export function MapHeader() {
-  return <div>TopTrip</div>;
+  return <div>Turplan</div>;
 }
 
 export default MapHeader;
