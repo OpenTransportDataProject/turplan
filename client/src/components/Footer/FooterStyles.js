@@ -6,10 +6,10 @@ export const FooterContainer = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  background-color: rgb(58, 77, 109,0.1);
+  background-color: rgb(58, 77, 109, 0.1);
   padding-left: 10px;
   padding-right: 10px;
-  max-height:200px;
+  max-height: 200px;
 `;
 
 export const FooterText = styled.p`
@@ -21,16 +21,19 @@ export const FooterText = styled.p`
 export const CustomerContainer = styled.div`justify-content: center;`;
 
 export const NTNUImg = styled.img`
+  src: url(${props => (props.src ? props.src : null)});
   height: 50px;
   padding-right: 100px;
 `;
 
 export const SINTEFImg = styled.img`
+  src: url(${props => (props.src ? props.src : null)});
   height: 50px;
   padding: 10px;
 `;
 
 export const VegvesenImg = styled.img`
+  src: url(${props => (props.src ? props.src : null)});
   height: 50px;
   padding: 10px;
 `;
