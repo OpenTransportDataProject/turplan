@@ -4,7 +4,8 @@ import { Map, TileLayer, Popup, Marker } from "react-leaflet";
 import Menubar from "../Menubar/Menubar.js";
 import { Searchbar } from "../Searchbar/Searchbar";
 import MapHeader from "../Header/MapHeader.js";
-import { Container, Searchcontainer, MapContainer } from "./MapStyles";
+import { Container, Searchcontainer, MapContainer, Button, Row, ToggleContainer, Header } from "./MapStyles";
+import Toggle from 'material-ui/Toggle';
 
 /* This function is connected to the button in the menu, and will use the
 overpass-api to find parking lots within open street map.*/
@@ -366,13 +367,41 @@ class ReactLeafletMap extends Component {
 */
 
   render() {
+
+    const styles = {
+      toggle: {
+        textAlign: 'right',
+        width: '50%',
+      }
+    }
     return (
       <Container>
-        <MapHeader />
         {
-          <Searchcontainer>
+          <Row>
+            <Header>Turplan</Header>
+            <ToggleContainer>
+              <Toggle
+                label="Parkering"
+                defaultToggled={true}
+                labelStyle={styles.toggle}
+              />
+            </ToggleContainer>
+            <ToggleContainer>
+              <Toggle
+                label="Ladestasjon"
+                defaultToggled={true}
+                labelStyle={styles.toggle}
+              />
+            </ToggleContainer>
+            <ToggleContainer>
+              <Toggle
+                label="Turer"
+                defaultToggled={true}
+                labelStyle={styles.toggle}
+              />
+            </ToggleContainer>
             <Searchbar handleMap={(lat, lng) => this.handleMap(lat, lng)} />
-          </Searchcontainer>
+          </Row>
         }
         <MapContainer>
           <Map
