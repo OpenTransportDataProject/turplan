@@ -13,10 +13,6 @@ class Menubar extends PureComponent {
         <Button onClick={this.props.findChargingStations.bind(this)}>
           Finn ladestasjon
         </Button>
-
-        <Button onClick={this.props.findNobilChargingStations.bind(this)}>
-          Finn nobil ladestasjon
-        </Button>
       </MenuBar>
     );
   }

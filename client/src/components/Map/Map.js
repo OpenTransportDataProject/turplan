@@ -34,8 +34,25 @@ var newMarkerIcon = Leaflet.icon({
   popupAnchor: [-3, -76]
 });
 
-// This component HAD to be a component, not PureComponent, to be able to display markers.
-// DO NOT change it. Was big problem, as it says nothing changes when it in fact does.
+function toRadians(degrees){
+  return degrees*Math.PI/180;
+}
+
+function coordinateDistance(lat1,lng1,lat2,lng2){
+  // This function is supposed to return distance in meters
+  // This function is from the internet.
+  // based on function from haversine-formula
+  var r = 6371e3; // earth radius in meters
+  var ro1 = toRadians(lat1);
+  var ro2 = toRadians(lat2);
+  var deltaro = toRadians(lat2-lat1);
+  var deltalamda = toRadians(lng2-lng1);
+  var a = Math.sin(deltaro/2)*Math.sin(deltaro/2)+
+  Math.cos(ro1)*Math.cos(ro2)*Math.sin(deltalamda/2)*Math.sin(deltalamda/2);
+  var c = 2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+  return r*c;
+}
+
 class ReactLeafletMap extends Component {
   constructor() {
     //setting up initial starting state of the map.
@@ -147,7 +164,6 @@ class ReactLeafletMap extends Component {
     // Performs the query:
     overpass(query, (error, data) => {
       if (data == null) {
-        alert("Fikk ingen respons, prøv på nytt litt senere");
         return;
       }
       // Here is what gets returned from the api call to overpass based on bounds.
@@ -184,77 +200,10 @@ class ReactLeafletMap extends Component {
   }
 
   findChargingStations() {
+    this.findNobilChargingStations();
     // Finding the bounding box of the current window to use in api call
     var bounds = this.refs.map.leafletElement.getBounds();
-    //Reset the value of the charging marker
-    this.setState({ s_chargepoint: null });
 
-    // Include the overpass library to be able to use it. It's a bit slow, but works
-    const overpass = require("query-overpass");
-    // Creates the query which is sent to overpass-api using their language of preference
-    const query =
-      "[out:json];node(" +
-      bounds._southWest.lat +
-      "," +
-      bounds._southWest.lng +
-      "," +
-      bounds._northEast.lat +
-      "," +
-      bounds._northEast.lng +
-      ")[amenity=charging_station];out;way(" +
-      bounds._southWest.lat +
-      "," +
-      bounds._southWest.lng +
-      "," +
-      bounds._northEast.lat +
-      "," +
-      bounds._northEast.lng +
-      ")[amenity=charging_station];out center;relation(" +
-      bounds._southWest.lat +
-      "," +
-      bounds._southWest.lng +
-      "," +
-      bounds._northEast.lat +
-      "," +
-      bounds._northEast.lng +
-      ")[amenity=charging_station];out center;";
-
-    // Performs the query:
-    overpass(query, (error, data) => {
-      if (data == null) {
-        alert("Fikk ingen respons, prøv på nytt litt senere");
-        return;
-      }
-      // Here is what gets returned from the api call to overpass based on bounds.
-      let charging_stations = data.features;
-      // Obtaining coordinates for each parking lot entry
-      let chargingMarkers = [];
-      // Obtain all positions and send them to the state which will be used to make markers
-      for (let i = 0; i < charging_stations.length; i++) {
-        const chargingStation = charging_stations[i];
-        const lat = chargingStation.geometry.coordinates[1];
-        const lng = chargingStation.geometry.coordinates[0];
-        const id = chargingStation.id;
-        const tags = chargingStation.properties.tags;
-        const amenity = tags.amenity;
-        const fee = tags.fee;
-        const capacity = tags.capacity;
-        const hours = tags.opening_hours;
-
-        chargingMarkers.push({
-          position: [lat, lng],
-          id: id,
-          tags: {
-            amenity: amenity,
-            fee: fee,
-            capacity: capacity,
-            hours: hours
-          }
-        });
-      }
-      // Updates the state with new markers.
-      this.setState({ chargingMarkers });
-    });
   }
 
   findNobilChargingStations() {
@@ -310,6 +259,88 @@ class ReactLeafletMap extends Component {
         }
         // Updates the state with new markers.
         this.setState({ chargingNobilMarkers });
+        //Reset the value of the charging marker
+        this.setState({ s_chargepoint: null });
+
+        // Include the overpass library to be able to use it. It's a bit slow, but works
+        const overpass = require("query-overpass");
+        // Creates the query which is sent to overpass-api using their language of preference
+        const query =
+          "[out:json];node(" +
+          bounds._southWest.lat +
+          "," +
+          bounds._southWest.lng +
+          "," +
+          bounds._northEast.lat +
+          "," +
+          bounds._northEast.lng +
+          ")[amenity=charging_station];out;way(" +
+          bounds._southWest.lat +
+          "," +
+          bounds._southWest.lng +
+          "," +
+          bounds._northEast.lat +
+          "," +
+          bounds._northEast.lng +
+          ")[amenity=charging_station];out center;relation(" +
+          bounds._southWest.lat +
+          "," +
+          bounds._southWest.lng +
+          "," +
+          bounds._northEast.lat +
+          "," +
+          bounds._northEast.lng +
+          ")[amenity=charging_station];out center;";
+
+        // Performs the query:
+        //
+        overpass(query, (error, data) => {
+          if (data == null) {
+            return;
+          }
+          // Here is what gets returned from the api call to overpass based on bounds.
+          let charging_stations = data.features;
+          // Obtaining coordinates for each parking lot entry
+          let chargingMarkers = [];
+          // Obtain all positions and send them to the state which will be used to make markers
+          for (let i = 0; i < charging_stations.length; i++) {
+            var discard = false;
+            const chargingStation = charging_stations[i];
+            const lat = chargingStation.geometry.coordinates[1];
+            const lng = chargingStation.geometry.coordinates[0];
+            for (let j = 0; j < chargingNobilMarkers.length;j++){
+              // Check if the exact marker is already on map:
+              var pos = chargingNobilMarkers[j].position;
+              var threshold = 50; // meters merging
+              if (coordinateDistance(pos[0],pos[1],lat,lng)<threshold) {
+                discard = true;
+                break;
+              }
+            }
+            if(discard){
+              continue;
+            }
+            const id = chargingStation.id;
+            const tags = chargingStation.properties.tags;
+            const amenity = tags.amenity;
+            const fee = tags.fee;
+            const capacity = tags.capacity;
+            const hours = tags.opening_hours;
+
+            chargingMarkers.push({
+              position: [lat, lng],
+              id: id,
+              tags: {
+                amenity: amenity,
+                fee: fee,
+                capacity: capacity,
+                hours: hours
+              }
+            });
+          }
+          // Updates the state with new markers.
+          this.setState({ chargingMarkers });
+        });
       });
   }
 
@@ -581,7 +612,6 @@ class ReactLeafletMap extends Component {
         <Menubar
           findParkingLots={this.findParkingLots}
           findChargingStations={this.findChargingStations}
-          findNobilChargingStations={this.findNobilChargingStations}
         />
       </Container>
     );
