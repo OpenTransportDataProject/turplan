@@ -10,7 +10,6 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   background-color: #eee;
-  height: 100vh;
 `;
 
 class App extends Component {

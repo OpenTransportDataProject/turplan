@@ -56,7 +56,10 @@ class ReactLeafletMap extends Component {
       s_parkingpoint: null,
       // Selecting the Charging stations
       c_pos: null,
-      s_chargepoint: null
+      s_chargepoint: null,
+      showParking: true,
+      showCharging: true,
+      showHikes: true,
     };
 
     // Makes this availiable. Fixes most of the react issues related to getting correct things
@@ -359,6 +362,12 @@ class ReactLeafletMap extends Component {
       });
   }
 
+  toggleInfoOnMap = (infoType) => {
+    this.setState({
+      [infoType]: !this.state[infoType]
+    })
+  }
+
   /*  MAPS TO LOOK AT
   url="http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
   url="https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png"
@@ -384,6 +393,7 @@ class ReactLeafletMap extends Component {
                 label="Parkering"
                 defaultToggled={true}
                 labelStyle={styles.toggle}
+                onToggle={() => this.toggleInfoOnMap('showParking')}
               />
             </ToggleContainer>
             <ToggleContainer>
@@ -391,6 +401,7 @@ class ReactLeafletMap extends Component {
                 label="Ladestasjon"
                 defaultToggled={true}
                 labelStyle={styles.toggle}
+                onToggle={() => this.toggleInfoOnMap('showCharging')}
               />
             </ToggleContainer>
             <ToggleContainer>
@@ -398,6 +409,7 @@ class ReactLeafletMap extends Component {
                 label="Turer"
                 defaultToggled={true}
                 labelStyle={styles.toggle}
+                onToggle={() => this.toggleInfoOnMap('showHikes')}
               />
             </ToggleContainer>
             <Searchbar handleMap={(lat, lng) => this.handleMap(lat, lng)} />
@@ -416,7 +428,7 @@ class ReactLeafletMap extends Component {
               attribution="&copy; <a href=&quot;http://www.statkart.no&quot;>Startkart.no</a>"
             />
 
-            {!this.state.s_parkingpoint ? (
+            {this.state.showParking ? (!this.state.s_parkingpoint ? (
               this.state.parkingMarkers.map(({ position, tags, id }, idx) => (
                 <Marker
                   key={`marker-${idx}`}
@@ -453,9 +465,9 @@ class ReactLeafletMap extends Component {
                   <span>Your selected starting point!</span>
                 </Popup>
               </Marker>
-            )}
+            )) : null}
 
-            {!this.state.s_chargepoint ? (
+            {this.state.showCharging ? (!this.state.s_chargepoint ? (
               this.state.chargingMarkers.map(({ position, id, tags }, idx) => (
                 <Marker
                   key={`marker-${idx}`}
@@ -490,7 +502,7 @@ class ReactLeafletMap extends Component {
                   <span>Your selected starting point!</span>
                 </Popup>
               </Marker>
-            )}
+            )) : null }
 
             {this.state.vegvesenMarkers.map(
               ({ position, id, address, lots }, idx) => (
