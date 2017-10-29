@@ -307,7 +307,6 @@ class ReactLeafletMap extends Component {
       })
       
       let hikes = await getHikes(this.state.bounds);
-	  console.log(hikes);
       if(hikes) {
           this.setState({
               hikes: hikes
@@ -440,7 +439,7 @@ class ReactLeafletMap extends Component {
             zoom={this.state.zoom}
             ref="map"
             onClick={this.addMarker}
-			onViewportChanged={this.setBounds}
+			      onViewportChanged={this.setBounds}
           >
             <TileLayer
               url="http://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=topo2&zoom={z}&x={x}&y={y}"
@@ -601,6 +600,7 @@ class ReactLeafletMap extends Component {
                             </Marker>
                         ))}
           </Map>
+          
         </MapContainer>
         <Menubar
           findParkingLots={this.findParkingLots}
