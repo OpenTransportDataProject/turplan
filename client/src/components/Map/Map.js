@@ -179,6 +179,8 @@ class ReactLeafletMap extends Component {
       // Updates the state with new markers.
       this.setState({ parkingMarkers });
     });
+
+    this.findVegvesenParkingLots();
   }
 
   findChargingStations() {
@@ -329,11 +331,17 @@ class ReactLeafletMap extends Component {
       .then(results => results.json())
       .then(parking_lots => {
         let vegvesenMarkers = [];
+        var bounds = this.refs.map.leafletElement.getBounds();
 
         for (let i = 0; i < parking_lots.length; i++) {
           const parking_lot = parking_lots[i];
           const lat = parking_lot.breddegrad;
           const lng = parking_lot.lengdegrad;
+          // THIS one discards stuff outside bounding box so it's way faster to zoom/navigate
+          if(lat < bounds._southWest.lat || lat > bounds._northEast.lat ||
+          lng < bounds._southWest.lng || lng > bounds._northEast.lng){
+            continue;
+          }
           const id = parking_lot.id;
           const version = parking_lot.aktivVersjon;
           const address = version.adresse;
@@ -572,7 +580,6 @@ class ReactLeafletMap extends Component {
         </MapContainer>
         <Menubar
           findParkingLots={this.findParkingLots}
-          findVegvesenParkingLots={this.findVegvesenParkingLots}
           findChargingStations={this.findChargingStations}
           findNobilChargingStations={this.findNobilChargingStations}
         />
