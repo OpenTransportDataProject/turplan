@@ -57,9 +57,9 @@ class ReactLeafletMap extends Component {
       // Selecting the Charging stations
       c_pos: null,
       s_chargepoint: null,
-      showParking: true,
-      showCharging: true,
-      showHikes: true,
+      showParking: false,
+      showCharging: false,
+      showHikes: false,
     };
 
     // Makes this availiable. Fixes most of the react issues related to getting correct things
@@ -71,6 +71,14 @@ class ReactLeafletMap extends Component {
     this.handleMap = this.handleMap.bind(this);
     this.selectparking = this.selectparking.bind(this);
     this.selectcharging = this.selectcharging.bind(this);
+
+  }
+
+  componentDidMount() {
+    this.findParkingLots();
+    this.findChargingStations();
+    this.findNobilChargingStations();
+    //this.findVegvesenParkingLots();
   }
 
   addMarker = e => {
@@ -362,10 +370,21 @@ class ReactLeafletMap extends Component {
       });
   }
 
+  updateInfoOnMap(infoType) {
+    if (infoType === 'showParking') {
+      console.log('yes')
+      this.findParkingLots();
+    } else if (infoType === 'showCharging') {
+      this.findChargingStations();
+      this.findNobilChargingStations();
+    }
+  }
+
   toggleInfoOnMap = (infoType) => {
     this.setState({
       [infoType]: !this.state[infoType]
     })
+    this.updateInfoOnMap(infoType);
   }
 
   /*  MAPS TO LOOK AT
@@ -391,7 +410,7 @@ class ReactLeafletMap extends Component {
             <ToggleContainer>
               <Toggle
                 label="Parkering"
-                defaultToggled={true}
+                defaultToggled={false}
                 labelStyle={styles.toggle}
                 onToggle={() => this.toggleInfoOnMap('showParking')}
               />
@@ -399,7 +418,7 @@ class ReactLeafletMap extends Component {
             <ToggleContainer>
               <Toggle
                 label="Ladestasjon"
-                defaultToggled={true}
+                defaultToggled={false}
                 labelStyle={styles.toggle}
                 onToggle={() => this.toggleInfoOnMap('showCharging')}
               />
@@ -407,7 +426,7 @@ class ReactLeafletMap extends Component {
             <ToggleContainer>
               <Toggle
                 label="Turer"
-                defaultToggled={true}
+                defaultToggled={false}
                 labelStyle={styles.toggle}
                 onToggle={() => this.toggleInfoOnMap('showHikes')}
               />
@@ -504,7 +523,7 @@ class ReactLeafletMap extends Component {
               </Marker>
             )) : null }
 
-            {this.state.vegvesenMarkers.map(
+            {this.state.showParking ? this.state.vegvesenMarkers.map(
               ({ position, id, address, lots }, idx) => (
                 <Marker
                   key={`marker-${idx}`}
@@ -530,9 +549,9 @@ class ReactLeafletMap extends Component {
                   </Popup>
                 </Marker>
               )
-            )}
+            ) : null}
 
-            {this.state.chargingNobilMarkers.map(
+            {this.state.showCharging ? this.state.chargingNobilMarkers.map(
               ({ position, id, address, name, points }, idx) => (
                 <Marker
                   key={`marker-${idx}`}
@@ -555,7 +574,7 @@ class ReactLeafletMap extends Component {
                   </Popup>
                 </Marker>
               )
-            )}
+            ) : null}
 
             {this.state.startMarker.map((position, idx) => (
               <Marker
