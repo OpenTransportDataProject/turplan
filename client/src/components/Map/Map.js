@@ -76,6 +76,7 @@ class ReactLeafletMap extends Component {
       showParking: false,
       showCharging: false,
       showHikes: false,
+      parkingLotLockOn: false, // avoid multiple queries to osm at the same time
     };
 
     // Makes this availiable. Fixes most of the react issues related to getting correct things
@@ -130,6 +131,15 @@ class ReactLeafletMap extends Component {
 
   findParkingLots() {
     // http://wiki.openstreetmap.org/wiki/Overpass_API/Overpass_API_by_Example <-- read here for info abt queries
+    var zoom = this.refs.map.leafletElement.getZoom();
+    console.log(zoom);
+    if(zoom <=14){
+      return;
+    }
+    if(this.state.parkingLotLockOn){
+      return;
+    }
+    this.setState({parkingLotLockOn:true});
 
     var bounds = this.refs.map.leafletElement.getBounds();
     // Include the overpass library to be able to use it. It's a bit slow, but works
@@ -199,12 +209,16 @@ class ReactLeafletMap extends Component {
       }
       // Updates the state with new markers.
       this.setState({ parkingMarkers });
+      this.findVegvesenParkingLots();
+      this.setState({parkingLotLockOn:false});
     });
-
-    this.findVegvesenParkingLots();
   }
 
-  findChargingStations() {
+  findChargingStations() {var zoom = this.refs.map.leafletElement.getZoom();
+  console.log(zoom);
+  if(zoom <=12){
+    return;
+  }
     this.findNobilChargingStations();
     // Finding the bounding box of the current window to use in api call
     var bounds = this.refs.map.leafletElement.getBounds();
@@ -411,6 +425,16 @@ class ReactLeafletMap extends Component {
       console.log('yes')
       this.findParkingLots();
     } else if (infoType === 'showCharging') {
+      console.log('yes')
+      this.findChargingStations();
+    }
+  }
+
+  handleMapMove(){
+    if(this.state.showParking){
+      this.findParkingLots();
+    }
+    if(this.state.showCharging){
       this.findChargingStations();
     }
   }
@@ -471,6 +495,7 @@ class ReactLeafletMap extends Component {
         }
         <MapContainer>
           <Map
+            onMoveend={this.handleMapMove.bind(this)}
             center={[this.state.lat, this.state.lng]}
             //center={[this.props.lat, this.props.lng]}
             zoom={this.state.zoom}
