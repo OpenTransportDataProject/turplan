@@ -3,8 +3,9 @@ import Leaflet from "leaflet";
 import { Map, TileLayer, Popup, Marker } from "react-leaflet";
 import { Searchbar } from "../Searchbar/Searchbar";
 import MapHeader from "../Header/MapHeader.js";
-import { Container, Searchcontainer, MapContainer, Button, Row, ToggleContainer, Header } from "./MapStyles";
+import { Container, Searchcontainer, MapContainer, Button, Row, ToggleContainer, Header, InfoError } from "./MapStyles";
 import Toggle from 'material-ui/Toggle';
+import Dialog from './Dialog';
 
 /* This function is connected to the button in the menu, and will use the
 overpass-api to find parking lots within open street map.*/
@@ -132,7 +133,6 @@ class ReactLeafletMap extends Component {
   findParkingLots() {
     // http://wiki.openstreetmap.org/wiki/Overpass_API/Overpass_API_by_Example <-- read here for info abt queries
     var zoom = this.refs.map.leafletElement.getZoom();
-    console.log(zoom);
     if(zoom <=14){
       return;
     }
@@ -216,7 +216,6 @@ class ReactLeafletMap extends Component {
 
   findChargingStations() {
   var zoom = this.refs.map.leafletElement.getZoom();
-  console.log(zoom);
   if(zoom <=12){
     return;
   }
@@ -423,10 +422,8 @@ class ReactLeafletMap extends Component {
 
   updateInfoOnMap(infoType) {
     if (infoType === 'showParking') {
-      console.log('yes')
       this.findParkingLots();
     } else if (infoType === 'showCharging') {
-      console.log('yes')
       this.findChargingStations();
     }
   }
@@ -446,10 +443,10 @@ class ReactLeafletMap extends Component {
     })
     this.updateInfoOnMap(infoType);
   }
-handleZoom(){
-  var zoom = this.refs.map.leafletElement.getZoom();
-  this.setState({zoom:zoom});
-}
+  handleZoom(){
+    var zoom = this.refs.map.leafletElement.getZoom();
+    this.setState({zoom:zoom});
+  }
   /*  MAPS TO LOOK AT
   url="http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
   url="https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png"
@@ -471,17 +468,15 @@ handleZoom(){
         {
           <Row>
             <Header>Turplan</Header>
-            <ToggleContainer>
+            <ToggleContainer error={(this.state.zoom <= 14 && this.state.showParking) ? true : false}>
               <Toggle
                 label="Parkering"
                 defaultToggled={false}
                 labelStyle={styles.toggle}
                 onToggle={() => this.toggleInfoOnMap('showParking')}
               />
-              {this.state.zoom<=14 &&
-                <h2>
-                  !
-                </h2>
+              {(this.state.zoom<=14 && this.state.showParking) ?
+                <Dialog /> : null
               }
             </ToggleContainer>
             <ToggleContainer>

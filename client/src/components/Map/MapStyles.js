@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import FaInfoCircle from 'react-icons/lib/fa/info-circle';
 
 export const Container = styled.div`
   display: flex;
@@ -47,7 +48,15 @@ export const Row = styled.div`
 
 export const ToggleContainer = styled.div`
   flex: 1;
+  margin: 0 1em;
   display: flex;
   justify-content: center;
   align-items: center;
+  border-bottom: ${props => props.error ? '2px solid #D8000C' : null};
+`;
+
+
+export const InfoError = styled(FaInfoCircle)`
+  font-size: 1.5em;
+  color: #D8000C;
 `;
