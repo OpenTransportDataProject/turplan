@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import Leaflet from "leaflet";
 import { Map, TileLayer, Popup, Marker } from "react-leaflet";
-import Menubar from "../Menubar/Menubar.js";
 import { Searchbar } from "../Searchbar/Searchbar";
 import MapHeader from "../Header/MapHeader.js";
 import { Container, Searchcontainer, MapContainer, Button, Row, ToggleContainer, Header } from "./MapStyles";
@@ -625,10 +624,6 @@ class ReactLeafletMap extends Component {
             ))}
           </Map>
         </MapContainer>
-        <Menubar
-          findParkingLots={this.findParkingLots}
-          findChargingStations={this.findChargingStations}
-        />
       </Container>
     );
   }
