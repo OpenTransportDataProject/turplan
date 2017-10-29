@@ -214,7 +214,8 @@ class ReactLeafletMap extends Component {
     });
   }
 
-  findChargingStations() {var zoom = this.refs.map.leafletElement.getZoom();
+  findChargingStations() {
+  var zoom = this.refs.map.leafletElement.getZoom();
   console.log(zoom);
   if(zoom <=12){
     return;
@@ -445,7 +446,10 @@ class ReactLeafletMap extends Component {
     })
     this.updateInfoOnMap(infoType);
   }
-
+handleZoom(){
+  var zoom = this.refs.map.leafletElement.getZoom();
+  this.setState({zoom:zoom});
+}
   /*  MAPS TO LOOK AT
   url="http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
   url="https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png"
@@ -461,6 +465,7 @@ class ReactLeafletMap extends Component {
         width: '50%',
       }
     }
+
     return (
       <Container>
         {
@@ -473,6 +478,11 @@ class ReactLeafletMap extends Component {
                 labelStyle={styles.toggle}
                 onToggle={() => this.toggleInfoOnMap('showParking')}
               />
+              {this.state.zoom<=14 &&
+                <h2>
+                  !
+                </h2>
+              }
             </ToggleContainer>
             <ToggleContainer>
               <Toggle
@@ -481,6 +491,11 @@ class ReactLeafletMap extends Component {
                 labelStyle={styles.toggle}
                 onToggle={() => this.toggleInfoOnMap('showCharging')}
               />
+              {this.state.zoom<=12 &&
+                <h2>
+                  !
+                </h2>
+              }
             </ToggleContainer>
             <ToggleContainer>
               <Toggle
@@ -499,6 +514,7 @@ class ReactLeafletMap extends Component {
             center={[this.state.lat, this.state.lng]}
             //center={[this.props.lat, this.props.lng]}
             zoom={this.state.zoom}
+            onZoomend={this.handleZoom.bind(this)}
             ref="map"
             onClick={this.addMarker}
           >
