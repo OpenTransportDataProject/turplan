@@ -1,6 +1,11 @@
 
 import axios from "axios";
 
+export const Difficulity = {
+    0: "Lett",
+    1: "Medium",
+    2: "Krevende"
+}
 
 var flipHikeCoordinates = function (hikes) {
 

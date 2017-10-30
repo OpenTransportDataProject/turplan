@@ -3,7 +3,7 @@ import Leaflet from "leaflet";
 import { Map, TileLayer, Popup, Marker, Polyline } from "react-leaflet";
 import { Searchbar } from "../Searchbar/Searchbar";
 import MapHeader from "../Header/MapHeader.js";
-import { Container, Searchcontainer, MapContainer, Button, Row, ToggleContainer, Header, InfoError } from "./MapStyles";
+import { Container, Searchcontainer, MapContainer, TripDescriptionContainer, TagContainer, InlineTagsContainer, Button, Row, ToggleContainer, Header, InfoError } from "./MapStyles";
 import Toggle from 'material-ui/Toggle';
 import Dialog from './Dialog';
 
@@ -11,7 +11,7 @@ import Dialog from './Dialog';
 overpass-api to find parking lots within open street map.*/
 import styled from "styled-components";
 
-import {getHikes} from "../Hikes/Hikes";
+import {getHikes, Difficulity} from "../Hikes/Hikes";
 
 //Leaflet.Icon.Default.imagePath =
 //"//cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.0/images/";
@@ -724,8 +724,14 @@ class ReactLeafletMap extends Component {
                 <Marker key={`marker-${idx}`} position={hike.geometry.coordinates[0]}>
                   <Popup>
                     <div>
-                      <div><b>{hike.name}</b></div>
-                      <div><b>Lengde: </b>{hike.maxDist}</div>
+                      {hike.name ? <div style={{"marginBottom": "8px"}}><b><h3>{hike.name}</h3></b></div> : null }
+                      {hike.maxDist > 0 ? <div><b>Lengde: </b>{hike.maxDist}</div> : null}
+                      {hike.description ? <TripDescriptionContainer dangerouslySetInnerHTML={{ __html: hike.description }}></TripDescriptionContainer> : null}
+                      {hike.duration > 0 ? <div><b>Varighet: </b>{hike.duration} timer</div> : null}
+                      {hike.provider > 0 ? <div><b>Tilbyder: </b>{hike.provider}</div> : null}
+                      {hike.tags ? <InlineTagsContainer>{hike.tags ? (hike.tags.map((tag, idx) => (<TagContainer>{tag}</TagContainer>)))
+                        : null}</InlineTagsContainer> : null }
+                      {hike.classification ? <div><b>Vansklighetsgrad: </b>{Difficulity[hike.classification]}</div> : null}
                     </div>
                   </Popup>
                   </Marker>

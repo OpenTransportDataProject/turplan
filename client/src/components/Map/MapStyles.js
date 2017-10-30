@@ -60,3 +60,24 @@ export const InfoError = styled(FaInfoCircle)`
   font-size: 1.5em;
   color: #D8000C;
 `;
+
+export const TripDescriptionContainer = styled.div`
+  max-height: 200px;
+  overflow: auto;
+  border-left: 1px solid rgba(0,0,0,0.2);
+  padding: 4px;
+  margin: 4px;
+`;
+
+export const TagContainer = styled.div`
+  margin: 4px;
+  border-radius: 4px;
+  background-color: #75f19e;
+  padding: 4px;
+  box-shadow: 0px 0px 3px rgba(0,0,0,0.2);
+`;
+
+export const InlineTagsContainer = styled.div`
+  display: flex;
+  flex-flow: row wrap;
+`
