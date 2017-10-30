@@ -8,7 +8,7 @@ import PlacesAutocomplete, {
 import styled from "styled-components";
 import ReactLeafletMap from "../Map/Map";
 
-import { Container, ContentContainer, SearchButton } from "./SearchbarStyles";
+import { Container, ContentContainer, SearchButton, Form, SearchIcon } from "./SearchbarStyles";
 
 // API key AIzaSyD-qhLT9q0SQV8EjT4wUivxtyS7K_CxMhM
 
@@ -18,19 +18,12 @@ export class Searchbar extends Component {
 
     this.state = {
       address: "",
-      lat: 0,
-      lng: 0
+      lat: 63.417993,
+      lng: 10.205758
     };
 
     this.onChange = address => this.setState({ address });
-    this.printLatLng = this.printLatLng.bind(this);
   }
-
-  printLatLng = () => {
-    console.log(
-      "Searchbar - lat: " + this.state.lat + " lng: " + this.state.lng
-    );
-  };
 
   handleFormSubmit = event => {
     event.preventDefault();
@@ -46,7 +39,6 @@ export class Searchbar extends Component {
       )
       .catch(error => console.error("Error", error));
 
-    this.printLatLng();
   };
 
   handleSelect = address => {
@@ -76,27 +68,25 @@ export class Searchbar extends Component {
         zIndex: "1"
       },
       input: {
-        width: "100%"
+        width: "80%"
       }
     };
 
     return (
       <Container>
-        <form onSubmit={this.handleFormSubmit}>
+        <Form onSubmit={this.handleFormSubmit}>
           <PlacesAutocomplete
             inputProps={inputProps}
             onSelect={address => this.handleSelect(address)}
             styles={myStyles}
           />
           {
-            <SearchButton
+            <SearchIcon
               onClick={() =>
                 this.props.handleMap(this.state.lat, this.state.lng)}
-            >
-              Søk etter sted
-            </SearchButton>
+            />
           }
-        </form>
+        </Form>
       </Container>
     );
   }
