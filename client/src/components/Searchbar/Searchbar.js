@@ -8,7 +8,7 @@ import PlacesAutocomplete, {
 import styled from "styled-components";
 import ReactLeafletMap from "../Map/Map";
 
-import { Container, ContentContainer, SearchButton } from "./SearchbarStyles";
+import { Container, ContentContainer, SearchButton, Form, SearchIcon } from "./SearchbarStyles";
 
 // API key AIzaSyD-qhLT9q0SQV8EjT4wUivxtyS7K_CxMhM
 
@@ -68,27 +68,25 @@ export class Searchbar extends Component {
         zIndex: "1"
       },
       input: {
-        width: "100%"
+        width: "80%"
       }
     };
 
     return (
       <Container>
-        <form onSubmit={this.handleFormSubmit}>
+        <Form onSubmit={this.handleFormSubmit}>
           <PlacesAutocomplete
             inputProps={inputProps}
             onSelect={address => this.handleSelect(address)}
             styles={myStyles}
           />
           {
-            <SearchButton
+            <SearchIcon
               onClick={() =>
                 this.props.handleMap(this.state.lat, this.state.lng)}
-            >
-              Søk etter sted
-            </SearchButton>
+            />
           }
-        </form>
+        </Form>
       </Container>
     );
   }

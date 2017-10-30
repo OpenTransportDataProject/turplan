@@ -1,10 +1,11 @@
 import React, { Component } from "react";
 import Leaflet from "leaflet";
 import { Map, TileLayer, Popup, Marker, Polyline } from "react-leaflet";
-import Menubar from "../Menubar/Menubar.js";
 import { Searchbar } from "../Searchbar/Searchbar";
 import MapHeader from "../Header/MapHeader.js";
-import { Container, Searchcontainer, MapContainer } from "./MapStyles";
+import { Container, Searchcontainer, MapContainer, Button, Row, ToggleContainer, Header, InfoError } from "./MapStyles";
+import Toggle from 'material-ui/Toggle';
+import Dialog from './Dialog';
 
 /* This function is connected to the button in the menu, and will use the
 overpass-api to find parking lots within open street map.*/
@@ -55,6 +56,25 @@ Leaflet.Icon.Default.imagePath =
 
 // This component HAD to be a component, not PureComponent, to be able to display markers.
 // DO NOT change it. Was big problem, as it says nothing changes when it in fact does.
+function toRadians(degrees){
+  return degrees*Math.PI/180;
+}
+
+function coordinateDistance(lat1,lng1,lat2,lng2){
+  // This function is supposed to return distance in meters
+  // This function is from the internet.
+  // based on function from haversine-formula
+  var r = 6371e3; // earth radius in meters
+  var ro1 = toRadians(lat1);
+  var ro2 = toRadians(lat2);
+  var deltaro = toRadians(lat2-lat1);
+  var deltalamda = toRadians(lng2-lng1);
+  var a = Math.sin(deltaro/2)*Math.sin(deltaro/2)+
+  Math.cos(ro1)*Math.cos(ro2)*Math.sin(deltalamda/2)*Math.sin(deltalamda/2);
+  var c = 2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+  return r*c;
+}
+
 class ReactLeafletMap extends Component {
   constructor() {
     //setting up initial starting state of the map.
@@ -69,7 +89,7 @@ class ReactLeafletMap extends Component {
       startmarker: [],
       bounds: {
           northEastLat: 0,
-          northEastLng: 0, 
+          northEastLng: 0,
           southWestLat: 0,
           southWestLng: 0
       },
@@ -84,7 +104,11 @@ class ReactLeafletMap extends Component {
       s_parkingpoint: null,
       // Selecting the Charging stations
       c_pos: null,
-      s_chargepoint: null
+      s_chargepoint: null,
+      showParking: false,
+      showCharging: false,
+      showHikes: false,
+      parkingLotLockOn: false, // avoid multiple queries to osm at the same time
     };
 
     // Makes this availiable. Fixes most of the react issues related to getting correct things
@@ -96,7 +120,12 @@ class ReactLeafletMap extends Component {
     this.findVegvesenParkingLots = this.findVegvesenParkingLots.bind(this);
     this.selectparking = this.selectparking.bind(this);
     this.selectcharging = this.selectcharging.bind(this);
-    this.findNobilChargingStations = this.findNobilChargingStations.bind(this);
+
+  }
+
+  componentDidMount() {
+    this.findParkingLots();
+    this.findChargingStations();
   }
 
   addMarker = e => {
@@ -134,6 +163,14 @@ class ReactLeafletMap extends Component {
 
   findParkingLots() {
     // http://wiki.openstreetmap.org/wiki/Overpass_API/Overpass_API_by_Example <-- read here for info abt queries
+    var zoom = this.refs.map.leafletElement.getZoom();
+    if(zoom <=14){
+      return;
+    }
+    if(this.state.parkingLotLockOn){
+      return;
+    }
+    this.setState({parkingLotLockOn:true});
 
     var bounds = this.refs.map.leafletElement.getBounds();
     // Include the overpass library to be able to use it. It's a bit slow, but works
@@ -173,7 +210,6 @@ class ReactLeafletMap extends Component {
     // Performs the query:
     overpass(query, (error, data) => {
       if (data == null) {
-        alert("Fikk ingen respons, prøv på nytt litt senere");
         return;
       }
       // Here is what gets returned from the api call to overpass based on bounds.
@@ -204,81 +240,20 @@ class ReactLeafletMap extends Component {
       }
       // Updates the state with new markers.
       this.setState({ parkingMarkers });
+      this.findVegvesenParkingLots();
+      this.setState({parkingLotLockOn:false});
     });
   }
 
   findChargingStations() {
+  var zoom = this.refs.map.leafletElement.getZoom();
+  if(zoom <=12){
+    return;
+  }
+    this.findNobilChargingStations();
     // Finding the bounding box of the current window to use in api call
     var bounds = this.refs.map.leafletElement.getBounds();
-    //Reset the value of the charging marker
-    this.setState({ s_chargepoint: null });
 
-    // Include the overpass library to be able to use it. It's a bit slow, but works
-    const overpass = require("query-overpass");
-    // Creates the query which is sent to overpass-api using their language of preference
-    const query =
-      "[out:json];node(" +
-      bounds._southWest.lat +
-      "," +
-      bounds._southWest.lng +
-      "," +
-      bounds._northEast.lat +
-      "," +
-      bounds._northEast.lng +
-      ")[amenity=charging_station];out;way(" +
-      bounds._southWest.lat +
-      "," +
-      bounds._southWest.lng +
-      "," +
-      bounds._northEast.lat +
-      "," +
-      bounds._northEast.lng +
-      ")[amenity=charging_station];out center;relation(" +
-      bounds._southWest.lat +
-      "," +
-      bounds._southWest.lng +
-      "," +
-      bounds._northEast.lat +
-      "," +
-      bounds._northEast.lng +
-      ")[amenity=charging_station];out center;";
-
-    // Performs the query:
-    overpass(query, (error, data) => {
-      if (data == null) {
-        alert("Fikk ingen respons, prøv på nytt litt senere");
-        return;
-      }
-      // Here is what gets returned from the api call to overpass based on bounds.
-      let charging_stations = data.features;
-      // Obtaining coordinates for each parking lot entry
-      let chargingMarkers = [];
-      // Obtain all positions and send them to the state which will be used to make markers
-      for (let i = 0; i < charging_stations.length; i++) {
-        const chargingStation = charging_stations[i];
-        const lat = chargingStation.geometry.coordinates[1];
-        const lng = chargingStation.geometry.coordinates[0];
-        const id = chargingStation.id;
-        const tags = chargingStation.properties.tags;
-        const amenity = tags.amenity;
-        const fee = tags.fee;
-        const capacity = tags.capacity;
-        const hours = tags.opening_hours;
-
-        chargingMarkers.push({
-          position: [lat, lng],
-          id: id,
-          tags: {
-            amenity: amenity,
-            fee: fee,
-            capacity: capacity,
-            hours: hours
-          }
-        });
-      }
-      // Updates the state with new markers.
-      this.setState({ chargingMarkers });
-    });
   }
   handleMap(lat, lng) {
     this.setState({
@@ -291,8 +266,8 @@ class ReactLeafletMap extends Component {
 }
 
 /*
-        Sets the bounds state of the current boundingbox of the map. This function is supposed 
-        to be called whenever the view of the map changes. 
+        Sets the bounds state of the current boundingbox of the map. This function is supposed
+        to be called whenever the view of the map changes.
     */
     async setBounds(){
       let currentBounds = this.refs.map.leafletElement.getBounds();
@@ -305,13 +280,13 @@ class ReactLeafletMap extends Component {
               southWestLng: currentBounds._southWest.lng
           }
       })
-      
+
       let hikes = await getHikes(this.state.bounds);
       if(hikes) {
           this.setState({
               hikes: hikes
           })
-      } 
+      }
   }
 
   findNobilChargingStations() {
@@ -367,6 +342,88 @@ class ReactLeafletMap extends Component {
         }
         // Updates the state with new markers.
         this.setState({ chargingNobilMarkers });
+        //Reset the value of the charging marker
+        this.setState({ s_chargepoint: null });
+
+        // Include the overpass library to be able to use it. It's a bit slow, but works
+        const overpass = require("query-overpass");
+        // Creates the query which is sent to overpass-api using their language of preference
+        const query =
+          "[out:json];node(" +
+          bounds._southWest.lat +
+          "," +
+          bounds._southWest.lng +
+          "," +
+          bounds._northEast.lat +
+          "," +
+          bounds._northEast.lng +
+          ")[amenity=charging_station];out;way(" +
+          bounds._southWest.lat +
+          "," +
+          bounds._southWest.lng +
+          "," +
+          bounds._northEast.lat +
+          "," +
+          bounds._northEast.lng +
+          ")[amenity=charging_station];out center;relation(" +
+          bounds._southWest.lat +
+          "," +
+          bounds._southWest.lng +
+          "," +
+          bounds._northEast.lat +
+          "," +
+          bounds._northEast.lng +
+          ")[amenity=charging_station];out center;";
+
+        // Performs the query:
+        //
+        overpass(query, (error, data) => {
+          if (data == null) {
+            return;
+          }
+          // Here is what gets returned from the api call to overpass based on bounds.
+          let charging_stations = data.features;
+          // Obtaining coordinates for each parking lot entry
+          let chargingMarkers = [];
+          // Obtain all positions and send them to the state which will be used to make markers
+          for (let i = 0; i < charging_stations.length; i++) {
+            var discard = false;
+            const chargingStation = charging_stations[i];
+            const lat = chargingStation.geometry.coordinates[1];
+            const lng = chargingStation.geometry.coordinates[0];
+            for (let j = 0; j < chargingNobilMarkers.length;j++){
+              // Check if the exact marker is already on map:
+              var pos = chargingNobilMarkers[j].position;
+              var threshold = 50; // meters merging
+              if (coordinateDistance(pos[0],pos[1],lat,lng)<threshold) {
+                discard = true;
+                break;
+              }
+            }
+            if(discard){
+              continue;
+            }
+            const id = chargingStation.id;
+            const tags = chargingStation.properties.tags;
+            const amenity = tags.amenity;
+            const fee = tags.fee;
+            const capacity = tags.capacity;
+            const hours = tags.opening_hours;
+
+            chargingMarkers.push({
+              position: [lat, lng],
+              id: id,
+              tags: {
+                amenity: amenity,
+                fee: fee,
+                capacity: capacity,
+                hours: hours
+              }
+            });
+          }
+          // Updates the state with new markers.
+          this.setState({ chargingMarkers });
+        });
       });
   }
 
@@ -384,11 +441,17 @@ class ReactLeafletMap extends Component {
       .then(results => results.json())
       .then(parking_lots => {
         let vegvesenMarkers = [];
+        var bounds = this.refs.map.leafletElement.getBounds();
 
         for (let i = 0; i < parking_lots.length; i++) {
           const parking_lot = parking_lots[i];
           const lat = parking_lot.breddegrad;
           const lng = parking_lot.lengdegrad;
+          // THIS one discards stuff outside bounding box so it's way faster to zoom/navigate
+          if(lat < bounds._southWest.lat || lat > bounds._northEast.lat ||
+          lng < bounds._southWest.lng || lng > bounds._northEast.lng){
+            continue;
+          }
           const id = parking_lot.id;
           const version = parking_lot.aktivVersjon;
           const address = version.adresse;
@@ -417,6 +480,33 @@ class ReactLeafletMap extends Component {
       });
   }
 
+  updateInfoOnMap(infoType) {
+    if (infoType === 'showParking') {
+      this.findParkingLots();
+    } else if (infoType === 'showCharging') {
+      this.findChargingStations();
+    }
+  }
+
+  handleMapMove(){
+    if(this.state.showParking){
+      this.findParkingLots();
+    }
+    if(this.state.showCharging){
+      this.findChargingStations();
+    }
+  }
+
+  toggleInfoOnMap = (infoType) => {
+    this.setState({
+      [infoType]: !this.state[infoType]
+    })
+    this.updateInfoOnMap(infoType);
+  }
+  handleZoom(){
+    var zoom = this.refs.map.leafletElement.getZoom();
+    this.setState({zoom:zoom});
+  }
   /*  MAPS TO LOOK AT
   url="http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
   url="https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png"
@@ -425,18 +515,60 @@ class ReactLeafletMap extends Component {
 */
 
   render() {
+
+    const styles = {
+      toggle: {
+        textAlign: 'right',
+        width: '50%',
+      }
+    }
+
     return (
       <Container>
-        <MapHeader />
         {
-          <Searchcontainer>
+          <Row>
+            <Header>Turplan</Header>
+            <ToggleContainer error={(this.state.zoom <= 14 && this.state.showParking) ? true : false}>
+              <Toggle
+                label="Parkering"
+                defaultToggled={false}
+                labelStyle={styles.toggle}
+                onToggle={() => this.toggleInfoOnMap('showParking')}
+              />
+              {(this.state.zoom<=14 && this.state.showParking) ?
+                <Dialog /> : null
+              }
+            </ToggleContainer>
+            <ToggleContainer>
+              <Toggle
+                label="Ladestasjon"
+                defaultToggled={false}
+                labelStyle={styles.toggle}
+                onToggle={() => this.toggleInfoOnMap('showCharging')}
+              />
+              {this.state.zoom<=12 &&
+                <h2>
+                  !
+                </h2>
+              }
+            </ToggleContainer>
+            <ToggleContainer>
+              <Toggle
+                label="Turer"
+                defaultToggled={false}
+                labelStyle={styles.toggle}
+                onToggle={() => this.toggleInfoOnMap('showHikes')}
+              />
+            </ToggleContainer>
             <Searchbar handleMap={(lat, lng) => this.handleMap(lat, lng)} />
-          </Searchcontainer>
+          </Row>
         }
         <MapContainer>
           <Map
+            onMoveend={this.handleMapMove.bind(this)}
             center={[this.state.lat, this.state.lng]}
             zoom={this.state.zoom}
+            onZoomend={this.handleZoom.bind(this)}
             ref="map"
             onClick={this.addMarker}
 			      onViewportChanged={this.setBounds}
@@ -446,7 +578,7 @@ class ReactLeafletMap extends Component {
               attribution="&copy; <a href=&quot;http://www.statkart.no&quot;>Startkart.no</a>"
             />
 
-            {!this.state.s_parkingpoint ? (
+            {this.state.showParking ? (!this.state.s_parkingpoint ? (
               this.state.parkingMarkers.map(({ position, tags, id }, idx) => (
                 <Marker
                   key={`marker-${idx}`}
@@ -483,9 +615,9 @@ class ReactLeafletMap extends Component {
                   <span>Your selected starting point!</span>
                 </Popup>
               </Marker>
-            )}
+            )) : null}
 
-            {!this.state.s_chargepoint ? (
+            {this.state.showCharging ? (!this.state.s_chargepoint ? (
               this.state.chargingMarkers.map(({ position, id, tags }, idx) => (
                 <Marker
                   key={`marker-${idx}`}
@@ -520,9 +652,9 @@ class ReactLeafletMap extends Component {
                   <span>Your selected starting point!</span>
                 </Popup>
               </Marker>
-            )}
+            )) : null }
 
-            {this.state.vegvesenMarkers.map(
+            {this.state.showParking ? this.state.vegvesenMarkers.map(
               ({ position, id, address, lots }, idx) => (
                 <Marker
                   key={`marker-${idx}`}
@@ -548,9 +680,9 @@ class ReactLeafletMap extends Component {
                   </Popup>
                 </Marker>
               )
-            )}
+            ) : null}
 
-            {this.state.chargingNobilMarkers.map(
+            {this.state.showCharging ? this.state.chargingNobilMarkers.map(
               ({ position, id, address, name, points }, idx) => (
                 <Marker
                   key={`marker-${idx}`}
@@ -573,7 +705,7 @@ class ReactLeafletMap extends Component {
                   </Popup>
                 </Marker>
               )
-            )}
+            ) : null}
 
             {this.state.startMarker.map((position, idx) => (
               <Marker
@@ -600,14 +732,8 @@ class ReactLeafletMap extends Component {
                             </Marker>
                         ))}
           </Map>
-          
+
         </MapContainer>
-        <Menubar
-          findParkingLots={this.findParkingLots}
-          findVegvesenParkingLots={this.findVegvesenParkingLots}
-          findChargingStations={this.findChargingStations}
-          findNobilChargingStations={this.findNobilChargingStations}
-        />
       </Container>
     );
   }

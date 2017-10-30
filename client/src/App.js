@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import ReactLeafletMap from "./components/Map";
 import LandingPage from "./components/Landing_page/LandingPage.js";
 import styled from "styled-components";
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import "./App.css";
 
 const Container = styled.div`
@@ -32,7 +33,7 @@ class App extends Component {
     } else {
       componentToShow = <ReactLeafletMap />;
     }
-    return <Container className="App">{componentToShow}</Container>;
+    return <MuiThemeProvider><Container className="App">{componentToShow}</Container></MuiThemeProvider>;
   }
 }
 
