@@ -153,7 +153,9 @@ class ReactLeafletMap extends Component {
         this.refs.map.leafletElement.removeControl(this.state.route);
       }
       var route = L.routing.control({
-        pointMarkerStyle:null,
+        lineOptions:{styles:[{color: 'black', opacity: 0.15, weight: 9},
+        {color: 'blue', opacity: 0.8, weight: 6},
+        {color: 'blue', opacity: 1, weight: 2}]},
         waypoints:[
           L.latLng(this.state.startpointA[0], this.state.startpointA[1]),
           L.latLng(this.state.startpointB[0], this.state.startpointB[1])
