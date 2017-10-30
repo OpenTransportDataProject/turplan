@@ -1,8 +1,4 @@
 import React from "react";
-import ntnu from "./images/ntnu_logo.png";
-import sintef from "./images/sintef_logo.png";
-import vegvesen from "./images/vegvesen_logo.png";
-
 import {
   FooterContainer,
   FooterText,
@@ -15,15 +11,15 @@ import {
 export function Footer() {
   return (
     <FooterContainer>
-      <NTNUImg src={ntnu} alt="ntnu" />
+      <NTNUImg src={"/images/ntnu_logo.png"} alt="ntnu" />
       <FooterText>
         {
           "TDT4290 Kundestyrt Prosjekt i samarbeid med SINTEF Digital og Statens Vegvesen"
         }
       </FooterText>
       <CustomerContainer>
-        <SINTEFImg src={sintef} alt="sintef" />
-        <VegvesenImg src={vegvesen} alt="vegvesen" />{" "}
+        <SINTEFImg src={"/images/sintef_logo.png"} alt="sintef" />
+        <VegvesenImg src={"/images/vegvesen_logo.png"} alt="vegvesen" />{" "}
       </CustomerContainer>
     </FooterContainer>
   );
