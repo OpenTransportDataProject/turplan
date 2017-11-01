@@ -1,0 +1,33 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Renders correctly 1`] = `
+<div
+  className="sc-bdVaJa dDPzOW"
+>
+  <img
+    alt="ntnu"
+    className="sc-bxivhb giPjmN"
+    src="/images/ntnu_logo.png"
+  />
+  <p
+    className="sc-bwzfXH fuhOkh"
+  >
+    TDT4290 Kundestyrt Prosjekt i samarbeid med SINTEF Digital og Statens Vegvesen
+  </p>
+  <div
+    className="sc-htpNat jUffPd"
+  >
+    <img
+      alt="sintef"
+      className="sc-ifAKCX cSEGXs"
+      src="/images/sintef_logo.png"
+    />
+    <img
+      alt="vegvesen"
+      className="sc-EHOje brCLHT"
+      src="/images/vegvesen_logo.png"
+    />
+     
+  </div>
+</div>
+`;

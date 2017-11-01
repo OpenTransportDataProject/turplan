@@ -5,6 +5,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import { InfoError } from "./MapStyles";
 
 export default class DialogExampleAlert extends React.Component {
+  
   state = {
     open: false,
   };

@@ -1,0 +1,195 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Renders correctly 1`] = `
+<div
+  className="sc-iwsKbI fwqsqj"
+>
+  <div
+    className="sc-bdVaJa ebqGbM"
+  >
+    <h1
+      className="sc-bwzfXH glACvo"
+    >
+      Turplan
+    </h1>
+    <div
+      className="sc-htpNat cNrdsZ"
+    >
+      <h2>
+        Her kan du finne turer og parkering
+      </h2>
+      <p>
+        Nå kan du lett finne turer i ditt nærområde og planlegge turen dit. Her kan du hente ut parkeringsplasser og ladestasjoner til elbil ved noen få tastetrykk.
+         
+      </p>
+      <button
+        className="sc-bxivhb Dblxq"
+        onClick={[Function]}
+      >
+        Gå til kart
+      </button>
+    </div>
+  </div>
+  <div
+    className="sc-gqjmRU hSDwCS"
+  >
+    <p
+      className="sc-VigVT ibqJrZ"
+    >
+      Denne siden er laget i samarbeid med Statens Vegvesen, Sintef Digital og studenter ved NTNU i forbindelse med emnet "Kundestyrt prosjekt" høsten 2017.
+    </p>
+    <div
+      className="sc-jzJRlG eHwEw"
+    >
+      <div
+        className="sc-fjdhpX dfJVIW"
+      >
+        <div
+          className="sc-cSHVUG ndVwj"
+        >
+          <h3
+            className="sc-kAzzGY cPHuHy"
+          >
+            Finn parkeringsplasser
+          </h3>
+          <p
+            className="sc-chPdSV ipSNvI"
+          >
+            I kartet kan du lett finne parkeringsplasser når du har aktivert parkering. Det hentes da inn informasjon fra to forskjellige kilder. Den første kilden, Open Street Map, er et api som inneholder parkeringsplasser lagt til av publikum. Disse kan mangele noe info om begrensinger, men det er lagt til store mengder data. De andre kilden er fra Statens Vegvesen, og disse inneholder mer info om begrensinger, men det er bare et lite subset av alle norges parkeringsplasser i dette registeret. Punktene lar seg ikke slå sammen, da de er registret på forskjellige måter.
+          </p>
+        </div>
+        <div
+          className="sc-kgoBCf kmrWoU"
+        />
+      </div>
+      <div
+        className="sc-fjdhpX dfJVIW"
+      >
+        <div
+          className="sc-kgoBCf ffHgPG"
+        />
+        <div
+          className="sc-cSHVUG ndVwj"
+        >
+          <h3
+            className="sc-kAzzGY cPHuHy"
+          >
+            Finn ladestasjon
+          </h3>
+          <p
+            className="sc-chPdSV ipSNvI"
+          >
+            Ladestasjonene som er tilgjengelige i vårt kart er en kombinasjon av Open Street Map og Nobil Transnova's api. Sistnevnte samarbeider med elbilforeningen og har et ganske komplett bilde av alle norges ladestasjoner for elbil. Disse er utgangspunktet for vår applikasjon. Der det finnes ekstra fra Open Street Map har disse blitt lagt til, hvis ikke har vi valgt å vise Nobil's stasjoner.
+             
+          </p>
+        </div>
+      </div>
+      <div
+        className="sc-fjdhpX dfJVIW"
+      >
+        <div
+          className="sc-cSHVUG ndVwj"
+        >
+          <h3
+            className="sc-kAzzGY cPHuHy"
+          >
+            Finn turer
+          </h3>
+          <p
+            className="sc-chPdSV ipSNvI"
+          >
+            Denne applikasjonen samler tur-informasjon fra Nasjonalturbase. Da denne var strukturert litt uhelig for vårt bruk, har vi lastet ned et subset av deres turer for å vise i vår applikasjon.
+             
+          </p>
+        </div>
+        <div
+          className="sc-kgoBCf hgqDTh"
+        />
+      </div>
+      <div
+        className="sc-fjdhpX dfJVIW"
+      >
+        <div
+          className="sc-kgoBCf kBNJDJ"
+        />
+        <div
+          className="sc-cSHVUG ndVwj"
+        >
+          <h3
+            className="sc-kAzzGY cPHuHy"
+          >
+            Våre kart
+          </h3>
+          <p
+            className="sc-chPdSV ipSNvI"
+          >
+            Vi benytter leaflet som basis for å vise kart-data og markere, med kartblad hentet ut fra statkart.
+             
+          </p>
+        </div>
+      </div>
+    </div>
+    <p
+      className="sc-VigVT ibqJrZ"
+    >
+      <h1>
+        Api og datakilder
+      </h1>
+      <ul
+        className="sc-kGXeez bEiwLP"
+      >
+        <li>
+          Nobil Transnova
+        </li>
+        <li>
+          Open Street Map
+        </li>
+        <li>
+          Parkeringsregisteret, Statens Vegvesen
+        </li>
+        <li>
+          Google Places
+        </li>
+        <li>
+          Nasjonal Turbase
+        </li>
+        <li>
+          Leaflet
+        </li>
+        <li>
+          Statkart/Kartverket/Norgeskart
+        </li>
+      </ul>
+    </p>
+  </div>
+  <div
+    className="sc-ifAKCX dUPOVk"
+  >
+    <img
+      alt="ntnu"
+      className="sc-gzVnrw bpooqE"
+      src="/images/ntnu_logo.png"
+    />
+    <p
+      className="sc-EHOje jGhVpY"
+    >
+      TDT4290 Kundestyrt Prosjekt i samarbeid med SINTEF Digital og Statens Vegvesen
+    </p>
+    <div
+      className="sc-bZQynM nyGYe"
+    >
+      <img
+        alt="sintef"
+        className="sc-htoDjs faPUxq"
+        src="/images/sintef_logo.png"
+      />
+      <img
+        alt="vegvesen"
+        className="sc-dnqmqq bnXutj"
+        src="/images/vegvesen_logo.png"
+      />
+       
+    </div>
+  </div>
+</div>
+`;

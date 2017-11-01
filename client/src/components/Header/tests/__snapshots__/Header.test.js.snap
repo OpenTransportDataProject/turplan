@@ -1,0 +1,30 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Renders correctly 1`] = `
+<div
+  className="sc-bdVaJa ebqGbM"
+>
+  <h1
+    className="sc-bwzfXH glACvo"
+  >
+    Turplan
+  </h1>
+  <div
+    className="sc-htpNat cNrdsZ"
+  >
+    <h2>
+      Her kan du finne turer og parkering
+    </h2>
+    <p>
+      Nå kan du lett finne turer i ditt nærområde og planlegge turen dit. Her kan du hente ut parkeringsplasser og ladestasjoner til elbil ved noen få tastetrykk.
+       
+    </p>
+    <button
+      className="sc-bxivhb Dblxq"
+      onClick={[Function]}
+    >
+      Gå til kart
+    </button>
+  </div>
+</div>
+`;
