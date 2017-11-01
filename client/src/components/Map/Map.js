@@ -163,6 +163,13 @@ class ReactLeafletMap extends Component {
       }).addTo(this.refs.map.leafletElement);
       this.setState({route:route});
     }
+
+this.setState({
+  chargingMarkers: [],
+  chargingNobilMarkers: [],
+})
+
+
   }
 
   selectparking(pos) {
@@ -172,6 +179,7 @@ class ReactLeafletMap extends Component {
     //for (var i = 0; i < this.state.chargingMarkers.length; i++) {
       this.setState({
         chargingMarkers: [],
+        chargingNobilMarkers: [],
         s_chargepoint: null
       });
       this.doRouting();
@@ -182,13 +190,16 @@ class ReactLeafletMap extends Component {
     console.log("we Have Selected the Charging Station" + pos);
     this.setState({ s_chargepoint: pos });
     this.setState({startpointB:pos});
-    //for (var i = 0; i < this.state.parkingMarkers.length; i++) {
+    for (var i = 0; i < this.state.parkingMarkers.length; i++) {
       this.setState({
         parkingMarkers: [],
+        chargingNobilMarkers: [],
+        vegvesenMarkers: [],
         s_parkingpoint: null
       });
-      this.doRouting();
-    //}
+
+    }
+  this.doRouting();
   }
 
   findParkingLots() {
@@ -684,7 +695,9 @@ class ReactLeafletMap extends Component {
               </Marker>
             )) : null }
 
-            {this.state.showParking && !this.state.s_parkingpoint && this.state.vegvesenMarkers.map(
+            {this.state.showParking ?(!this.state.s_parkingpoint
+
+              ?( this.state.vegvesenMarkers.map(
               ({ position, id, address, lots }, idx) => (
                 <Marker
                   key={`marker-${idx}`}
@@ -717,7 +730,14 @@ class ReactLeafletMap extends Component {
                     </div>
                   </Popup>
                 </Marker>
-              ))}
+              ))
+              ) : (
+                <Marker position={this.state.s_parkingpoint} icon={parkingIcon}>
+                  <Popup>
+                    <span>Your selected starting point!</span>
+                  </Popup>
+                </Marker>
+              )) : null}
 
             {this.state.showCharging ? this.state.chargingNobilMarkers.map(
               ({ position, id, address, name, points }, idx) => (
@@ -738,6 +758,14 @@ class ReactLeafletMap extends Component {
                       <div>Antall Ladeplasser: {points}</div>
                       <div>Fra: NOBIL Transnova</div>
                       <div>ID: {id}</div>
+                      <div>
+                        {
+                          <button onClick={e => this.selectcharging(position)}>
+                            Mark as starting point?
+                          </button>
+                        }
+                      </div>
+
                     </div>
                   </Popup>
                 </Marker>
