@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import Leaflet from "leaflet";
 import axios from "axios";
-import {newMarkerIcon} from '../../assets/markers';
+import {newMarkerIcon, chargingIcon} from '../../assets/markers';
 
 import { Map, TileLayer, Popup, Marker, Polyline } from "react-leaflet";
 import { Searchbar } from "../Searchbar/Searchbar";
@@ -16,6 +16,7 @@ overpass-api to find parking lots within open street map.*/
 import styled from "styled-components";
 
 import {getHikes, Difficulity} from "../../actions/hikes";
+import {getChargingStations} from "../../actions/charging";
 
 const startPosition = {
 	lat: 63.417993,
@@ -29,21 +30,28 @@ class ReactLeafletMap extends Component {
 		super();
 		this.state = {
 			showHikes: false,
-			showParking: false,
 			showCharging: false,
-			hikesInView: []
+			showParking: false,
+			hikesInView: [],
+			chargingStationsInView: [],
 		}
 		this._onViewportChanged = this._onViewportChanged.bind(this);
 	}
 
 	async _onViewportChanged(){
 		var bounds = this.refs.map.leafletElement.getBounds();
+		if(this.state.showHikes) this._getHikes(bounds);
+		if(this.state.showCharging) this._getChargingStations(bounds);
+	}
 
-		this.state.hikesInView = this.state.showHikes ? await getHikes(bounds) : [];
-		if(this.state.hikesInView) {
-			var hikes = await getHikes(bounds) || [];
-			this.setState({ hikesInView: hikes });
-		}
+	async _getHikes(bounds){
+		var hikes = await getHikes(bounds) || [];
+		this.setState({ hikesInView: hikes });
+	}
+
+	async _getChargingStations(bounds){
+		var chargingStations = await getChargingStations(bounds) || [];
+		this.setState({ chargingStationsInView: chargingStations });
 	}
 
 	componentDidMount(){
@@ -61,7 +69,15 @@ class ReactLeafletMap extends Component {
 							label="Turer"
 							labelStyle={ToggleStyle}
 							defaultToggled={false} // todo: This could cause a potential bug. What if we decide to have hikes visible from the start??
-							onToggle={(event, value) => {this.state.showHikes = value; this._onViewportChanged();}}
+							onToggle={(event, value) => {this.state.showHikes = value; this._getHikes(this.refs.map.leafletElement.getBounds());}}
+						/>
+					</ToggleContainer>
+					<ToggleContainer>
+						<Toggle
+							label="Charging stations"
+							labelStyle={ToggleStyle}
+							defaultToggled={false} // todo: This could cause a potential bug. What if we decide to have hikes visible from the start??
+							onToggle={(event, value) => {this.state.showCharging = value; this._getChargingStations(this.refs.map.leafletElement.getBounds());}}
 						/>
 					</ToggleContainer>
 				</Row>
@@ -77,6 +93,8 @@ class ReactLeafletMap extends Component {
 							attribution="&copy; <a href=&quot;http://www.statkart.no&quot;>Startkart.no</a>"
 						/>
 
+						// This is the thing for displaying all the hikes.
+						// todo: move into own component
 						{this.state.showHikes ? this.state.hikesInView.map((hike, idx) => (
 						<div key={hike._id}>
 							<Polyline positions={hike.geometry.coordinates} color="rgba(0,0,255,1)"/>
@@ -91,6 +109,29 @@ class ReactLeafletMap extends Component {
 										{hike.tags ? <InlineTagsContainer>{hike.tags ? (hike.tags.map((tag, tagId) => (<TagContainer key={tagId}>{tag}</TagContainer>)))
 											: null}</InlineTagsContainer> : null }
 										{hike.classification ? <div><b>Vansklighetsgrad: </b>{Difficulity[hike.classification]}</div> : null}
+									</div>
+								</Popup>
+							</Marker>
+						</div>
+						)) : null}
+						
+						// This is the thing for displaying all the charging stations.
+						// todo: move into own component
+						{this.state.showCharging ? this.state.chargingStationsInView.map((chargingStation, idx) => (
+						<div key={idx}>
+							<Marker key={`marker-${idx}`} position={chargingStation.position} icon={chargingIcon}>
+								<Popup>
+									<div>
+										<div>Ladestasjon!</div>
+										<div>
+											Adresse: {chargingStation.address.street} {chargingStation.address.street_nr}
+										</div>
+										<div>
+											Posisjon: {chargingStation.position[0]}, {chargingStation.position[1]}
+										</div>
+										<div>Antall Ladeplasser: {chargingStation.points}</div>
+										<div>Fra: NOBIL Transnova</div>
+										<div>ID: {chargingStation.id}</div>
 									</div>
 								</Popup>
 							</Marker>
