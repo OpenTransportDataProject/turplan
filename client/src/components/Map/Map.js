@@ -40,6 +40,12 @@ var newMarkerIcon = Leaflet.icon({
   popupAnchor: [-3, -76]
 });
 
+var newMarkerIcon = Leaflet.icon({
+  iconUrl: "images/marker-icon.png",
+  iconSize: [25, 41],
+  iconAnchor: [12.5, 41],
+  popupAnchor: [-3, -76]
+});
 
 
 /* This function is connected to the button in the menu, and will use the
