@@ -165,8 +165,11 @@ class ReactLeafletMap extends Component {
     }
 
 this.setState({
+      parkingMarkers: [],
   chargingMarkers: [],
   chargingNobilMarkers: [],
+  vegvesenMarkers: [],
+
 })
 
 
