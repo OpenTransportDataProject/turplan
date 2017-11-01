@@ -706,6 +706,14 @@ class ReactLeafletMap extends Component {
                       </div>
                       <div>Fra: Parkeringsregisteret</div>
                       <div>ID: {id}</div>
+                      <div>
+                        {
+                          <button onClick={e => this.selectparking(position)}>
+                            Mark as starting point?
+                          </button>
+                        }
+                      </div>
+
                     </div>
                   </Popup>
                 </Marker>
