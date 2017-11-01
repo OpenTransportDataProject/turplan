@@ -24,6 +24,10 @@ router.get('/', function(req, res, next) {
 	var llng = parseFloat(req.query.lng_lower);
     var llat = parseFloat(req.query.lat_lower);
 
+    if(ulng == 0 || ulat == 0 || llng == 0 || llat == 0) {
+    	return res.json({error: "Coordinates was zero."});
+    }
+
 	Trip.where('geometry').intersects().geometry({
 		type: "Polygon",
 	    coordinates: [[
@@ -40,19 +44,16 @@ router.get('/', function(req, res, next) {
 }); 
 
 router.post('/', function(req, res, next) {
-	console.log("FUNK!");
 	var trip = new Trip(req.body);
-	return trip.save().then(function() {
-		console.log("success!");
-		return res.json(trip);
-	});
-	/*Trip.create(req.body, function(err, result){
-		if(err) {
-			//console.error(err);
-			return res.json(err);
+	Trip.findOne({'ntID': trip.ntID}, function(err, retTrip) {
+		if(!retTrip) {
+			return trip.save().then(function() {
+				return res.json(trip);
+			});
+		} else {
+			return res.json({error: "Trip already in database."})
 		}
-		return res.json(result);
-	});*/
+	});
 });
 
 // Put request. Not a priority right now.

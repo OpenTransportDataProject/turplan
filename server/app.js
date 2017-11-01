@@ -1,19 +1,20 @@
 // stuff we need
 var express = require('express'),
-	path = require('path'),
-	logger = require('morgan'),
-	cookieParser = require('cookie-parser'),
-	bodyParser = require('body-parser'),
-	cors = require('cors');
+  path = require('path'),
+  logger = require('morgan'),
+  cookieParser = require('cookie-parser'),
+  bodyParser = require('body-parser'),
+  cors = require('cors');
 
 // import the routes
 var routes = require('./routes/index'),
-	webhook = require('./routes/webhook'),
-	api = require('./routes/trips');
+  webhook = require('./routes/webhook'),
+  tripAPI = require('./routes/trips'),
+  chargingAPI = require('./routes/charging');
 
 // set up and connect to mongodb using mongoose
 var mongoose = require('mongoose'),
-	mongoURL = 'mongodb://localhost:27017/trips';
+  mongoURL = 'mongodb://localhost:27017/trips';
 
 mongoose.connect(mongoURL);
 mongoose.set('debug', true);
@@ -35,7 +36,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // routes setup
 app.use('/', routes);
-app.use('/api/v1/trips', api);
+app.use('/api/v1/trips', tripAPI);
+app.use('/api/v1/charging', chargingAPI);
 
 // disabled automatic pull as that will not work at the moment
 //app.use('/webhook', webhook);
@@ -53,7 +55,7 @@ app.use(function(req, res, next) {
 // will print stacktrace
 if (app.get('env') === 'development') {
   app.use(function(err, req, res, next) {
-  	console.log(err.stack);
+    console.log(err.stack);
     res.status(err.status || 500);
     res.json({'errors': {
       message: err.message,

@@ -16,6 +16,7 @@
     "mongodb": "^2.2.31",
     "morgan": "~1.6.1",
     "node-auto-deploy": "^1.0.5",
+    "request": "^2.83.0",
     "serve-favicon": "~2.3.0"
   }
 }
