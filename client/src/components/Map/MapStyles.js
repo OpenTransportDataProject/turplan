@@ -81,3 +81,7 @@ export const InlineTagsContainer = styled.div`
   display: flex;
   flex-flow: row wrap;
 `
+export const ToggleStyle = {
+  textAlign: 'right',
+  width: '50%',
+}
