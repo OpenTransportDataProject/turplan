@@ -22,8 +22,9 @@ router.get('/', function (req, res, next) {
 
 	// Execute Query
 
-	var reqURL = "http://nobil.no/api/server/search.php?"
-	reqURL += `apikey=${apiKey.nobilApiKey}&apiversion=3&action=search&type=rectangle&northeast(${ulng}%2C%20${ulat})&southwest(${llng}%2C%20${llat})`;
+	var reqURL = "http://nobil.no/api/server/search.php?";
+	reqURL += `apikey=${apiKey.nobilApiKey}&apiversion=3&action=search&type=rectangle&`;
+	reqURL += `northeast=(${ulat}%2C%20${ulng})&southwest=(${llat}%2C%20${llng})`;
 	
 	request(reqURL, function (error, response, body) {
 		if (error) {
