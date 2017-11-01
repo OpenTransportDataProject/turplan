@@ -6,6 +6,7 @@
     "antd": "^2.13.3",
     "axios": "^0.16.2",
     "leaflet": "^1.2.0",
+    "leaflet-routing-machine": "^3.2.7",
     "material-ui": "^0.19.4",
     "prop-types": "15.5.0",
     "query-overpass": "^1.5.1",

@@ -1,11 +1,14 @@
 import React, { Component } from "react";
 import Leaflet from "leaflet";
+import L from "leaflet";
+
 import { Map, TileLayer, Popup, Marker, Polyline } from "react-leaflet";
 import { Searchbar } from "../Searchbar/Searchbar";
 import MapHeader from "../Header/MapHeader.js";
 import { Container, Searchcontainer, MapContainer, TripDescriptionContainer, TagContainer, InlineTagsContainer, Button, Row, ToggleContainer, Header, InfoError } from "./MapStyles";
 import Toggle from 'material-ui/Toggle';
 import Dialog from './Dialog';
+import 'leaflet-routing-machine';
 
 /* This function is connected to the button in the menu, and will use the
 overpass-api to find parking lots within open street map.*/
@@ -109,6 +112,9 @@ class ReactLeafletMap extends Component {
       showCharging: false,
       showHikes: false,
       parkingLotLockOn: false, // avoid multiple queries to osm at the same time
+      startpointA: false,
+      startpointB: false,
+      route: false,
     };
 
     // Makes this availiable. Fixes most of the react issues related to getting correct things
@@ -120,12 +126,14 @@ class ReactLeafletMap extends Component {
     this.findVegvesenParkingLots = this.findVegvesenParkingLots.bind(this);
     this.selectparking = this.selectparking.bind(this);
     this.selectcharging = this.selectcharging.bind(this);
+    this.doRouting = this.doRouting.bind(this);
 
   }
 
   componentDidMount() {
     this.findParkingLots();
     this.findChargingStations();
+
   }
 
   addMarker = e => {
@@ -133,32 +141,54 @@ class ReactLeafletMap extends Component {
     startMarker = [];
     startMarker.push(e.latlng);
     this.setState({ startMarker });
+    this.setState({startpointA:[e.latlng.lat,e.latlng.lng]});
+    this.doRouting();
   };
+
+  doRouting(){
+    if(this.state.startpointA!==false&&this.state.startpointB!==false){
+      console.log("doing routing");
+      console.log(this.state.startpointA,this.state.startpointB);
+      if(this.state.route!==false){
+        this.refs.map.leafletElement.removeControl(this.state.route);
+      }
+      var route = L.routing.control({
+        lineOptions:{styles:[{color: 'black', opacity: 0.15, weight: 9},
+        {color: 'blue', opacity: 0.8, weight: 6},
+        {color: 'blue', opacity: 1, weight: 2}]},
+        waypoints:[
+          L.latLng(this.state.startpointA[0], this.state.startpointA[1]),
+          L.latLng(this.state.startpointB[0], this.state.startpointB[1])
+        ]
+      }).addTo(this.refs.map.leafletElement);
+      this.setState({route:route});
+    }
+  }
 
   selectparking(pos) {
     console.log("we are passing the postion" + pos);
-
     this.setState({ s_parkingpoint: pos });
-
-    for (var i = 0; i < this.state.chargingMarkers.length; i++) {
+    this.setState({startpointB:pos});
+    //for (var i = 0; i < this.state.chargingMarkers.length; i++) {
       this.setState({
         chargingMarkers: [],
         s_chargepoint: null
       });
-    }
+      this.doRouting();
+    //}
   }
 
   selectcharging(pos) {
     console.log("we Have Selected the Charging Station" + pos);
-
     this.setState({ s_chargepoint: pos });
-
-    for (var i = 0; i < this.state.parkingMarkers.length; i++) {
+    this.setState({startpointB:pos});
+    //for (var i = 0; i < this.state.parkingMarkers.length; i++) {
       this.setState({
         parkingMarkers: [],
         s_parkingpoint: null
       });
-    }
+      this.doRouting();
+    //}
   }
 
   findParkingLots() {
@@ -654,7 +684,7 @@ class ReactLeafletMap extends Component {
               </Marker>
             )) : null }
 
-            {this.state.showParking ? this.state.vegvesenMarkers.map(
+            {this.state.showParking && !this.state.s_parkingpoint && this.state.vegvesenMarkers.map(
               ({ position, id, address, lots }, idx) => (
                 <Marker
                   key={`marker-${idx}`}
@@ -679,8 +709,7 @@ class ReactLeafletMap extends Component {
                     </div>
                   </Popup>
                 </Marker>
-              )
-            ) : null}
+              ))}
 
             {this.state.showCharging ? this.state.chargingNobilMarkers.map(
               ({ position, id, address, name, points }, idx) => (
