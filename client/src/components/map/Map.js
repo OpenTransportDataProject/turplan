@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import Leaflet from "leaflet";
 import axios from "axios";
-import {newMarkerIcon, chargingIcon} from '../../assets/markers';
+import {newMarkerIcon, chargingIcon, parkingIcon} from '../../assets/markers';
 
 import { Map, TileLayer, Popup, Marker, Polyline } from "react-leaflet";
 import { Searchbar } from "../Searchbar/Searchbar";
@@ -17,6 +17,7 @@ import styled from "styled-components";
 
 import {getHikes, Difficulity} from "../../actions/hikes";
 import {getChargingStations} from "../../actions/charging";
+import {getParking} from "../../actions/parking";
 
 const startPosition = {
 	lat: 63.417993,
@@ -34,14 +35,17 @@ class ReactLeafletMap extends Component {
 			showParking: false,
 			hikesInView: [],
 			chargingStationsInView: [],
+			parkingInView: [],
 		}
 		this._onViewportChanged = this._onViewportChanged.bind(this);
+		this._selectStart = this._selectStart.bind(this);
 	}
 
 	async _onViewportChanged(){
 		var bounds = this.refs.map.leafletElement.getBounds();
 		if(this.state.showHikes) this._getHikes(bounds);
 		if(this.state.showCharging) this._getChargingStations(bounds);
+		if(this.state.showParking) this._getParking(bounds);
 	}
 
 	async _getHikes(bounds){
@@ -52,6 +56,15 @@ class ReactLeafletMap extends Component {
 	async _getChargingStations(bounds){
 		var chargingStations = await getChargingStations(bounds) || [];
 		this.setState({ chargingStationsInView: chargingStations });
+	}
+
+	async _getParking(bounds) {
+		var parking = await getParking(bounds) || [];
+		this.setState({ parkingInView: parking });
+	}
+
+	_selectStart(position) {
+		console.log(position);
 	}
 
 	componentDidMount(){
@@ -78,6 +91,14 @@ class ReactLeafletMap extends Component {
 							labelStyle={ToggleStyle}
 							defaultToggled={false} // todo: This could cause a potential bug. What if we decide to have hikes visible from the start??
 							onToggle={(event, value) => {this.state.showCharging = value; this._getChargingStations(this.refs.map.leafletElement.getBounds());}}
+						/>
+					</ToggleContainer>
+					<ToggleContainer>
+						<Toggle
+							label="Parking"
+							labelStyle={ToggleStyle}
+							defaultToggled={false} // todo: This could cause a potential bug. What if we decide to have hikes visible from the start??
+							onToggle={(event, value) => {this.state.showParking = value; this._getParking(this.refs.map.leafletElement.getBounds());}}
 						/>
 					</ToggleContainer>
 				</Row>
@@ -132,6 +153,34 @@ class ReactLeafletMap extends Component {
 										<div>Antall Ladeplasser: {chargingStation.points}</div>
 										<div>Fra: NOBIL Transnova</div>
 										<div>ID: {chargingStation.id}</div>
+									</div>
+								</Popup>
+							</Marker>
+						</div>
+						)) : null}
+
+						// This is the thing for displaying all the parking.
+						// todo: move into own component
+						{this.state.showParking ? this.state.parkingInView.map((parking, idx) => (
+						<div key={idx}>
+							<Marker key={`marker-${idx}`} position={parking.geometry.coordinates.reverse()} icon={parkingIcon}>
+								<Popup>
+									<div>
+										<div>Parkeringsplass!</div>
+										<div>Amenity: {parking.tags.amenity}</div>
+										<div>Betaling: {parking.tags.fee}</div>
+										<div>Parkeringstillegg: {parking.tags.p_fee}</div>
+										<div>Kapasitet: {parking.tags.capacity}</div>
+										<div>Maks oppholdstid: {parking.tags.maxstay}</div>
+										<div>Fra: OpenStreetMap</div>
+										<div>ID: {parking.tags.id}</div>
+										<div>
+										{
+											<button onClick={e => this._selectStart(parking.geometry)}>
+												Mark as starting point?
+											</button>
+										}
+										</div>
 									</div>
 								</Popup>
 							</Marker>
