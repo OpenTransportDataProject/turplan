@@ -4,13 +4,17 @@ var express = require('express'),
   logger = require('morgan'),
   cookieParser = require('cookie-parser'),
   bodyParser = require('body-parser'),
-  cors = require('cors');
+  cors = require('cors'),
+  request = require('request'),
+  bluebird = require('bluebird');
+
 
 // import the routes
 var routes = require('./routes/index'),
   webhook = require('./routes/webhook'),
   tripAPI = require('./routes/trips'),
-  chargingAPI = require('./routes/charging');
+  chargingAPI = require('./routes/charging'),
+  parkingAPI = require('./routes/parking');
 
 // set up and connect to mongodb using mongoose
 var mongoose = require('mongoose'),
@@ -18,7 +22,7 @@ var mongoose = require('mongoose'),
 
 mongoose.connect(mongoURL);
 mongoose.set('debug', true);
-mongoose.Promise = require('bluebird');
+mongoose.Promise = bluebird;
 
 var app = express();
 app.use(cors());
@@ -38,6 +42,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', routes);
 app.use('/api/v1/trips', tripAPI);
 app.use('/api/v1/charging', chargingAPI);
+app.use('/api/v1/parking', parkingAPI);
 
 // disabled automatic pull as that will not work at the moment
 //app.use('/webhook', webhook);
