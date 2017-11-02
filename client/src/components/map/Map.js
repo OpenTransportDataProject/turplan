@@ -55,7 +55,9 @@ class ReactLeafletMap extends Component {
 
 	async _getChargingStations(bounds){
 		var chargingStations = await getChargingStations(bounds) || [];
+		console.log(chargingStations);
 		this.setState({ chargingStationsInView: chargingStations });
+
 	}
 
 	async _getParking(bounds) {
@@ -140,15 +142,12 @@ class ReactLeafletMap extends Component {
 						// todo: move into own component
 						{this.state.showCharging ? this.state.chargingStationsInView.map((chargingStation, idx) => (
 						<div key={idx}>
-							<Marker key={`marker-${idx}`} position={chargingStation.position} icon={chargingIcon}>
+							<Marker key={`marker-${idx}`} position={chargingStation.geometry.coordinates.reverse()} icon={chargingIcon}>
 								<Popup>
 									<div>
 										<div>Ladestasjon!</div>
 										<div>
 											Adresse: {chargingStation.address.street} {chargingStation.address.street_nr}
-										</div>
-										<div>
-											Posisjon: {chargingStation.position[0]}, {chargingStation.position[1]}
 										</div>
 										<div>Antall Ladeplasser: {chargingStation.points}</div>
 										<div>Fra: NOBIL Transnova</div>
