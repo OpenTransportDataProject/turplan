@@ -1,6 +1,6 @@
 
 import axios from "axios";
-
+import {env} from '../env';
 
 export async function getChargingStations(mapBounds) {
 
@@ -10,7 +10,7 @@ export async function getChargingStations(mapBounds) {
     let lowerLng = mapBounds._southWest.lng;
 
     // todo: move url into own file
-    let url = "http://198.211.120.107:3001";
+    let url = env.backendURL;
     let req = `${url}/api/v1/charging?lat_lower=${lowerLat}&lat_upper=${upperLat}&lng_lower=${lowerLng}&lng_upper=${upperLng}`;
 
     let result = await axios.get(req);

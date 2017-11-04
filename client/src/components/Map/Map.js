@@ -52,6 +52,7 @@ class ReactLeafletMap extends Component {
 		this._selectStart = this._selectStart.bind(this);
 		this._selectDestination = this._selectDestination.bind(this);
 		this._clearRoute = this._clearRoute.bind(this);
+		this.setPosition = this.setPosition.bind(this);
 	}
 
 	async _onViewportChanged(){
@@ -128,7 +129,11 @@ class ReactLeafletMap extends Component {
 		});
 	}
 
-	async _updateRoute(){
+	setPosition(lat, lng) {
+		this.refs.map.leafletElement.panTo([lat, lng]);
+	}
+
+	_updateRoute(){
 		if(this.state.routingElement) {
 			this.refs.map.leafletElement.removeControl(this.state.routingElement);
 			this.setState({routingElement: null});
@@ -207,6 +212,7 @@ class ReactLeafletMap extends Component {
 						{this.state.loadingParking ? <Loading isLoading={true}></Loading> : null}
 					</ToggleContainer>
 					<Button color="primary" disabled={!this.state.routingStart && !this.state.routingDestination} onClick={this._clearRoute}>Remove route</Button>
+					<Searchbar handleMap={(lat, lng) => this.setPosition(lat, lng)} />
 				</Row>
 				<MapContainer>
 					<Map 
