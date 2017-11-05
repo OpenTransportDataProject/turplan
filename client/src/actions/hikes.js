@@ -35,6 +35,7 @@ export async function getHikes(mapBounds) {
     let result = await axios.get(`${url}/api/v1/trips?lat_lower=${lowerLat}&lat_upper=${upperLat}&lng_lower=${lowerLng}&lng_upper=${upperLng}`);
     
     if(result.data.length > 0 ){
+        if(result.error) return null;
         flipHikeCoordinates(result.data);
         return result.data;
     }

@@ -18,6 +18,7 @@ export async function getChargingStations(mapBounds) {
     if(result.error != null) return null;
 
     if(result.data.length > 0 ){
+        if(result.error) return null;
         return result.data;
     }
 

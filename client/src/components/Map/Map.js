@@ -285,13 +285,18 @@ class ReactLeafletMap extends Component {
 								<Popup autoPan={false}>
 									<div>
 										<div>Parkeringsplass!</div>
-										<div>Amenity: {parking.tags.amenity}</div>
-										<div>Betaling: {parking.tags.fee}</div>
-										<div>Parkeringstillegg: {parking.tags.p_fee}</div>
-										<div>Kapasitet: {parking.tags.capacity}</div>
-										<div>Maks oppholdstid: {parking.tags.maxstay}</div>
-										<div>Fra: OpenStreetMap</div>
-										<div>ID: {parking.tags.id}</div>
+										{parking.source == "osm" ? 
+											<div>
+												<div>Amenity: {parking.amenity}</div>
+												<div>Tilgang: {parking.access}</div>
+												<div>Kilde: {parking.source}</div>
+											</div>
+										: null}
+										{parking.source == "vegvesenet" ? 
+											<div>
+												<div>Hei!</div>
+											</div>
+										: null}
 										<div>
 											<button onClick={e => this._selectStart(parking)}> Mark as starting point? </button>
 											<button onClick={e => this._selectDestination(parking)}> Mark as destination? </button>
