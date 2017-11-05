@@ -23,6 +23,9 @@ import {getChargingStations} from "../../actions/charging";
 import {getParking} from "../../actions/parking";
 import {distance} from "../../actions/haversineDist";
 
+Leaflet.Icon.Default.imagePath = "//cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.0/images/";
+
+
 const startPosition = {
 	lat: 63.417993,
 	lng: 10.405758,
@@ -136,7 +139,7 @@ class ReactLeafletMap extends Component {
 	_updateRoute(){
 		if(this.state.routingElement) {
 			this.refs.map.leafletElement.removeControl(this.state.routingElement);
-			this.setState({routingElement: null});
+			this.state.routingElement = null;
 		}
 		if(this.state.routingStart && this.state.routingDestination) {
 			var startCoords = this.state.routingStart.geometry.type == 'Point' ? this.state.routingStart.geometry.coordinates : this.state.routingStart.geometry.coordinates[0];
@@ -145,27 +148,17 @@ class ReactLeafletMap extends Component {
 			if(dist < 100 || dist > 50000 || !dist) {
 				return;
 			}
-
-			console.log(startCoords);
-			console.log(endCoords);
-			console.log(dist);
-
-			var route = L.routing.control({
+			var route = L.Routing.control({
 				lineOptions:{styles:[{color: 'black', opacity: 0.15, weight: 9},
 				{color: 'blue', opacity: 0.8, weight: 6},
 				{color: 'blue', opacity: 1, weight: 2}]},
 				waypoints:[
-					L.latLng(startCoords[1], startCoords[0]),
-					L.latLng(endCoords[1], endCoords[0]),
+					L.latLng(startCoords[0], startCoords[1]),
+					L.latLng(endCoords[0], endCoords[1]),
 				]
-			});
-			
-			if(route.options.waypoints.length <= 2)  {
-				console.log("hello")
-				return;
-			}
-			route.addTo(this.refs.map.leafletElement);
+			}).addTo(this.refs.map.leafletElement);
 			this.setState({routingElement: route}, () => console.log("hello World"));
+
 		} else if(this.state.routingElement) {
 			this.refs.map.leafletElement.removeControl(this.state.routingElement);
 			this.setState({routingElement: null});
