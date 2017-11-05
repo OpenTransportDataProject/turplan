@@ -1,5 +1,6 @@
 
 import axios from "axios";
+import {env} from '../env';
 
 export async function getParking(mapBounds) {
 
@@ -8,11 +9,12 @@ export async function getParking(mapBounds) {
     let lowerLat = mapBounds._southWest.lat;
     let lowerLng = mapBounds._southWest.lng;
 
-    let url = "http://198.211.120.107:3001";
+    let url = env.backendURL;
     let request = `${url}/api/v1/parking?lat_lower=${lowerLat}&lat_upper=${upperLat}&lng_lower=${lowerLng}&lng_upper=${upperLng}`;
     let result = await axios.get(request);
     
     if(result.data.length > 0 ){
+        if(result.error) return null;
         return result.data;
     }
 

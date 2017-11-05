@@ -1,14 +1,6 @@
 
 import axios from "axios";
-
-function positionToArray(str) {
-
-    // (63.42182,10.43178) -> [ 63.42182, 10.43178 ]
-    
-    var res = /\((.*),(.*)\)/.exec(str);
-    return [ parseFloat(res[1]), parseFloat(res[2]) ];
-
-}
+import {env} from '../env';
 
 export async function getChargingStations(mapBounds) {
 
@@ -18,30 +10,19 @@ export async function getChargingStations(mapBounds) {
     let lowerLng = mapBounds._southWest.lng;
 
     // todo: move url into own file
-    let url = "http://198.211.120.107:3001";
+    let url = env.backendURL;
+    let req = `${url}/api/v1/charging?lat_lower=${lowerLat}&lat_upper=${upperLat}&lng_lower=${lowerLng}&lng_upper=${upperLng}`;
 
-    let result = await axios.get(`${url}/api/v1/charging?lat_lower=${lowerLat}&lat_upper=${upperLat}&lng_lower=${lowerLng}&lng_upper=${upperLng}`);
-    result = JSON.parse(result.data);
+    let result = await axios.get(req);
     
     if(result.error != null) return null;
-    result = result.chargerstations;
-    
-    var parsedResults = [];
-    for(let chargingStation of result) {
-        var item = {
-            position: positionToArray(chargingStation.csmd.Position),
-            id: chargingStation.csmd.id,
-            name: chargingStation.csmd.name,
-            address: {
-                street: chargingStation.csmd.Street,
-                street_nr: chargingStation.csmd.House_number,
-            },
-            points: chargingStation.csmd.Number_charging_points,
-            description: chargingStation.csmd.Description_of_location
-        };
-        parsedResults.push(item);
+
+    if(result.data.length > 0 ){
+        if(result.error) return null;
+        return result.data;
     }
 
-    return parsedResults;
+    return Promise.resolve(null);
+    
 }
 
