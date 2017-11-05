@@ -20,6 +20,8 @@ var routes = require('./routes/index'),
 var mongoose = require('mongoose'),
   mongoURL = 'mongodb://localhost:27017/trips';
 
+var cacheVegvesenet = require('./init');
+
 mongoose.connect(mongoURL);
 mongoose.set('debug', true);
 mongoose.Promise = bluebird;
@@ -68,6 +70,8 @@ if (app.get('env') === 'development') {
     }});
   });
 }
+
+cacheVegvesenet();
 
 // production error handler
 // no stacktraces leaked to user

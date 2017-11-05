@@ -14,10 +14,9 @@ function transformData(data) {
     for(let parking of parkingLots) {
         parkingLotsTransformed.push({
             geometry: parking.geometry,
-            tags: {
-                amenity: parking.properties.tags.amenity,
-                access: parking.properties.tags.access
-            },
+            source: "osm",
+            amenity: parking.properties.tags.amenity,
+            access: parking.properties.tags.access,
             id: parking.id
         });
     }
