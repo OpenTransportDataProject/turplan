@@ -49,13 +49,15 @@ class ReactLeafletMap extends Component {
 			routingStart: null,
 			routingDestination: null,
 			routingElement: null,
-			zoomLevel: 15
+			zoomLevel: 15,
+			showStartMarker: false
 		}
 		this._onViewportChanged = this._onViewportChanged.bind(this);
 		this._selectStart = this._selectStart.bind(this);
 		this._selectDestination = this._selectDestination.bind(this);
 		this._clearRoute = this._clearRoute.bind(this);
 		this.setPosition = this.setPosition.bind(this);
+		this.onMapClick = this.onMapClick.bind(this);
 	}
 
 	async _onViewportChanged(){
@@ -136,11 +138,17 @@ class ReactLeafletMap extends Component {
 		this.refs.map.leafletElement.panTo([lat, lng]);
 	}
 
+	onMapClick(e) {
+		this.setState({showStartMarker: true});
+		this._selectStart({geometry: { type: 'Point', coordinates: [e.latlng.lng, e.latlng.lat] }})
+	}
+
 	_updateRoute(){
 		if(this.state.routingElement) {
 			this.refs.map.leafletElement.removeControl(this.state.routingElement);
 			this.state.routingElement = null;
 		}
+		console.log(this.state.routingStart)
 		if(this.state.routingStart && this.state.routingDestination) {
 			var startCoords = this.state.routingStart.geometry.type == 'Point' ? this.state.routingStart.geometry.coordinates : this.state.routingStart.geometry.coordinates[0];
 			var endCoords = this.state.routingDestination.geometry.type == 'Point' ? this.state.routingDestination.geometry.coordinates : this.state.routingDestination.geometry.coordinates[0];
@@ -212,6 +220,7 @@ class ReactLeafletMap extends Component {
 						onViewportChanged={this._onViewportChanged}
 						center={[startPosition.lat, startPosition.lng]}
 						zoom={startPosition.zoom}
+						onClick={this.onMapClick}
             			ref="map">
 						
 						<TileLayer
@@ -261,7 +270,7 @@ class ReactLeafletMap extends Component {
 										<div>Fra: NOBIL Transnova</div>
 										<div>ID: {chargingStation.id}</div>
 										<div>
-											<button onClick={e => this._selectStart(chargingStation)}> Mark as starting point? </button>
+											<button onClick={e => {this.state.showStartMarker = false; this._selectStart(chargingStation);}}> Mark as starting point? </button>
 											<button onClick={e => this._selectDestination(chargingStation)}> Mark as destination? </button>
 										</div>
 									</div>
@@ -297,7 +306,7 @@ class ReactLeafletMap extends Component {
 											</div>
 										: null}
 										<div>
-											<button onClick={e => this._selectStart(parking)}> Mark as starting point? </button>
+											<button onClick={e => {this.state.showStartMarker = false; this._selectStart(parking)}}> Mark as starting point? </button>
 											<button onClick={e => this._selectDestination(parking)}> Mark as destination? </button>
 										</div>
 									</div>
@@ -305,6 +314,8 @@ class ReactLeafletMap extends Component {
 							</Marker>
 						</div>
 						)) : null}
+
+						{(this.state.showStartMarker && this.state.routingStart) ? <Marker position={this.state.routingStart.geometry.coordinates.reverse()} icon={newMarkerIcon}></Marker> : null}
 
 					</Map>
 				</MapContainer>
