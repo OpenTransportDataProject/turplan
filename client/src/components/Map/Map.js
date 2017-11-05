@@ -294,7 +294,13 @@ class ReactLeafletMap extends Component {
 										: null}
 										{parking.source == "vegvesenet" ? 
 											<div>
-												<div>Hei!</div>
+												<div>Tilbyder: {parking.provider}</div>
+												<div>Navn: {parking.name}</div>
+												<div>Adresse: {parking.address}</div>
+												<div>Antall betalte plasser: {parking.numberOfFeePlaces}</div>
+												<div>Antall gratis plasser: {parking.numberOfFreePlaces}</div>
+												<div>Antall ladestasjoner: {parking.numberOfChargingPlaces}</div>
+												<div>Kilde: {parking.source}</div>
 											</div>
 										: null}
 										<div>
