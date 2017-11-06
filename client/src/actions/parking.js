@@ -14,7 +14,6 @@ export async function getParking(mapBounds) {
     let result = await axios.get(request);
     
     if(result.data.length > 0 ){
-        if(result.error) return null;
         return result.data;
     }
 
