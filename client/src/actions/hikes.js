@@ -37,6 +37,7 @@ export async function getHikes(mapBounds) {
     if(result.data.length > 0 ){
         if(result.error) return null;
         flipHikeCoordinates(result.data);
+        //console.log(result.data[0].geometry.coordinates[0]);
         return result.data;
     }
 

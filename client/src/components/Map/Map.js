@@ -49,13 +49,15 @@ class ReactLeafletMap extends Component {
 			routingStart: null,
 			routingDestination: null,
 			routingElement: null,
-			zoomLevel: 15
+			zoomLevel: 15,
 		}
 		this._onViewportChanged = this._onViewportChanged.bind(this);
 		this._selectStart = this._selectStart.bind(this);
 		this._selectDestination = this._selectDestination.bind(this);
 		this._clearRoute = this._clearRoute.bind(this);
 		this.setPosition = this.setPosition.bind(this);
+		this.onMapClick = this.onMapClick.bind(this);
+		this._selectDestinationHike = this._selectDestinationHike.bind(this);
 	}
 
 	async _onViewportChanged(){
@@ -109,7 +111,6 @@ class ReactLeafletMap extends Component {
 				this.setState({ loadingParking: false });
 				this.setState({ parkingInView: parking });
 			} else {
-				console.log(this.refs);
 			}
 		} else {
 			this.setState({ showParking: false });
@@ -132,8 +133,17 @@ class ReactLeafletMap extends Component {
 		});
 	}
 
+	_selectDestinationHike(hike) {		
+		this._selectDestination({geometry: { type: 'Point', coordinates: [ hike.geometry.coordinates[0][0], hike.geometry.coordinates[0][1] ] }})
+	}
+
 	setPosition(lat, lng) {
 		this.refs.map.leafletElement.panTo([lat, lng]);
+		this._selectStart({geometry: { type: 'Point', coordinates: [lng, lat] }})
+	}
+
+	onMapClick(e) {
+		this._selectStart({geometry: { type: 'Point', coordinates: [e.latlng.lng, e.latlng.lat] }})
 	}
 
 	_updateRoute(){
@@ -142,12 +152,14 @@ class ReactLeafletMap extends Component {
 			this.state.routingElement = null;
 		}
 		if(this.state.routingStart && this.state.routingDestination) {
+			
 			var startCoords = this.state.routingStart.geometry.type == 'Point' ? this.state.routingStart.geometry.coordinates : this.state.routingStart.geometry.coordinates[0];
 			var endCoords = this.state.routingDestination.geometry.type == 'Point' ? this.state.routingDestination.geometry.coordinates : this.state.routingDestination.geometry.coordinates[0];
 			var dist = distance(startCoords, endCoords);
 			if(dist < 100 || dist > 50000 || !dist) {
 				return;
 			}
+			
 			var route = L.Routing.control({
 				lineOptions:{styles:[{color: 'black', opacity: 0.15, weight: 9},
 				{color: 'blue', opacity: 0.8, weight: 6},
@@ -212,6 +224,7 @@ class ReactLeafletMap extends Component {
 						onViewportChanged={this._onViewportChanged}
 						center={[startPosition.lat, startPosition.lng]}
 						zoom={startPosition.zoom}
+						onClick={this.onMapClick}
             			ref="map">
 						
 						<TileLayer
@@ -237,7 +250,7 @@ class ReactLeafletMap extends Component {
 										{hike.classification ? <div><b>Vansklighetsgrad: </b>{Difficulity[hike.classification]}</div> : null}
 										<div>
 										{
-											<button onClick={e => this._selectDestination(hike)}> Mark as destination? </button>
+											<button onClick={e => this._selectDestinationHike(hike)}> Mark as destination? </button>
 										}
 										</div>
 									</div>
@@ -248,7 +261,7 @@ class ReactLeafletMap extends Component {
 						
 						/* This is the thing for displaying all the charging stations. */
 						/* todo: move into own component */
-						{this.state.showCharging && this.state.chargingStationsInView != null ? this.state.chargingStationsInView.map((chargingStation, idx) => (
+						{this.state.showCharging && this.state.chargingStationsInView != null && this.state.chargingStationsInView != null ? this.state.chargingStationsInView.map((chargingStation, idx) => (
 						<div key={idx}>
 							<Marker key={`marker-${idx}`} position={chargingStation.geometry.coordinates.reverse()} icon={chargingIcon}>
 								<Popup autoPan={false}>
@@ -274,7 +287,7 @@ class ReactLeafletMap extends Component {
 						/* todo: move into own component */
 						{this.state.showParking && this.state.parkingInView != null ? this.state.parkingInView.map((parking, idx) => (
 						<div key={idx}>
-							<Marker key={`marker-${idx}`} position={parking.geometry.coordinates.reverse()} icon={parkingIcon}>
+							{parking.geometry ? <Marker key={`marker-${idx}`} position={parking.geometry.coordinates.reverse()} icon={parkingIcon}>
 								<Popup autoPan={false}>
 									<div>
 										<div>Parkeringsplass!</div>
@@ -302,9 +315,11 @@ class ReactLeafletMap extends Component {
 										</div>
 									</div>
 								</Popup>
-							</Marker>
+							</Marker> : null}
 						</div>
 						)) : null}
+
+						{this.state.routingStart ? <Marker position={this.state.routingStart.geometry.coordinates.reverse()} icon={newMarkerIcon}></Marker> : null}
 
 					</Map>
 				</MapContainer>
