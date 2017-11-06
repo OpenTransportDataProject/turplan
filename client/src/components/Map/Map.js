@@ -159,6 +159,8 @@ class ReactLeafletMap extends Component {
 			if(dist < 100 || dist > 50000 || !dist) {
 				return;
 			}
+			console.log('start: ',startCoords)
+			console.log('end:   ',endCoords)
 			
 			var route = L.Routing.control({
 				lineOptions:{styles:[{color: 'black', opacity: 0.15, weight: 9},
@@ -190,7 +192,7 @@ class ReactLeafletMap extends Component {
 						<Toggle
 							label="Turer"
 							labelStyle={ToggleStyle}
-							defaultToggled={false} // todo: This could cause a potential bug. What if we decide to have hikes visible from the start??
+							defaultToggled={false}
 							onToggle={(event, value) => {this._updateHikes(value, this.refs.map.leafletElement.getBounds());}}
 						/>
 						{this.state.loadingHikes ? <Loading isLoading={true}></Loading> : null}
@@ -199,7 +201,7 @@ class ReactLeafletMap extends Component {
 						<Toggle
 							label="Charging stations"
 							labelStyle={ToggleStyle}
-							defaultToggled={false} // todo: This could cause a potential bug. What if we decide to have hikes visible from the start??
+							defaultToggled={false}
 							onToggle={(event, value) => {this._updateChargingStations(value, this.refs.map.leafletElement.getBounds());}}
 						/>
 						{this.state.loadingCharging ? <Loading isLoading={true}></Loading> : null}
@@ -211,12 +213,12 @@ class ReactLeafletMap extends Component {
 							value={this.state.showParking}
 							disabled={this.state.zoomLevel <= 14}
 							ref="parkingToggle"
-							defaultToggled={false} // todo: This could cause a potential bug. What if we decide to have hikes visible from the start??
+							defaultToggled={false}
 							onToggle={(event, value) => {this._updateParking(value, this.refs.map.leafletElement.getBounds());}}
 						/>
 						{this.state.loadingParking ? <Loading isLoading={true}></Loading> : null}
 					</ToggleContainer>
-					<Button color="primary" disabled={!this.state.routingStart && !this.state.routingDestination} onClick={this._clearRoute}>Remove route</Button>
+					<Button color="primary" disabled={!this.state.routingStart && !this.state.routingDestination} onClick={this._clearRoute}>Fjern rute</Button>
 					<Searchbar handleMap={(lat, lng) => this.setPosition(lat, lng)} />
 				</Row>
 				<MapContainer>
@@ -232,8 +234,6 @@ class ReactLeafletMap extends Component {
 							attribution="&copy; <a href=&quot;http://www.statkart.no&quot;>Startkart.no</a>"
 						/>
 
-						/* This is the thing for displaying all the hikes. */
-						/* todo: move into own component */
 						{this.state.showHikes && this.state.hikesInView != null ? this.state.hikesInView.map((hike, idx) => (
 						<div key={hike._id}>
 							<Polyline positions={hike.geometry.coordinates} color="rgba(0,0,255,1)"/>
@@ -259,8 +259,6 @@ class ReactLeafletMap extends Component {
 						</div>
 						)) : null}
 						
-						/* This is the thing for displaying all the charging stations. */
-						/* todo: move into own component */
 						{this.state.showCharging && this.state.chargingStationsInView != null && this.state.chargingStationsInView != null ? this.state.chargingStationsInView.map((chargingStation, idx) => (
 						<div key={idx}>
 							<Marker key={`marker-${idx}`} position={chargingStation.geometry.coordinates.reverse()} icon={chargingIcon}>
@@ -274,7 +272,6 @@ class ReactLeafletMap extends Component {
 										<div>Fra: NOBIL Transnova</div>
 										<div>ID: {chargingStation.id}</div>
 										<div>
-											<button onClick={e => this._selectStart(chargingStation)}> Mark as starting point? </button>
 											<button onClick={e => this._selectDestination(chargingStation)}> Mark as destination? </button>
 										</div>
 									</div>
@@ -283,8 +280,6 @@ class ReactLeafletMap extends Component {
 						</div>
 						)) : null}
 
-						/* This is the thing for displaying all the parking. */
-						/* todo: move into own component */
 						{this.state.showParking && this.state.parkingInView != null ? this.state.parkingInView.map((parking, idx) => (
 						<div key={idx}>
 							{parking.geometry ? <Marker key={`marker-${idx}`} position={parking.geometry.coordinates.reverse()} icon={parkingIcon}>
@@ -310,7 +305,6 @@ class ReactLeafletMap extends Component {
 											</div>
 										: null}
 										<div>
-											<button onClick={e => this._selectStart(parking)}> Mark as starting point? </button>
 											<button onClick={e => this._selectDestination(parking)}> Mark as destination? </button>
 										</div>
 									</div>
