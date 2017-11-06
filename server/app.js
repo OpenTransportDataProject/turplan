@@ -20,7 +20,7 @@ var routes = require('./routes/index'),
 var mongoose = require('mongoose'),
   mongoURL = 'mongodb://localhost:27017/trips';
 
-var cacheVegvesenet = require('./init');
+var cacheVegvesenet = require('./init').cacheVegvesenet;
 
 mongoose.connect(mongoURL);
 mongoose.set('debug', true);

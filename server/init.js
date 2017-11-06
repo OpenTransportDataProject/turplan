@@ -1,4 +1,5 @@
 var {OSMCached, OSMParking, VegvesenParking} = require('./models/caching.js');
+var request = require('request-promise');
 
 function transformVegvesenetData(data) {
     let out = [];
@@ -30,7 +31,7 @@ function transformVegvesenetData(data) {
     return out;
 }
 
-module.exports = function cacheVegvesenet(){
+module.exports.cacheVegvesenet = function cacheVegvesenet(){
     VegvesenParking.count(function (err, count) {
         if (!err && count === 0) {
             console.log('Caching vegvesenet!');
@@ -57,3 +58,82 @@ module.exports = function cacheVegvesenet(){
         }
     });
 }
+
+/*module.exports.cacheTrips = function(){
+
+    let url = 'http://api.nasjonalturbase.no';
+	let current = 0;
+	let limit = 50;
+	let rest = 0;
+    let currentArray = [];
+    let amount = 1000;
+    let count = 0;
+
+    while(count < amount) {
+        
+    }
+
+    function getNext(){
+        request(`${this.url}/turer?skip=${this.current}&limit=${this.limit}`).then(res => {
+            var array = [];
+            for(var serverTrip of JSON.parse(res).documents) {
+
+                var newTrip = {};
+                newTrip.counties = serverTrip.fylker;
+                newTrip.municipalies = serverTrip.kommuner;
+                newTrip.seasons = serverTrip.sesong;
+                newTrip.classification = ["Enkel", "Middels", "Vanskelig"].indexOf(serverTrip.gradering);
+                newTrip.description = serverTrip.beskrivelse;
+                newTrip.distance = serverTrip.distanse;
+                newTrip.duration = serverTrip.tidsbruk.normal.timer; // dager?
+                newTrip.geometry = serverTrip.geojson;
+                newTrip.images = serverTrip.bilder;
+                newTrip.name = serverTrip.navn;
+                newTrip.ntID = serverTrip._id;
+                newTrip.tags = serverTrip.tags;
+                newTrip.url = serverTrip.url;
+                newTrip.lastEdited = serverTrip.endret;
+                newTrip.provider = serverTrip.tilbyder;
+
+            }
+            while(array.length > 0) {
+
+            }
+        })
+		var returnValue = this.currentArray.shift();
+
+		var details = await this.http.get(`${this.url}/turer/${returnValue._id}`)
+				.map((response: Response) => response.json())
+				.toPromise()
+				.then(res => {
+			
+			var serverTrip = <NTTripDetails>res;
+			var newTrip: TripSchema = new TripSchema();
+			
+			newTrip.counties = serverTrip.fylker;
+			newTrip.municipalies = serverTrip.kommuner;
+			newTrip.seasons = serverTrip.sesong;
+			newTrip.classification = ["Enkel", "Middels", "Vanskelig"].indexOf(<string>serverTrip.gradering);
+			newTrip.description = serverTrip.beskrivelse;
+			newTrip.distance = serverTrip.distanse;
+			newTrip.duration = serverTrip.tidsbruk.normal.timer; // dager?
+			newTrip.geometry = serverTrip.geojson;
+			newTrip.images = serverTrip.bilder;
+			newTrip.name = serverTrip.navn;
+			newTrip.ntID = serverTrip._id;
+			newTrip.tags = serverTrip.tags;
+			newTrip.url = serverTrip.url;
+			newTrip.lastEdited = serverTrip.endret;
+			newTrip.provider = serverTrip.tilbyder;
+
+			return newTrip;
+
+		}).catch(err => {
+			console.error(err);
+			Promise.resolve({error: err, current: this.current, _id: returnValue._id});
+		});
+
+		this.current += 1;
+		return Promise.resolve(details);
+	}
+}*/
