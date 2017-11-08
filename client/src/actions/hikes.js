@@ -1,5 +1,6 @@
 
 import axios from "axios";
+import {env} from '../env';
 
 export const Difficulity = {
     0: "Lett",
@@ -7,7 +8,7 @@ export const Difficulity = {
     2: "Krevende"
 }
 
-var flipHikeCoordinates = function (hikes) {
+function flipHikeCoordinates(hikes) {
 
     /* The hike coordinates are formatted in a two dimensional array, where every inner array are an
         array with two elements; lng, lat. The order of these has to be flipped to the correct format
@@ -23,17 +24,20 @@ var flipHikeCoordinates = function (hikes) {
 
 export async function getHikes(mapBounds) {
 
-    let upperLat = mapBounds.northEastLat;
-    let upperLng = mapBounds.northEastLng;
-    let lowerLat = mapBounds.southWestLat;
-    let lowerLng = mapBounds.southWestLng;
+    let upperLat = mapBounds._northEast.lat;
+    let upperLng = mapBounds._northEast.lng;
+    let lowerLat = mapBounds._southWest.lat;
+    let lowerLng = mapBounds._southWest.lng;
 
-    let url = "http://198.211.120.107:3001";
+    // todo: move url into own file
+    let url = env.backendURL;
 
     let result = await axios.get(`${url}/api/v1/trips?lat_lower=${lowerLat}&lat_upper=${upperLat}&lng_lower=${lowerLng}&lng_upper=${upperLng}`);
     
     if(result.data.length > 0 ){
+        if(result.error) return null;
         flipHikeCoordinates(result.data);
+        //console.log(result.data[0].geometry.coordinates[0]);
         return result.data;
     }
 

@@ -4,21 +4,28 @@ var express = require('express'),
   logger = require('morgan'),
   cookieParser = require('cookie-parser'),
   bodyParser = require('body-parser'),
-  cors = require('cors');
+  cors = require('cors'),
+  request = require('request'),
+  bluebird = require('bluebird');
+
 
 // import the routes
 var routes = require('./routes/index'),
   webhook = require('./routes/webhook'),
   tripAPI = require('./routes/trips'),
-  chargingAPI = require('./routes/charging');
+  chargingAPI = require('./routes/charging'),
+  parkingAPI = require('./routes/parking');
 
 // set up and connect to mongodb using mongoose
 var mongoose = require('mongoose'),
   mongoURL = 'mongodb://localhost:27017/trips';
 
+var cacheVegvesenet = require('./init').cacheVegvesenet;
+var cacheTrips = require('./init').cacheTrips;
+
 mongoose.connect(mongoURL);
 mongoose.set('debug', true);
-mongoose.Promise = require('bluebird');
+mongoose.Promise = bluebird;
 
 var app = express();
 app.use(cors());
@@ -38,6 +45,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', routes);
 app.use('/api/v1/trips', tripAPI);
 app.use('/api/v1/charging', chargingAPI);
+app.use('/api/v1/parking', parkingAPI);
 
 // disabled automatic pull as that will not work at the moment
 //app.use('/webhook', webhook);
@@ -63,6 +71,45 @@ if (app.get('env') === 'development') {
     }});
   });
 }
+
+var readline = require('readline');
+
+var handleCommand = function(answer) {
+  // TODO: Log the answer in a database
+  switch(answer) {
+    case 'cacheVegvesenet': {
+      console.log('Caching vegvesenet parking...')
+      cacheVegvesenet();
+      break;
+    }
+    case 'cacheTrips': {
+      console.log('Caching trips...')
+      cacheTrips();
+      break;
+    }
+    default: {
+      console.log("Invalid command. Use either \'cacheVegvesenet\' or \'cacheTrips\'");
+      break;
+    }
+  }
+}
+
+var rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
+
+rl.setPrompt('> ');
+rl.prompt();
+rl.on('line', function(line) {
+  handleCommand(line);
+  rl.prompt();
+}).on('close',function(){
+    process.exit(0);
+});
+
+//cacheVegvesenet();
+//cacheTrips();
 
 // production error handler
 // no stacktraces leaked to user

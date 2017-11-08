@@ -4,6 +4,39 @@ var router = express.Router();
 var apiKey = require('./apiKey');
 var request = require('request');
 
+
+function positionToArray(str) {
+	
+	// (63.42182,10.43178) -> [ 10.43178, 63.42182 ]
+	
+	var res = /\((.*),(.*)\)/.exec(str);
+	return [ parseFloat(res[2]), parseFloat(res[1]) ];
+
+}
+
+function parseResults(data) {
+	var parsedResults = [];
+    for(let chargingStation of data) {
+        var item = {
+            geometry: {
+                coordinates: positionToArray(chargingStation.csmd.Position),
+                type: 'Point'
+            },
+            id: chargingStation.csmd.id,
+            name: chargingStation.csmd.name,
+            address: {
+                street: chargingStation.csmd.Street,
+                street_nr: chargingStation.csmd.House_number,
+            },
+            points: chargingStation.csmd.Number_charging_points,
+            description: chargingStation.csmd.Description_of_location
+        };
+        parsedResults.push(item);
+	}
+
+    return parsedResults;
+}
+
 // Makes a route for charging address
 router.get('/', function (req, res, next) {
 
@@ -22,8 +55,9 @@ router.get('/', function (req, res, next) {
 
 	// Execute Query
 
-	var reqURL = "http://nobil.no/api/server/search.php?"
-	reqURL += `apikey=${apiKey.nobilApiKey}&apiversion=3&action=search&type=rectangle&northeast(${ulng}%2C%20${ulat})&southwest(${llng}%2C%20${llat})`;
+	var reqURL = "http://nobil.no/api/server/search.php?";
+	reqURL += `apikey=${apiKey.nobilApiKey}&apiversion=3&action=search&type=rectangle&`;
+	reqURL += `northeast=(${ulat}%2C%20${ulng})&southwest=(${llat}%2C%20${llng})`;
 	
 	request(reqURL, function (error, response, body) {
 		if (error) {
@@ -37,10 +71,15 @@ router.get('/', function (req, res, next) {
 				statusCode: response.statusCode,
 				url: reqURL
 			});
+		} else if(JSON.parse(body).error != null) {
+			return res.json({
+				error: body
+			});
 		} else {
-			return res.json(body);
+			return res.json(parseResults(JSON.parse(body).chargerstations));
 		}
 	});
 });
 
 module.exports = router;
+	
