@@ -40,59 +40,6 @@ router.get('/', function(req, res, next) {
 		return res.json(result);
 	});
 	
-}); 
-
-router.post('/', function(req, res, next) {
-	var trip = new Trip(req.body);
-	Trip.findOne({'ntID': trip.ntID}, function(err, retTrip) {
-		if(!retTrip) {
-			return trip.save().then(function() {
-				return res.json(trip);
-			});
-		} else {
-			return res.json({error: "Trip already in database."})
-		}
-	});
-});
-
-// Put request. Not a priority right now.
-/*
-router.put('/:uid', function(req, res, next) {
-	var objID = req.params.uid;
-	Trip.findById(req.params.id, function(err, result) {
-		if(err) {
-			console.error(err);
-			return res.json(err);
-		}
-		result.modified = req.body;
-	});
-});
-*/
-
-router.delete('/:uid', function(req, res, next) {
-	var objID = req.params.uid;
-	Trip.find({_id: objID}).remove(function(err, result) {
-		if(err) {
-			console.error(err);
-			return res.json(err);
-		}
-		return res.json(result);
-	}).catch(next);
-});
-
-// For deleting all items. Requires a key. Will crash server :D
-router.delete('/', function(req, res, next) {
-	if(req.body.secret === 'fif493hb8e') {
-		Trip.remove(function(err, result) {
-			if(err) {
-				console.error(err);
-				return res.json(err);
-			}
-			return res.json(res);
-		}).catch(next);
-	} else {
-		return res.json({response: "invalid key"});
-	}
 });
 
 module.exports = router;

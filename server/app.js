@@ -11,7 +11,6 @@ var express = require('express'),
 
 // import the routes
 var routes = require('./routes/index'),
-  webhook = require('./routes/webhook'),
   tripAPI = require('./routes/trips'),
   chargingAPI = require('./routes/charging'),
   parkingAPI = require('./routes/parking');
@@ -46,9 +45,6 @@ app.use('/', routes);
 app.use('/api/v1/trips', tripAPI);
 app.use('/api/v1/charging', chargingAPI);
 app.use('/api/v1/parking', parkingAPI);
-
-// disabled automatic pull as that will not work at the moment
-//app.use('/webhook', webhook);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
