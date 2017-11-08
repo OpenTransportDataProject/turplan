@@ -40,7 +40,7 @@ class LandingPage extends Component {
                   aktivert parkering. Det hentes da inn informasjon fra to
                   forskjellige kilder. Den første kilden, Open Street Map, er et
                   api som inneholder parkeringsplasser lagt til av publikum.
-                  Disse kan mangele noe info om begrensinger, men det er lagt
+                  Disse kan mangle noe info om begrensinger, men det er lagt
                   til store mengder data. De andre kilden er fra Statens
                   Vegvesen, og disse inneholder mer info om begrensinger, men
                   det er bare et lite subset av alle norges parkeringsplasser i

@@ -199,7 +199,7 @@ class ReactLeafletMap extends Component {
 					</ToggleContainer>
 					<ToggleContainer>
 						<Toggle
-							label="Charging stations"
+							label="Ladestasjoner"
 							labelStyle={ToggleStyle}
 							defaultToggled={false}
 							onToggle={(event, value) => {this._updateChargingStations(value, this.refs.map.leafletElement.getBounds());}}
@@ -208,7 +208,7 @@ class ReactLeafletMap extends Component {
 					</ToggleContainer>
 					<ToggleContainer>
 						<Toggle
-							label="Parking"
+							label="Parkering"
 							labelStyle={ToggleStyle}
 							value={this.state.showParking}
 							disabled={this.state.zoomLevel <= 14}
@@ -250,7 +250,7 @@ class ReactLeafletMap extends Component {
 										{hike.classification ? <div><b>Vansklighetsgrad: </b>{Difficulity[hike.classification]}</div> : null}
 										<div>
 										{
-											<button onClick={e => this._selectDestinationHike(hike)}> Mark as destination? </button>
+											<button onClick={e => this._selectDestinationHike(hike)}> Merk som mål </button>
 										}
 										</div>
 									</div>
@@ -272,7 +272,7 @@ class ReactLeafletMap extends Component {
 										<div>Fra: NOBIL Transnova</div>
 										<div>ID: {chargingStation.id}</div>
 										<div>
-											<button onClick={e => this._selectDestination(chargingStation)}> Mark as destination? </button>
+											<button onClick={e => this._selectDestination(chargingStation)}> Merk som mål </button>
 										</div>
 									</div>
 								</Popup>
@@ -305,7 +305,7 @@ class ReactLeafletMap extends Component {
 											</div>
 										: null}
 										<div>
-											<button onClick={e => this._selectDestination(parking)}> Mark as destination? </button>
+											<button onClick={e => this._selectDestination(parking)}> Merk som mål </button>
 										</div>
 									</div>
 								</Popup>
