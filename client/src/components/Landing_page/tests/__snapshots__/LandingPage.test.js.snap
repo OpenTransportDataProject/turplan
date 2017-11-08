@@ -55,7 +55,7 @@ exports[`Renders correctly 1`] = `
           <p
             className="sc-chPdSV ipSNvI"
           >
-            I kartet kan du lett finne parkeringsplasser når du har aktivert parkering. Det hentes da inn informasjon fra to forskjellige kilder. Den første kilden, Open Street Map, er et api som inneholder parkeringsplasser lagt til av publikum. Disse kan mangele noe info om begrensinger, men det er lagt til store mengder data. De andre kilden er fra Statens Vegvesen, og disse inneholder mer info om begrensinger, men det er bare et lite subset av alle norges parkeringsplasser i dette registeret. Punktene lar seg ikke slå sammen, da de er registret på forskjellige måter.
+            I kartet kan du lett finne parkeringsplasser når du har aktivert parkering. Det hentes da inn informasjon fra to forskjellige kilder. Den første kilden, Open Street Map, er et api som inneholder parkeringsplasser lagt til av publikum. Disse kan mangle noe info om begrensinger, men det er lagt til store mengder data. De andre kilden er fra Statens Vegvesen, og disse inneholder mer info om begrensinger, men det er bare et lite subset av alle norges parkeringsplasser i dette registeret. Punktene lar seg ikke slå sammen, da de er registret på forskjellige måter.
           </p>
         </div>
         <div
@@ -110,8 +110,27 @@ exports[`Renders correctly 1`] = `
         className="sc-fjdhpX dfJVIW"
       >
         <div
-          className="sc-kgoBCf kBNJDJ"
+          className="sc-kgoBCf cSCHWN"
         />
+        <div
+          className="sc-cSHVUG ndVwj"
+        >
+          <h3
+            className="sc-kAzzGY cPHuHy"
+          >
+            Finn en rute
+          </h3>
+          <p
+            className="sc-chPdSV ipSNvI"
+          >
+            For å finne en rute mellom punkter, benytter vi "Leaflet Routing Machine". I dette stadiet av applikasjonen, må ting gjøres i en bestemt rekkefølge for å fungere. Det første du trenger er en destinasjon. Du kan sette denne ved å klikke på markøren til enten en parkeringsplass eller ladestasjon, og så sette denne som ditt startpunkt. Videre klikker du på kartet dit du ønsker å reise fra. Da vil det automatisk genereres en rute fra ditt selvvalgte punkt på kartet til den valgte markøren, og du får opp en veibeskrivelse (på engelsk).
+             
+          </p>
+        </div>
+      </div>
+      <div
+        className="sc-fjdhpX dfJVIW"
+      >
         <div
           className="sc-cSHVUG ndVwj"
         >
@@ -127,6 +146,9 @@ exports[`Renders correctly 1`] = `
              
           </p>
         </div>
+        <div
+          className="sc-kgoBCf kBNJDJ"
+        />
       </div>
     </div>
     <p
@@ -152,6 +174,9 @@ exports[`Renders correctly 1`] = `
         </li>
         <li>
           Nasjonal Turbase
+        </li>
+        <li>
+          Leaflet routing machine
         </li>
         <li>
           Leaflet
