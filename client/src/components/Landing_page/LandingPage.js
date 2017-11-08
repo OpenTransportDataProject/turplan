@@ -78,7 +78,21 @@ class LandingPage extends Component {
               <Image imageUrl={"images/tur.jpg"} />
             </Row>
             <Row>
-              <Image imageUrl={"images/kart.jpg"} />
+              <Image imageUrl={"images/path.jpg"} />
+              <Info>
+                <InfoHeader>Finn en rute</InfoHeader>
+                <InfoText>
+                  For å finne en rute mellom punkter, benytter vi "Leaflet Routing Machine". I dette stadiet
+                  av applikasjonen, må ting gjøres i en bestemt rekkefølge for å fungere. Det første du trenger er
+                  en destinasjon. Du kan sette denne ved å klikke på markøren til enten en parkeringsplass eller
+                  ladestasjon, og så sette denne som ditt startpunkt. Videre klikker du på kartet dit du ønsker å reise fra.
+                  Da vil det automatisk genereres en rute fra ditt selvvalgte punkt på kartet til den valgte markøren, og du
+                  får opp en veibeskrivelse (på engelsk).{" "}
+                </InfoText>
+              </Info>
+            </Row>
+            <Row>
+
               <Info>
                 <InfoHeader>Våre kart</InfoHeader>
                 <InfoText>
@@ -86,6 +100,7 @@ class LandingPage extends Component {
                   med kartblad hentet ut fra statkart.{" "}
                 </InfoText>
               </Info>
+                <Image imageUrl={"images/kart.jpg"} />
             </Row>
           </PageInfoContainer>
           <PageContentHeader>
@@ -96,6 +111,7 @@ class LandingPage extends Component {
               <li>Parkeringsregisteret, Statens Vegvesen</li>
               <li>Google Places</li>
               <li>Nasjonal Turbase</li>
+              <li>Leaflet routing machine</li>
               <li>Leaflet</li>
               <li>Statkart/Kartverket/Norgeskart</li>
             </List>
