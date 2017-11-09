@@ -33,7 +33,7 @@ const startPosition = {
 }
 
 class ReactLeafletMap extends Component {
-  
+
 	constructor(){
 		super();
 		this.state = {
@@ -64,7 +64,7 @@ class ReactLeafletMap extends Component {
 		//this.refs.map.leafletElement.closePopup();
 
 		let zoom = this.refs.map.leafletElement.getZoom();
-		
+
 		var bounds = this.refs.map.leafletElement.getBounds();
 		this.setState({zoomLevel: zoom}, () => {
 			if(this.state.showParking) this._updateParking(true, bounds);
@@ -124,7 +124,9 @@ class ReactLeafletMap extends Component {
 	}
 
 	_selectDestination(dest) {
+		console.log(dest);
 		this.setState({ routingDestination: dest }, this._updateRoute);
+		this.refs.map.leafletElement.closePopup();
 	}
 
 	_clearRoute(){
@@ -133,7 +135,7 @@ class ReactLeafletMap extends Component {
 		});
 	}
 
-	_selectDestinationHike(hike) {		
+	_selectDestinationHike(hike) {
 		this._selectDestination({geometry: { type: 'Point', coordinates: [ hike.geometry.coordinates[0][0], hike.geometry.coordinates[0][1] ] }})
 	}
 
@@ -152,7 +154,7 @@ class ReactLeafletMap extends Component {
 			this.state.routingElement = null;
 		}
 		if(this.state.routingStart && this.state.routingDestination) {
-			
+
 			var startCoords = this.state.routingStart.geometry.type == 'Point' ? this.state.routingStart.geometry.coordinates : this.state.routingStart.geometry.coordinates[0];
 			var endCoords = this.state.routingDestination.geometry.type == 'Point' ? this.state.routingDestination.geometry.coordinates : this.state.routingDestination.geometry.coordinates[0];
 			var dist = distance(startCoords, endCoords);
@@ -161,7 +163,7 @@ class ReactLeafletMap extends Component {
 			}
 			console.log('start: ',startCoords)
 			console.log('end:   ',endCoords)
-			
+
 			var route = L.Routing.control({
 				lineOptions:{styles:[{color: 'black', opacity: 0.15, weight: 9},
 				{color: 'blue', opacity: 0.8, weight: 6},
@@ -172,7 +174,6 @@ class ReactLeafletMap extends Component {
 				]
 			}).addTo(this.refs.map.leafletElement);
 			this.setState({routingElement: route}, () => console.log("hello World"));
-
 		} else if(this.state.routingElement) {
 			this.refs.map.leafletElement.removeControl(this.state.routingElement);
 			this.setState({routingElement: null});
@@ -222,13 +223,13 @@ class ReactLeafletMap extends Component {
 					<Searchbar handleMap={(lat, lng) => this.setPosition(lat, lng)} />
 				</Row>
 				<MapContainer>
-					<Map 
+					<Map
 						onViewportChanged={this._onViewportChanged}
 						center={[startPosition.lat, startPosition.lng]}
 						zoom={startPosition.zoom}
 						onClick={this.onMapClick}
             			ref="map">
-						
+
 						<TileLayer
 							url="http://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=topo2&zoom={z}&x={x}&y={y}"
 							attribution="&copy; <a href=&quot;http://www.statkart.no&quot;>Startkart.no</a>"
@@ -258,7 +259,7 @@ class ReactLeafletMap extends Component {
 							</Marker>
 						</div>
 						)) : null}
-						
+
 						{this.state.showCharging && this.state.chargingStationsInView != null && this.state.chargingStationsInView != null ? this.state.chargingStationsInView.map((chargingStation, idx) => (
 						<div key={idx}>
 							<Marker key={`marker-${idx}`} position={chargingStation.geometry.coordinates.reverse()} icon={chargingIcon}>
@@ -286,14 +287,14 @@ class ReactLeafletMap extends Component {
 								<Popup autoPan={false}>
 									<div>
 										<div>Parkeringsplass!</div>
-										{parking.source == "osm" ? 
+										{parking.source == "osm" ?
 											<div>
 												<div>Amenity: {parking.amenity}</div>
 												<div>Tilgang: {parking.access}</div>
 												<div>Kilde: {parking.source}</div>
 											</div>
 										: null}
-										{parking.source == "vegvesenet" ? 
+										{parking.source == "vegvesenet" ?
 											<div>
 												<div>Tilbyder: {parking.provider}</div>
 												<div>Navn: {parking.name}</div>
@@ -312,6 +313,11 @@ class ReactLeafletMap extends Component {
 							</Marker> : null}
 						</div>
 						)) : null}
+
+						{this.state.routingDestination ?
+								<Marker position={this.state.routingDestination.geometry.coordinates.reverse()} icon={newMarkerIcon}>
+								</Marker>
+						: null}
 
 						{this.state.routingStart ? <Marker position={this.state.routingStart.geometry.coordinates.reverse()} icon={newMarkerIcon}></Marker> : null}
 
