@@ -198,6 +198,7 @@ class ReactLeafletMap extends Component {
 						/>
 						{this.state.loadingHikes ? <Loading isLoading={true}></Loading> : null}
 					</ToggleContainer>
+
 					<ToggleContainer>
 						<Toggle
 							label="Ladestasjoner"
@@ -219,8 +220,9 @@ class ReactLeafletMap extends Component {
 						/>
 						{this.state.loadingParking ? <Loading isLoading={true}></Loading> : null}
 					</ToggleContainer>
-					<Button color="primary" disabled={!this.state.routingStart && !this.state.routingDestination} onClick={this._clearRoute}>Fjern rute</Button>
+
 					<Searchbar handleMap={(lat, lng) => this.setPosition(lat, lng)} />
+					<Button color="primary" hidden={!this.state.routingStart && !this.state.routingDestination} onClick={this._clearRoute}>Fjern rute</Button>
 				</Row>
 				<MapContainer>
 					<Map
