@@ -46,12 +46,14 @@ export class Searchbar extends Component {
       .then(results => getLatLng(results[0]))
       .then((
         latLng //console.log('Success', latLng)
-      ) =>
+      ) => (
         this.setState({
           address,
           lat: latLng.lat,
           lng: latLng.lng
-        })
+        }),
+        this.props.handleMap(this.state.lat, this.state.lng)
+      )
       )
       .catch(error => console.error("Error", error));
   };
@@ -60,7 +62,7 @@ export class Searchbar extends Component {
     const inputProps = {
       value: this.state.address,
       placeholder: 'søk her...',
-      onChange: this.onChange
+      onChange: this.onChange,
     };
 
     const myStyles = {
@@ -80,7 +82,8 @@ export class Searchbar extends Component {
             inputProps={inputProps}
             onSelect={address => this.handleSelect(address)}
             styles={myStyles}
-
+            onEnterKeyDown={(address) =>
+              this.props.handleMap(this.state.lat, this.state.lng)}
           />
           {
             <SearchIcon
