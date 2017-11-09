@@ -59,6 +59,7 @@ export class Searchbar extends Component {
   render() {
     const inputProps = {
       value: this.state.address,
+      placeholder: 'søk her...',
       onChange: this.onChange
     };
 
@@ -79,6 +80,7 @@ export class Searchbar extends Component {
             inputProps={inputProps}
             onSelect={address => this.handleSelect(address)}
             styles={myStyles}
+
           />
           {
             <SearchIcon
