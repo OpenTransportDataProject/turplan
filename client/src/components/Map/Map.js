@@ -219,6 +219,7 @@ class ReactLeafletMap extends Component {
 							onToggle={(event, value) => {this._updateParking(value, this.refs.map.leafletElement.getBounds());}}
 						/>
 						{this.state.loadingParking ? <Loading isLoading={true}></Loading> : null}
+						{(this.state.zoomLevel<=14 && this.state.showParking) ? <Dialog /> : null }
 					</ToggleContainer>
 
 					<Searchbar handleMap={(lat, lng) => this.setPosition(lat, lng)} />
