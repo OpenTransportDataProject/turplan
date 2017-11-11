@@ -10,6 +10,11 @@ export const FooterContainer = styled.div`
   padding-left: 10px;
   padding-right: 10px;
   max-height: 200px;
+  max-width:100%;
+  box-sizing:border-box;
+  @media (max-width:750px) {
+      flex-direction: column;
+    }
 `;
 
 export const FooterText = styled.p`

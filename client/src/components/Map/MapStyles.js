@@ -44,6 +44,12 @@ export const Row = styled.div`
   flex: 0.3;
   display: flex;
   flex-direction: row;
+  @media (max-width:750px) {
+      z-index:1;
+      flex-direction: column;
+      background: #eee;
+      padding-bottom: 2px;
+    }
 `;
 
 export const ToggleContainer = styled.div`
