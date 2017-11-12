@@ -235,7 +235,7 @@ class ReactLeafletMap extends Component {
 
 						<TileLayer
 							url="http://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=topo2&zoom={z}&x={x}&y={y}"
-							attribution="&copy; <a href=&quot;http://www.statkart.no&quot;>Startkart.no</a>"
+							attribution="Statkart | OSM | Google | Nobil ++"
 						/>
 
 						{this.state.showHikes && this.state.hikesInView != null ? this.state.hikesInView.map((hike, idx) => (

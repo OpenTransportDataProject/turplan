@@ -39,12 +39,12 @@ class LandingPage extends Component {
                   I kartet kan du lett finne parkeringsplasser når du har
                   aktivert parkering. Det hentes da inn informasjon fra to
                   forskjellige kilder. Den første kilden, Open Street Map, er et
-                  api som inneholder parkeringsplasser lagt til av publikum.
+                  datasett som inneholder parkeringsplasser lagt til av publikum.
                   Disse kan mangle noe info om begrensinger, men det er lagt
                   til store mengder data. De andre kilden er fra Statens
                   Vegvesen, og disse inneholder mer info om begrensinger, men
-                  det er bare et lite subset av alle norges parkeringsplasser i
-                  dette registeret. Punktene lar seg ikke slå sammen, da de er
+                  det er bare en liten del av alle norges parkeringsplasser i
+                  dette registeret. Markørene lar seg ikke slå sammen, da de er
                   registret på forskjellige måter.
                 </InfoText>
               </Info>
@@ -56,7 +56,7 @@ class LandingPage extends Component {
                 <InfoHeader>Finn ladestasjon</InfoHeader>
                 <InfoText>
                   Ladestasjonene som er tilgjengelige i vårt kart er en
-                  kombinasjon av Open Street Map og Nobil Transnova's api.
+                  kombinasjon av Open Street Map og Nobil Transnova's datasett.
                   Sistnevnte samarbeider med elbilforeningen og har et ganske
                   komplett bilde av alle norges ladestasjoner for elbil. Disse
                   er utgangspunktet for vår applikasjon. Der det finnes ekstra
@@ -71,8 +71,10 @@ class LandingPage extends Component {
                 <InfoText>
                   Denne applikasjonen samler tur-informasjon fra
                   Nasjonalturbase. Da denne var strukturert litt uhelig for vårt
-                  bruk, har vi lastet ned et subset av deres turer for å vise i
-                  vår applikasjon.{" "}
+                  bruk, har vi lastet ned et lite utvalg av deres turer for å vise i
+                  vår applikasjon. For videre utvikling anbefales å laste ned alle turene.
+                  I tillegg er det tegnet inn turer og høydekvoter i kartene vi henter fra Statskart om du
+                  zoomer godt nok inn. {" "}
                 </InfoText>
               </Info>
               <Image imageUrl={"images/tur.jpg"} />
@@ -84,7 +86,7 @@ class LandingPage extends Component {
                 <InfoText>
                   For å finne en rute mellom punkter, benytter vi "Leaflet Routing Machine". I dette stadiet
                   av applikasjonen, må ting gjøres i en bestemt rekkefølge for å fungere. Det første du trenger er
-                  en destinasjon. Du kan sette denne ved å klikke på markøren til enten en parkeringsplass eller
+                  en destinasjon. Du kan sette denne ved å klikke på markøren til enten en parkeringsplass, tur eller
                   ladestasjon, og så sette denne som ditt startpunkt. Videre klikker du på kartet dit du ønsker å reise fra.
                   Da vil det automatisk genereres en rute fra ditt selvvalgte punkt på kartet til den valgte markøren, og du
                   får opp en veibeskrivelse (på engelsk).{" "}

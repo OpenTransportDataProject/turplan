@@ -44,6 +44,9 @@ export const Row = styled.div`
   flex-direction: row;
   margin: 1.5em 0;
   min-height: 10em;
+  @media (max-width:750px) {
+      flex-direction: column;
+    }
 `;
 
 export const PageInfoContainer = styled.div`
@@ -70,6 +73,9 @@ export const Image = styled.div`
   flex: 1;
   background-image: url(${props => (props.imageUrl ? props.imageUrl : null)});
   border-radius: 10px;
+  @media (max-width:750px) {
+      display:none;
+    }
 `;
 
 export const List = styled.ul`list-style-type: none;`;
