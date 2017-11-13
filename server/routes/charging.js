@@ -2,8 +2,91 @@ var FormData = require('form-data');
 var express = require('express');
 var router = express.Router();
 var apiKey = require('./apiKey');
-var request = require('request');
+var request = require('request-promise');
+var overpass = require('../query-overpass');
 
+function distance(p1, p2){  // generally used geo measurement function
+	
+	var lat1 = p1[1];
+	var lon1 = p1[0];
+	var lat2 = p2[1];
+	var lon2 = p2[0];
+
+	var R = 6378.137; // Radius of earth in KM
+	var dLat = lat2 * Math.PI / 180 - lat1 * Math.PI / 180;
+	var dLon = lon2 * Math.PI / 180 - lon1 * Math.PI / 180;
+	var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+	Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+	Math.sin(dLon/2) * Math.sin(dLon/2);
+	var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+	var d = R * c;
+	return d * 1000; // meters
+}
+
+function transformChargingStations(data) {
+	let res = [];
+	for(let d of data) {
+		let newItem = {
+			geometry: d.geometry,
+			id: d.id,
+			name: '',
+			address: {
+				street: '',
+				street_nr: ''
+			},
+			points: 1,
+			description: ''
+		}
+		res.push(newItem)
+	}
+	return {osm: res};
+}
+
+function combineNobilOSM(osm, nobil) {
+	for (let osmItem of osm) {
+		let discard = false;
+		for(let nobilItem of nobil) {
+			let dist = distance(nobilItem.geometry.coordinates, osmItem.geometry.coordinates);
+			if(dist < 50) {
+				discard = true;
+				break;
+			}
+		}
+		if(!discard) {
+			nobil.push(osmItem);
+		}
+	}
+	return nobil;
+}
+
+function combine(source) {
+	
+	let s0 = source[0];
+	let s1 = source[1];
+	let osm = s0.osm ? s0.osm : s1.osm;
+	let nobil = s0.nobil ? s0.nobil : s1.nobil;
+
+	if(osm != null) {
+		nobil = combineNobilOSM(osm, nobil);
+	}
+
+	return nobil;
+
+	//return [].concat.apply([], [osm, nobil]);
+
+	//return source;-
+}
+
+function makeQuery(llat, llng, ulat, ulng) {
+    
+    var query =                    `[out:json];node(${llat},${llng},${ulat},${ulng})`;
+    query +=             `[amenity=charging_station];out;way(${llat},${llng},${ulat},${ulng})`;
+    query += `[amenity=charging_station];out center;relation(${llat},${llng},${ulat},${ulng})`;
+    query += `[amenity=charging_station];out center;`;
+
+    return query;
+
+}
 
 function positionToArray(str) {
 	
@@ -58,27 +141,39 @@ router.get('/', function (req, res, next) {
 	var reqURL = "http://nobil.no/api/server/search.php?";
 	reqURL += `apikey=${apiKey.nobilApiKey}&apiversion=3&action=search&type=rectangle&`;
 	reqURL += `northeast=(${ulat}%2C%20${ulng})&southwest=(${llat}%2C%20${llng})`;
-	
-	request(reqURL, function (error, response, body) {
-		if (error) {
-			return res.json({
-				error: error
-			});
-		} else if (!(/^2/.test('' + response.statusCode))) {
-			return res.json({
-				error: error,
-				response: response,
-				statusCode: response.statusCode,
-				url: reqURL
-			});
-		} else if(JSON.parse(body).error != null) {
-			return res.json({
-				error: body
-			});
+
+
+	var query = makeQuery(llat, llng, ulat, ulng);
+
+	let results_1;
+	if(distance([ulng, ulat], [llng, llat]) < 3000) {
+		results_1 = overpass.get(query, null, transformChargingStations);
+	} else {
+		console.log("heeeeeeeeee")
+		results_1 = Promise.resolve([]);
+	}
+	//let results_1 = Promise.resolve([]);
+	let results_2 = request(reqURL).then(response => {
+		response = JSON.parse(response);
+		if(response.error) {
+			return {nobil: []};
 		} else {
-			return res.json(parseResults(JSON.parse(body).chargerstations));
+			return {nobil: parseResults(response.chargerstations)};
 		}
+		
+	}).catch(err => {
+		console.error(err);
 	});
+	//let results_2 = Promise.resolve([]);
+	Promise.all([results_1, results_2]).then(r => {
+		let output = combine(r);
+		return output;
+	}).then(results => {
+		return res.json(results);
+	}).catch(err => {
+		console.error(err);
+		return err;
+	})
 });
 
 module.exports = router;

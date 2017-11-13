@@ -83,6 +83,11 @@ var handleCommand = function(answer) {
       cacheTrips();
       break;
     }
+    case 'exit': {
+      console.log('Exiting...')
+      process.exit()
+      break;
+    }
     default: {
       console.log("Invalid command. Use either \'cacheVegvesenet\' or \'cacheTrips\'");
       break;

@@ -6,7 +6,7 @@ var osmtogeojson = require('osmtogeojson'),
     xmldom = require('xmldom');
 
 
-function transformData(data) {
+module.exports.transformParkingData = function (data) {
 
     let parkingLots = data;
 
@@ -32,7 +32,7 @@ to finish and then return the resulting assay as
 a promise.
 
 */
-module.exports = function(query, options) {
+module.exports.get = function(query, options, transform = null) {
     
     var contentType;
     options = options || {};
@@ -80,7 +80,10 @@ module.exports = function(query, options) {
     });
 
     return promise.then(data => {
-        let transformed = transformData(data);
+        let transformed = data;
+        if(transform) {
+            transformed = transform(data);
+        }
         return transformed;
     }).catch(err => {
         return err;

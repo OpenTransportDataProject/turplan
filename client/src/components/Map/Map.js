@@ -273,7 +273,6 @@ class ReactLeafletMap extends Component {
 											Adresse: {chargingStation.address.street} {chargingStation.address.street_nr}
 										</div>
 										<div>Antall Ladeplasser: {chargingStation.points}</div>
-										<div>Fra: NOBIL Transnova</div>
 										<div>ID: {chargingStation.id}</div>
 										<div>
 											<button onClick={e => this._selectDestination(chargingStation)}> Merk som mål </button>

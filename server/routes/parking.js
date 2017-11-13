@@ -126,7 +126,7 @@ router.get('/', function (req, res, next) {
 
     var query = makeQuery(llat, llng, ulat, ulng);
 
-    var results_1 = overpass(query);
+    var results_1 = overpass.get(query, null, overpass.transformParkingData);
     var results_2 = getVegvesenetData(llat, llng, ulat, ulng);
     Promise.all([results_1, results_2]).then(r => {
         return [].concat.apply([], r);        
