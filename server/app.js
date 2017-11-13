@@ -17,14 +17,14 @@ var routes = require('./routes/index'),
 
 // set up and connect to mongodb using mongoose
 var mongoose = require('mongoose'),
-  mongoURL = 'mongodb://localhost:27017/trips';
-
-var cacheVegvesenet = require('./init').cacheVegvesenet;
-var cacheTrips = require('./init').cacheTrips;
+  mongoURL = process.env.MONGO_URL;
 
 mongoose.connect(mongoURL);
 mongoose.set('debug', true);
 mongoose.Promise = bluebird;
+
+var cacheVegvesenet = require('./init').cacheVegvesenet;
+var cacheTrips = require('./init').cacheTrips;
 
 var app = express();
 app.use(cors());

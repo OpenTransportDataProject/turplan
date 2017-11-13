@@ -1,14 +1,13 @@
 var FormData = require('form-data');
 var express = require('express');
 var router = express.Router();
-var apiKey = require('./apiKey');
 var request = require('request');
 
 
 function positionToArray(str) {
-	
+
 	// (63.42182,10.43178) -> [ 10.43178, 63.42182 ]
-	
+
 	var res = /\((.*),(.*)\)/.exec(str);
 	return [ parseFloat(res[2]), parseFloat(res[1]) ];
 
@@ -56,9 +55,9 @@ router.get('/', function (req, res, next) {
 	// Execute Query
 
 	var reqURL = "http://nobil.no/api/server/search.php?";
-	reqURL += `apikey=${apiKey.nobilApiKey}&apiversion=3&action=search&type=rectangle&`;
+	reqURL += `apikey=${process.env.API_KEY}&apiversion=3&action=search&type=rectangle&`;
 	reqURL += `northeast=(${ulat}%2C%20${ulng})&southwest=(${llat}%2C%20${llng})`;
-	
+
 	request(reqURL, function (error, response, body) {
 		if (error) {
 			return res.json({
