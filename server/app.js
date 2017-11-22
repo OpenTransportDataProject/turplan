@@ -17,18 +17,33 @@ var routes = require('./routes/index'),
 
 // set up and connect to mongodb using mongoose
 var mongoose = require('mongoose'),
-  mongoURL = 'mongodb://localhost:27017/trips';
+  mongoURL = process.env.MONGODB || 'mongodb://localhost:27017/trips';
+
+var port = process.env.PORT || 3001;
+
+console.log(`Connecting to MongoDB url: ${mongoURL}`);
+console.log(`Using port ${port}`);
 
 var cacheVegvesenet = require('./init').cacheVegvesenet;
 var cacheTrips = require('./init').cacheTrips;
 
-mongoose.connect(mongoURL);
 mongoose.set('debug', true);
 mongoose.Promise = bluebird;
 
+mongoose.connect(mongoURL, { useMongoClient: true }).then(res => {
+  // Check error in initial connection. There is no 2nd param to the callback.
+	console.log(`Connected to ${mongoURL}`);
+},
+err => {
+	console.error("Could not connect to mongoDB.");
+	console.error(err);
+	console.log('Exiting...');
+	process.exit(1);
+});
+
+
 var app = express();
 app.use(cors());
-
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -122,7 +137,7 @@ app.use(function(err, req, res, next) {
   });
 });
 
-app.listen(3001, function () {
+app.listen(port, function () {
   console.log('Example app listening on port 3001!')
 })
 

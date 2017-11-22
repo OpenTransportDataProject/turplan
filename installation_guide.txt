@@ -1,0 +1,42 @@
+Installation guide:
+
+1. Install Node
+2. Install MongoDB and set it up
+3. Install git
+4. Go to your favourite directory
+5. Run the following commands
+
+git clone https://github.com/sondrehav/tdt4290.git
+cd tdt4290
+npm install -g pm2
+
+6. Fixing firewall
+
+ufw status
+ufw allow <client port>
+ufw allow <server port>
+ufw allow <mongodb port>
+ufw enable
+
+ - Client:
+
+7. Run the following command
+
+cd client
+npm install
+REACT_APP_BACKEND_URL=<path to the specified ip address along with port> npm run build
+pm2 serve build <client port>
+cd ..
+
+- Server:
+
+8. Run the following command
+
+cd server
+npm install
+PORT=<server port> MONGODB=<path to mongodb> node app.js
+cacheVegvesenet
+cacheTrips
+exit
+PORT=<server port> MONGODB=<path to mongodb> NOBIL_KEY=<nobil api key> pm2 start app.js
+cd ..

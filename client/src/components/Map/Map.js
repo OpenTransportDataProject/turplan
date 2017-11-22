@@ -274,6 +274,7 @@ class ReactLeafletMap extends Component {
 										</div>
 										<div>Antall Ladeplasser: {chargingStation.points}</div>
 										<div>ID: {chargingStation.id}</div>
+										{chargingStation.source ? <div>Source: {chargingStation.source}</div> : null }
 										<div>
 											<button onClick={e => this._selectDestination(chargingStation)}> Merk som mål </button>
 										</div>
