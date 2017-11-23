@@ -1,7 +1,6 @@
 var FormData = require('form-data');
 var express = require('express');
 var router = express.Router();
-var apiKey = require('./apiKey');
 var request = require('request-promise');
 var overpass = require('../query-overpass');
 
@@ -139,7 +138,7 @@ router.get('/', function (req, res, next) {
 	// Execute Query
 
 	var reqURL = "http://nobil.no/api/server/search.php?";
-	reqURL += `apikey=${apiKey.nobilApiKey}&apiversion=3&action=search&type=rectangle&`;
+	reqURL += `apikey=${process.env.NOBIL_KEY}&apiversion=3&action=search&type=rectangle&`;
 	reqURL += `northeast=(${ulat}%2C%20${ulng})&southwest=(${llat}%2C%20${llng})`;
 
 
