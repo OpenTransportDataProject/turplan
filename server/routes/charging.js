@@ -34,7 +34,8 @@ function transformChargingStations(data) {
 				street_nr: ''
 			},
 			points: 1,
-			description: ''
+			description: '',
+			source: 'osm'
 		}
 		res.push(newItem)
 	}
@@ -111,7 +112,8 @@ function parseResults(data) {
                 street_nr: chargingStation.csmd.House_number,
             },
             points: chargingStation.csmd.Number_charging_points,
-            description: chargingStation.csmd.Description_of_location
+            description: chargingStation.csmd.Description_of_location,
+            source: 'nobil'
         };
         parsedResults.push(item);
 	}
@@ -148,7 +150,6 @@ router.get('/', function (req, res, next) {
 	if(distance([ulng, ulat], [llng, llat]) < 3000) {
 		results_1 = overpass.get(query, null, transformChargingStations);
 	} else {
-		console.log("heeeeeeeeee")
 		results_1 = Promise.resolve([]);
 	}
 	//let results_1 = Promise.resolve([]);

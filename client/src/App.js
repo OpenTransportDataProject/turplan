@@ -15,6 +15,7 @@ const Container = styled.div`
 class App extends Component {
   constructor() {
     super();
+    console.log(process.env);
     this.state = {
       LandingPage: true
     };
