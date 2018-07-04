@@ -234,7 +234,7 @@ class ReactLeafletMap extends Component {
             			ref="map">
 
 						<TileLayer
-							url="http://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=topo2&zoom={z}&x={x}&y={y}"
+							url="http://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=topo4&zoom={z}&x={x}&y={y}"
 							attribution="Statkart | OSM | Google | Nobil ++"
 						/>
 
